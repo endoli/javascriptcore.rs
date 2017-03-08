@@ -36,6 +36,26 @@ pub struct OpaqueJSValue([u8; 0]);
 pub type JSValueRef = *const OpaqueJSValue;
 pub type JSObjectRef = *mut OpaqueJSValue;
 extern "C" {
+    /// Evaluates a string of JavaScript.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `script`: A `JSString` containing the script to evaluate.
+    /// * `thisObject`: The object to use as `this`, or `NULL` to
+    ///   use the global object as `this`.
+    /// * `sourceURL`: A `JSString` containing a URL for the script's
+    ///   source file. This is used by debuggers and when reporting
+    ///   exceptions. Pass `NULL` if you do not care to include source
+    ///   file information.
+    /// * `startingLineNumber`: An integer value specifying the script's
+    ///   starting line number in the file located at `sourceURL`. This
+    ///   is only used when reporting exceptions. The value is one-based,
+    ///   so the first line is line `1` and invalid values are clamped
+    ///   to `1`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store an
+    ///   exception, if any. Pass `NULL` if you do not care to store an
+    ///   exception.
+    ///
+    /// The `JSValue` that results from evaluating script, or `NULL` if an exception is thrown.
     pub fn JSEvaluateScript(ctx: JSContextRef,
                             script: JSStringRef,
                             thisObject: JSObjectRef,
@@ -43,16 +63,46 @@ extern "C" {
                             startingLineNumber: ::std::os::raw::c_int,
                             exception: *mut JSValueRef)
                             -> JSValueRef;
-}
-extern "C" {
+
+    /// Checks for syntax errors in a string of JavaScript.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `script`: A `JSString` containing the script to check for
+    ///   syntax errors.
+    /// * `sourceURL`: A `JSString` containing a URL for the script's
+    ///   source file. This is only used when reporting exceptions.
+    ///   Pass `NULL` if you do not care to include source file
+    ///   information in exceptions.
+    /// * `startingLineNumber`: An integer value specifying the script's
+    ///   starting line number in the file located at `sourceURL`. This
+    ///   is only used when reporting exceptions. The value is one-based,
+    ///   so the first line is line `1` and invalid values are clamped
+    ///   to `1`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store a
+    ///   syntax error exception, if any. Pass `NULL` if you do not care
+    ///   to store a syntax error exception.
+    ///
+    /// Returns `true` if the script is syntactically correct, otherwise `false`.
     pub fn JSCheckScriptSyntax(ctx: JSContextRef,
                                script: JSStringRef,
                                sourceURL: JSStringRef,
                                startingLineNumber: ::std::os::raw::c_int,
                                exception: *mut JSValueRef)
                                -> bool;
-}
-extern "C" {
+
+    /// Performs a JavaScript garbage collection.
+    ///
+    /// JavaScript values that are on the machine stack, in a register,
+    /// protected by `JSValueProtect`, set as the global object of an
+    /// execution context, or reachable from any such value will not
+    /// be collected.
+    ///
+    /// During JavaScript execution, you are not required to call this
+    /// function; the JavaScript engine will garbage collect as needed.
+    /// JavaScript values created within a context group are automatically
+    /// destroyed when the last reference to the context group is released.
+    ///
+    /// * `ctx`: The execution context to use.
     pub fn JSGarbageCollect(ctx: JSContextRef);
 }
 #[repr(u32)]
@@ -476,12 +526,24 @@ impl Clone for JSClassDefinition {
     }
 }
 extern "C" {
+    /// Creates a JavaScript class suitable for use with `JSObjectMake`.
+    ///
+    /// * `definition`: A `JSClassDefinition` that defines the class.
+    ///
+    /// Returns a `JSClass` with the given definition. Ownership follows
+    /// the Create Rule.
     pub fn JSClassCreate(definition: *const JSClassDefinition) -> JSClassRef;
-}
-extern "C" {
+
+    /// Retains a JavaScript class.
+    ///
+    /// `jsClass`: The `JSClass` to retain.
+    ///
+    /// Returns a `JSClass` that is the same as `jsClass`.
     pub fn JSClassRetain(jsClass: JSClassRef) -> JSClassRef;
-}
-extern "C" {
+
+    /// Releases a JavaScript class.
+    ///
+    /// `jsClass`: The `JSClass` to release.
     pub fn JSClassRelease(jsClass: JSClassRef);
 }
 extern "C" {
@@ -642,75 +704,221 @@ extern "C" {
                                             propertyName: JSStringRef);
 }
 extern "C" {
+
+    /// Creates a JavaScript context group.
+    ///
+    /// `JSContextGroup` associates JavaScript contexts with one another.
+    /// Contexts in the same group may share and exchange JavaScript
+    /// objects. Sharing and/or exchanging JavaScript objects between
+    /// contexts in different groups will produce undefined behavior.
+    /// When objects from the same context group are used in multiple threads,
+    /// explicit synchronization is required.
+    ///
+    /// Returns the created `JSContextGroup`.
     pub fn JSContextGroupCreate() -> JSContextGroupRef;
-}
-extern "C" {
+
+    /// Retains a JavaScript context group.
+    ///
+    /// * `group`: The `JSContextGroup` to retain.
+    ///
+    /// Returns a `JSContextGroup` that is the same as group.
     pub fn JSContextGroupRetain(group: JSContextGroupRef) -> JSContextGroupRef;
-}
-extern "C" {
+
+    /// Releases a JavaScript context group.
+    ///
+    /// * `group`: The `JSContextGroup` to release.
     pub fn JSContextGroupRelease(group: JSContextGroupRef);
 }
 extern "C" {
+    /// Creates a global JavaScript execution context.
+    ///
+    /// `JSGlobalContextCreate` allocates a global object and populates
+    /// it with all the built-in JavaScript objects, such as `Object`,
+    /// `Function`, `String`, and `Array`.
+    ///
+    /// In WebKit version 4.0 and later, the context is created in a
+    /// unique context group. Therefore, scripts may execute in it
+    /// concurrently with scripts executing in other contexts. However,
+    /// you may not use values created in the context in other contexts.
+    ///
+    /// * `globalObjectClass`: The class to use when creating the global
+    ///   object. Pass `NULL` to use the default object class.
+    ///
+    /// Returns a `JSGlobalContext` with a global object of
+    /// class `globalObjectClass`.
     pub fn JSGlobalContextCreate(globalObjectClass: JSClassRef) -> JSGlobalContextRef;
-}
-extern "C" {
+
+    /// Creates a global JavaScript execution context in the context
+    /// group provided.
+    ///
+    /// `JSGlobalContextCreateInGroup` allocates a global object and
+    /// populates it with all the built-in JavaScript objects, such as
+    /// `Object`, `Function`, `String`, and `Array`.
+    ///
+    /// * `group`: The context group to use. The created global context
+    ///   retains the group.  Pass `NULL` to create a unique group for
+    ///   the context.
+    /// * `globalObjectClass`: The class to use when creating the global
+    ///   object. Pass NULL to use the default object class.
+    ///
+    /// Returns a `JSGlobalContext` with a global object of class
+    /// `globalObjectClass` and a context group equal to `group`.
     pub fn JSGlobalContextCreateInGroup(group: JSContextGroupRef,
                                         globalObjectClass: JSClassRef)
                                         -> JSGlobalContextRef;
-}
-extern "C" {
+
+    /// Retains a global JavaScript execution context.
+    ///
+    /// * `ctx`: The JSGlobalContext to retain.
+    ///
+    /// Returns a `JSGlobalContext` that is the same as `ctx`.
     pub fn JSGlobalContextRetain(ctx: JSGlobalContextRef) -> JSGlobalContextRef;
-}
-extern "C" {
+
+    /// Releases a global JavaScript execution context.
+    ///
+    /// * `ctx` The `JSGlobalContext` to release.
     pub fn JSGlobalContextRelease(ctx: JSGlobalContextRef);
-}
-extern "C" {
+
+    /// Gets the global object of a JavaScript execution context.
+    ///
+    /// * `ctx` The `JSContext` whose global object you want to get.
+    ///
+    /// Returns `ctx`'s global object.
     pub fn JSContextGetGlobalObject(ctx: JSContextRef) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Gets the context group to which a JavaScript execution context belongs.
+    ///
+    /// * `ctx`: The `JSContext` whose group you want to get.
+    ///
+    /// Returns `ctx`'s group.
     pub fn JSContextGetGroup(ctx: JSContextRef) -> JSContextGroupRef;
-}
-extern "C" {
+
+    /// Gets the global context of a JavaScript execution context.
+    ///
+    /// * `ctx`: The `JSContext` whose global context you want to get.
+    ///
+    /// Returns `ctx`'s global context.
     pub fn JSContextGetGlobalContext(ctx: JSContextRef) -> JSGlobalContextRef;
-}
-extern "C" {
+
+    /// Gets a copy of the name of a context.
+    ///
+    /// A `JSGlobalContext`'s name is exposed for remote debugging
+    /// to make it easier to identify the context you would like to
+    /// attach to.
+    ///
+    /// * `ctx`: The `JSGlobalContext` whose name you want to get.
+    ///
+    /// Returns the name for `ctx`.
     pub fn JSGlobalContextCopyName(ctx: JSGlobalContextRef) -> JSStringRef;
-}
-extern "C" {
+
+    /// Sets the remote debugging name for a context.
+    ///
+    /// * `ctx`: The `JSGlobalContext` that you want to name.
+    /// * `name`: The remote debugging name to set on `ctx`.
     pub fn JSGlobalContextSetName(ctx: JSGlobalContextRef, name: JSStringRef);
 }
+/// A UTF-16 code unit.
+///
+/// One, or a sequence of two, can encode any Unicode character. As
+/// with all scalar types, endianness depends on the underlying
+/// architecture.
 pub type JSChar = ::std::os::raw::c_ushort;
 extern "C" {
+    /// Creates a JavaScript string from a buffer of Unicode characters.
+    ///
+    /// * `chars`: The buffer of Unicode characters to copy into the
+    ///   new `JSString`.
+    /// * `numChars`: The number of characters to copy from the buffer
+    ///   pointed to by `chars`.
+    ///
+    /// Returns a `JSString` containing `chars`. Ownership follows the
+    /// Create Rule.
     pub fn JSStringCreateWithCharacters(chars: *const JSChar, numChars: usize) -> JSStringRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript string from a null-terminated UTF8 string.
+    ///
+    /// * `string`: The null-terminated UTF8 string to copy into the
+    ///   new `JSString`.
+    ///
+    /// Returns a `JSString` containing `string`. Ownership follows the
+    /// Create Rule.
     pub fn JSStringCreateWithUTF8CString(string: *const ::std::os::raw::c_char) -> JSStringRef;
-}
-extern "C" {
+
+    /// Retains a JavaScript string.
+    ///
+    /// * `string`: The `JSString` to retain.
+    ///
+    /// Returns a `JSString` that is the same as `string`.
     pub fn JSStringRetain(string: JSStringRef) -> JSStringRef;
-}
-extern "C" {
+
+    /// Releases a JavaScript string.
+    ///
+    /// * `string`: The `JSString` to release.
     pub fn JSStringRelease(string: JSStringRef);
-}
-extern "C" {
+
+    /// Returns the number of Unicode characters in a JavaScript string.
+    ///
+    /// * `string`: The `JSString` whose length (in Unicode characters)
+    ///   you want to know.
+    ///
+    /// Returns the number of Unicode characters stored in `string`.
     pub fn JSStringGetLength(string: JSStringRef) -> usize;
-}
-extern "C" {
+
+    /// Returns a pointer to the Unicode character buffer that
+    /// serves as the backing store for a JavaScript string.
+    ///
+    /// * `string`: The `JSString` whose backing store you want to access.
+    ///
+    /// Returns a pointer to the Unicode character buffer that serves
+    /// as `string`'s backing store, which will be deallocated when
+    /// `string` is deallocated.
     pub fn JSStringGetCharactersPtr(string: JSStringRef) -> *const JSChar;
-}
-extern "C" {
+
+    /// Returns the maximum number of bytes a JavaScript string will
+    /// take up if converted into a null-terminated UTF8 string.
+    ///
+    /// * `string`: The `JSString` whose maximum converted size (in bytes)
+    ///   you want to know.
+    ///
+    /// Returns the maximum number of bytes that could be required to
+    /// convert `string` into a null-terminated UTF8 string. The number
+    /// of bytes that the conversion actually ends up requiring could
+    /// be less than this, but never more.
     pub fn JSStringGetMaximumUTF8CStringSize(string: JSStringRef) -> usize;
-}
-extern "C" {
+
+    /// Converts a JavaScript string into a null-terminated UTF8 string,
+    /// and copies the result into an external byte buffer.
+    ///
+    /// * `string`: The source `JSString`.
+    /// * `buffer`: The destination byte buffer into which to copy a
+    ///   null-terminated UTF8 representation of `string`. On return,
+    ///   `buffer` contains a UTF8 string representation of `string`. If
+    ///   `bufferSize` is too small, `buffer` will contain only
+    ///   partial results. If `buffer` is not at least `bufferSize`
+    ///   bytes in size, behavior is undefined.
+    /// * `bufferSize`: The size of the external buffer in bytes.
+    ///
+    /// Returns the number of bytes written into buffer (including the null-terminator byte).
     pub fn JSStringGetUTF8CString(string: JSStringRef,
                                   buffer: *mut ::std::os::raw::c_char,
                                   bufferSize: usize)
                                   -> usize;
-}
-extern "C" {
+
+    /// Tests whether two JavaScript strings match.
+    ///
+    /// * `a`: The first `JSString` to test.
+    /// * `b`: The second `JSString` to test.
+    ///
+    /// Returns `true` if the two strings match, otherwise `false`.
     pub fn JSStringIsEqual(a: JSStringRef, b: JSStringRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript string matches a null-terminated
+    /// UTF8 string.
+    ///
+    /// * `a`: The `JSString` to test.
+    /// * `b`: The null-terminated UTF8 string to test.
+    ///
+    /// Returns `true` if the two strings match, otherwise `false`.
     pub fn JSStringIsEqualToUTF8CString(a: JSStringRef, b: *const ::std::os::raw::c_char) -> bool;
 }
 extern "C" {
