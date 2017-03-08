@@ -55,7 +55,6 @@ extern "C" {
 extern "C" {
     pub fn JSGarbageCollect(ctx: JSContextRef);
 }
-pub type __darwin_size_t = ::std::os::raw::c_ulong;
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum JSType {
