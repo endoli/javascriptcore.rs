@@ -131,36 +131,89 @@ pub enum JSTypedArrayType {
     kJSTypedArrayTypeNone = 10,
 }
 extern "C" {
+    /// Returns a JavaScript value's type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` whose type you want to obtain.
+    ///
+    /// Returns a value of type `JSType` that identifies `value`'s type.
     pub fn JSValueGetType(ctx: JSContextRef, arg1: JSValueRef) -> JSType;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value's type is the `undefined` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value`'s type is the `undefined` type, otherwise `false`.
     pub fn JSValueIsUndefined(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value's type is the `null` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value`'s type is the `null` type, otherwise `false`.
     pub fn JSValueIsNull(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value's type is the `boolean` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value`'s type is the `boolean` type, otherwise `false`.
     pub fn JSValueIsBoolean(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value's type is the `number` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value`'s type is the `number` type, otherwise `false`.
     pub fn JSValueIsNumber(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value's type is the `string` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value`'s type is the `string` type, otherwise `false`.
     pub fn JSValueIsString(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value's type is the `object` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value`'s type is the `object` type, otherwise `false`.
     pub fn JSValueIsObject(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value is an `object` with a given class in its class chain.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    /// * `jsClass`: The `JSClass` to test against.
+    ///
+    /// Returns `true` if `value` is an `object` and has `jsClass` in its
+    /// class chain, otherwise `false`.
     pub fn JSValueIsObjectOfClass(ctx: JSContextRef,
                                   value: JSValueRef,
                                   jsClass: JSClassRef)
                                   -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value is an `array`.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value` is an `array`, otherwise `false`.
     pub fn JSValueIsArray(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value is a `date`.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value` is a `date`, otherwise `false`.
     pub fn JSValueIsDate(ctx: JSContextRef, value: JSValueRef) -> bool;
 }
 extern "C" {

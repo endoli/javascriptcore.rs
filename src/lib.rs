@@ -19,6 +19,7 @@ mod base;
 mod context;
 mod contextgroup;
 mod string;
+mod value;
 
 pub use base::{check_script_syntax, evaluate_script, garbage_collect};
 pub use sys::{JSType, JSTypedArrayType};
