@@ -6,6 +6,7 @@ license = "MIT/Apache-2.0"
 readme = "README.md"
 description = "Bindings to the JavaScriptCore framework."
 keywords = ["javascript", "jsc"]
+documentation = "https://endoli.github.io/javascriptcore.rs/"
 homepage = "https://github.com/endoli/javascriptcore.rs"
 repository = "https://github.com/endoli/javascriptcore.rs"
 exclude = ["javascript_core/**"]
