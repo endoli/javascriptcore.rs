@@ -74,6 +74,7 @@ pub struct JSString {
 ///
 /// The base type for all JavaScript values, and polymorphic functions
 /// on them.
+#[derive(Debug)]
 pub struct JSValue {
     #[allow(dead_code)]
     raw: sys::JSValueRef,

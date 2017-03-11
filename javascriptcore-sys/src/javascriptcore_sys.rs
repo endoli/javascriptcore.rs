@@ -215,80 +215,208 @@ extern "C" {
     ///
     /// Returns `true` if `value` is a `date`, otherwise `false`.
     pub fn JSValueIsDate(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Returns a JavaScript value's Typed Array type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` whose Typed Array type to return.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a value of type `JSTypedArrayType` that identifies
+    /// value's Typed Array type, or `kJSTypedArrayTypeNone` if the
+    /// value is not a Typed Array object.
     pub fn JSValueGetTypedArrayType(ctx: JSContextRef,
                                     value: JSValueRef,
                                     exception: *mut JSValueRef)
                                     -> JSTypedArrayType;
-}
-extern "C" {
+
+    /// Tests whether two JavaScript values are equal, as compared by the JS `==` operator.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `a`: The first value to test.
+    /// * `b`: The second value to test.
+    /// * `exception`: A pointer to a `JSValueRef` in which to
+    ///   store an exception, if any. Pass `NULL` if you do
+    ///   not care to store an exception.
+    ///
+    /// Returns `true` if the two values are equal, `false` if
+    /// they are not equal or an exception is thrown.
     pub fn JSValueIsEqual(ctx: JSContextRef,
                           a: JSValueRef,
                           b: JSValueRef,
                           exception: *mut JSValueRef)
                           -> bool;
-}
-extern "C" {
+
+    /// Tests whether two JavaScript values are strict equal, as compared
+    /// by the JS `===` operator.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `a`: The first value to test.
+    /// * `b`: The second value to test.
+    ///
+    /// Returns `true` if the two values are strict equal, otherwise `false`.
     pub fn JSValueIsStrictEqual(ctx: JSContextRef, a: JSValueRef, b: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Tests whether a JavaScript value is an object constructed by a
+    /// given constructor, as compared by the JS `instanceof` operator.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The JSValue to test.
+    /// * `constructor`: The constructor to test against.
+    /// * `exception`: A pointer to a `JSValueRef` in which to
+    ///   store an exception, if any. Pass `NULL` if you do
+    ///   not care to store an exception.
+    ///
+    /// Returns `true` if value is an object constructed by constructor,
+    /// as compared by the JS `instanceof` operator, otherwise `false`.
     pub fn JSValueIsInstanceOfConstructor(ctx: JSContextRef,
                                           value: JSValueRef,
                                           constructor: JSObjectRef,
                                           exception: *mut JSValueRef)
                                           -> bool;
-}
-extern "C" {
+
+    /// Creates a JavaScript value of the `undefined` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    ///
+    /// Returns the unique `undefined` value.
     pub fn JSValueMakeUndefined(ctx: JSContextRef) -> JSValueRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript value of the `null` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    ///
+    /// Returns the unique `null` value.
     pub fn JSValueMakeNull(ctx: JSContextRef) -> JSValueRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript value of the `boolean` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `boolean`: The `bool` to assign to the newly created `JSValue`.
+    ///
+    /// Returns a `JSValue` of the `boolean` type, representing the value of `boolean`.
     pub fn JSValueMakeBoolean(ctx: JSContextRef, boolean: bool) -> JSValueRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript value of the `number` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `number`: The `f64` to assign to the newly created `JSValue`.
+    ///
+    /// Returns a `JSValue` of the `number` type, representing the value of `number`.
     pub fn JSValueMakeNumber(ctx: JSContextRef, number: f64) -> JSValueRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript value of the string type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `string`: The `JSString` to assign to the newly created
+    ///   JSValue`. The newly created `JSValue` retains string, and
+    ///   releases it upon garbage collection.
+    ///
+    /// Returns a `JSValue` of the `string` type, representing the value of `string`.
     pub fn JSValueMakeString(ctx: JSContextRef, string: JSStringRef) -> JSValueRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript value from a JSON formatted string.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `string`: The `JSString` containing the JSON string to be parsed.
+    ///
+    /// Returns a `JSValue` containing the parsed value, or `NULL` if the input is invalid.
     pub fn JSValueMakeFromJSONString(ctx: JSContextRef, string: JSStringRef) -> JSValueRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript string containing the JSON serialized representation of a JS value.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The value to serialize.
+    /// * `indent`: The number of spaces to indent when nesting.
+    ///   If `0`, the resulting JSON will not contains newlines.
+    ///   The size of the indent is clamped to `10` spaces.
+    /// * `exception`: A pointer to a `JSValueRef` in which to
+    ///   store an exception, if any. Pass `NULL` if you do not
+    ///   care to store an exception.
+    ///
+    /// Returns a `JSString` with the result of serialization, or `NULL` if an exception is thrown.
     pub fn JSValueCreateJSONString(ctx: JSContextRef,
                                    value: JSValueRef,
                                    indent: ::std::os::raw::c_uint,
                                    exception: *mut JSValueRef)
                                    -> JSStringRef;
-}
-extern "C" {
+
+    /// Converts a JavaScript value to boolean and returns the resulting boolean.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The JSValue to convert.
+    ///
+    /// Returns the boolean result of conversion.
     pub fn JSValueToBoolean(ctx: JSContextRef, value: JSValueRef) -> bool;
-}
-extern "C" {
+
+    /// Converts a JavaScript value to number and returns the resulting number.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to convert.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store an
+    ///   exception, if any. Pass `NULL` if you do not care to store an
+    ///   exception.
+    ///
+    /// Returns the numeric result of conversion, or `NaN` if an exception is thrown.
     pub fn JSValueToNumber(ctx: JSContextRef,
                            value: JSValueRef,
                            exception: *mut JSValueRef)
                            -> f64;
-}
-extern "C" {
+
+    /// Converts a JavaScript value to string and copies the result into a JavaScript string.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to convert.
+    /// * `exception`:  A pointer to a `JSValueRef` in which to store an
+    ///   exception, if any. Pass `NULL` if you do not care to store an
+    ///   exception.
+    ///
+    /// Returns a `JSString` with the result of conversion, or `NULL`
+    /// if an exception is thrown. Ownership follows the Create Rule.
     pub fn JSValueToStringCopy(ctx: JSContextRef,
                                value: JSValueRef,
                                exception: *mut JSValueRef)
                                -> JSStringRef;
-}
-extern "C" {
+
+    /// Converts a JavaScript value to object and returns the resulting object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to convert.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to store
+    ///   an exception.
+    ///
+    /// Returns the `JSObject` result of conversion, or `NULL` if
+    /// an exception is thrown.
     pub fn JSValueToObject(ctx: JSContextRef,
                            value: JSValueRef,
                            exception: *mut JSValueRef)
                            -> JSObjectRef;
-}
-extern "C" {
+
+    /// Protects a JavaScript value from garbage collection.
+    ///
+    /// Use this method when you want to store a `JSValue` in a
+    /// global or on the heap, where the garbage collector will
+    /// not be able to discover your reference to it.
+    ///
+    /// A value may be protected multiple times and must be
+    /// unprotected an equal number of times before becoming
+    /// eligible for garbage collection.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to protect.
     pub fn JSValueProtect(ctx: JSContextRef, value: JSValueRef);
-}
-extern "C" {
+
+    /// Unprotects a JavaScript value from garbage collection.
+    ///
+    /// A value may be protected multiple times and must be unprotected
+    /// an equal number of times before becoming eligible for garbage
+    /// collection.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to unprotect.
     pub fn JSValueUnprotect(ctx: JSContextRef, value: JSValueRef);
 }
 pub type JSPropertyAttributes = ::std::os::raw::c_uint;
