@@ -8,6 +8,12 @@ use std::ffi::CString;
 use super::JSString;
 use sys;
 
+
+impl Drop for JSString {
+    fn drop(&mut self) {
+        unsafe { sys::JSStringRelease(self.raw) }
+    }
+}
 impl PartialEq for JSString {
     fn eq(&self, other: &JSString) -> bool {
         unsafe { sys::JSStringIsEqual(self.raw, other.raw) }
