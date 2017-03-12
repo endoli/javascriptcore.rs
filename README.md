@@ -2,8 +2,9 @@
 
 [![](http://meritbadge.herokuapp.com/javascriptcore)](https://crates.io/crates/javascriptcore)
 
-This crate provides a safe binding to the public API for [JavaScriptCore], the
-JavaScript engine used by the WebKit browser.
+This crate provides a safe binding to the public API for
+[JavaScriptCore](https://trac.webkit.org/wiki/JavaScriptCore),
+the JavaScript engine used by the WebKit browser.
 
 Dual licensed under the MIT and Apache 2 licenses.
 
