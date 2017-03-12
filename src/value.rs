@@ -5,7 +5,7 @@
 // except according to those terms.
 
 use std::ptr;
-use super::{JSClass, JSContext, JSObject, JSString, JSType, JSValue};
+use super::{JSClass, JSContext, JSException, JSObject, JSString, JSType, JSValue};
 use sys;
 
 impl JSValue {
@@ -78,11 +78,11 @@ impl JSValue {
     ///
     /// Returns either a `JSString` with the result of serialization, or an
     /// exception if one was thrown.
-    pub fn to_json_string(&self, ctx: &JSContext, indent: u32) -> Result<JSString, JSValue> {
+    pub fn to_json_string(&self, ctx: &JSContext, indent: u32) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let v = unsafe { sys::JSValueCreateJSONString(ctx.raw, self.raw, indent, &mut e) };
         if v.is_null() {
-            Err(JSValue { raw: e })
+            Err(JSException { value: JSValue { raw: e } })
         } else {
             Ok(JSString { raw: v })
         }
@@ -195,11 +195,11 @@ impl JSValue {
     ///
     /// Returns either the numeric result of conversion, or an exception
     /// if one was thrown.
-    pub fn as_number(&self, ctx: &JSContext) -> Result<f64, JSValue> {
+    pub fn as_number(&self, ctx: &JSContext) -> Result<f64, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let f = unsafe { sys::JSValueToNumber(ctx.raw, self.raw, &mut e) };
         if f.is_nan() {
-            Err(JSValue { raw: e })
+            Err(JSException { value: JSValue { raw: e } })
         } else {
             Ok(f)
         }
@@ -211,11 +211,11 @@ impl JSValue {
     ///
     /// Returns either `JSString` with the result of conversion, or an
     /// exception if one was thrown.  Ownership follows the Create Rule.
-    pub fn as_string(&self, ctx: &JSContext) -> Result<JSString, JSValue> {
+    pub fn as_string(&self, ctx: &JSContext) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let s = unsafe { sys::JSValueToStringCopy(ctx.raw, self.raw, &mut e) };
         if s.is_null() {
-            Err(JSValue { raw: e })
+            Err(JSException { value: JSValue { raw: e } })
         } else {
             Ok(JSString { raw: s })
         }
@@ -227,11 +227,11 @@ impl JSValue {
     ///
     /// Returns either the `JSObject` result of conversion, or an exception
     /// if one was thrown.
-    pub fn as_object(&self, ctx: &JSContext) -> Result<JSObject, JSValue> {
+    pub fn as_object(&self, ctx: &JSContext) -> Result<JSObject, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let o = unsafe { sys::JSValueToObject(ctx.raw, self.raw, &mut e) };
         if o.is_null() {
-            Err(JSValue { raw: e })
+            Err(JSException { value: JSValue { raw: e } })
         } else {
             Ok(JSObject { raw: o })
         }

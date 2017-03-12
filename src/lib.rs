@@ -18,6 +18,7 @@ extern crate javascriptcore_sys as sys;
 mod base;
 mod context;
 mod contextgroup;
+mod exception;
 mod string;
 mod value;
 
@@ -51,6 +52,12 @@ pub struct JSContext {
 /// threads, explicit synchronization is required.
 pub struct JSContextGroup {
     raw: sys::JSContextGroupRef,
+}
+
+/// A wrapper for a JSValue that contains an exception.
+#[derive(Debug)]
+pub struct JSException {
+    value: JSValue,
 }
 
 /// A JavaScript object.

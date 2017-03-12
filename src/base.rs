@@ -5,7 +5,7 @@
 // except according to those terms.
 
 use std::ptr;
-use super::{JSContext, JSObject, JSString, JSValue};
+use super::{JSContext, JSException, JSObject, JSString, JSValue};
 use sys;
 
 /// Evaluates a string of JavaScript.
@@ -25,14 +25,14 @@ use sys;
 ///   to `1`.
 ///
 /// Returns either the `Option<JSValue>` that results from evaluating the script or
-/// the value containing an exception that occurred.
+/// the exception that occurred.
 pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>
     (ctx: &JSContext,
      script: S,
      this_object: Option<&JSObject>,
      source_url: U,
      starting_line_number: i32)
-     -> Result<Option<JSValue>, JSValue> {
+     -> Result<Option<JSValue>, JSException> {
     unsafe {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let r = sys::JSEvaluateScript(ctx.raw,
@@ -42,7 +42,7 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>
                                       starting_line_number,
                                       &mut e);
         if e.is_null() {
-            Err(JSValue { raw: e })
+            Err(JSException { value: JSValue { raw: e } })
         } else if r.is_null() {
             Ok(None)
         } else {
@@ -67,12 +67,12 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>
 ///   to `1`.
 ///
 /// Returns `Ok` if the script is syntactically correct, otherwise
-/// returns a `JSValue` containing an exception.
+/// returns an exception.
 pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(ctx: &JSContext,
                                                                  script: S,
                                                                  source_url: U,
                                                                  starting_line_number: i32)
-                                                                 -> Result<(), JSValue> {
+                                                                 -> Result<(), JSException> {
     unsafe {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let r = sys::JSCheckScriptSyntax(ctx.raw,
@@ -83,7 +83,7 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(ctx: &JSContext
         if r {
             Ok(())
         } else {
-            Err(JSValue { raw: e })
+            Err(JSException { value: JSValue { raw: e } })
         }
     }
 }
