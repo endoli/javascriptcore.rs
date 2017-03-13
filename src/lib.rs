@@ -54,7 +54,7 @@ pub struct JSContextGroup {
     raw: sys::JSContextGroupRef,
 }
 
-/// A wrapper for a JSValue that contains an exception.
+/// A wrapper for a `JSValue` that contains an exception.
 #[derive(Debug)]
 pub struct JSException {
     value: JSValue,
