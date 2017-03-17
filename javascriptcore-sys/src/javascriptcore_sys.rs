@@ -26,10 +26,8 @@ pub type JSPropertyNameArrayRef = *mut OpaqueJSPropertyNameArray;
 pub struct OpaqueJSPropertyNameAccumulator([u8; 0]);
 pub type JSPropertyNameAccumulatorRef = *mut OpaqueJSPropertyNameAccumulator;
 pub type JSTypedArrayBytesDeallocator =
-    ::std::option::Option<unsafe extern "C" fn(bytes:
-                                                   *mut ::std::os::raw::c_void,
-                                               deallocatorContext:
-                                                   *mut ::std::os::raw::c_void)>;
+    ::std::option::Option<unsafe extern "C" fn(bytes: *mut ::std::os::raw::c_void,
+                                               deallocatorContext: *mut ::std::os::raw::c_void)>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OpaqueJSValue([u8; 0]);
@@ -427,59 +425,59 @@ pub type JSObjectFinalizeCallback =
     ::std::option::Option<unsafe extern "C" fn(object: JSObjectRef)>;
 pub type JSObjectHasPropertyCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 object: JSObjectRef,
-                                                 propertyName: JSStringRef)
-                                                 -> bool>;
+                                               object: JSObjectRef,
+                                               propertyName: JSStringRef)
+                                               -> bool>;
 pub type JSObjectGetPropertyCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 object: JSObjectRef,
-                                                 propertyName: JSStringRef,
-                                                 exception: *mut JSValueRef)
-                                                 -> *const OpaqueJSValue>;
+                                               object: JSObjectRef,
+                                               propertyName: JSStringRef,
+                                               exception: *mut JSValueRef)
+                                               -> *const OpaqueJSValue>;
 pub type JSObjectSetPropertyCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 object: JSObjectRef,
-                                                 propertyName: JSStringRef,
-                                                 value: JSValueRef,
-                                                 exception: *mut JSValueRef)
-                                                 -> bool>;
+                                               object: JSObjectRef,
+                                               propertyName: JSStringRef,
+                                               value: JSValueRef,
+                                               exception: *mut JSValueRef)
+                                               -> bool>;
 pub type JSObjectDeletePropertyCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 object: JSObjectRef,
-                                                 propertyName: JSStringRef,
-                                                 exception: *mut JSValueRef)
-                                                 -> bool>;
+                                               object: JSObjectRef,
+                                               propertyName: JSStringRef,
+                                               exception: *mut JSValueRef)
+                                               -> bool>;
 pub type JSObjectGetPropertyNamesCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 object: JSObjectRef,
-                                                 propertyNames: JSPropertyNameAccumulatorRef)>;
+                                               object: JSObjectRef,
+                                               propertyNames: JSPropertyNameAccumulatorRef)>;
 pub type JSObjectCallAsFunctionCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 function: JSObjectRef,
-                                                 thisObject: JSObjectRef,
-                                                 argumentCount: usize,
-                                                 arguments: *const JSValueRef,
-                                                 exception: *mut JSValueRef)
-                                                 -> *const OpaqueJSValue>;
+                                               function: JSObjectRef,
+                                               thisObject: JSObjectRef,
+                                               argumentCount: usize,
+                                               arguments: *const JSValueRef,
+                                               exception: *mut JSValueRef)
+                                               -> *const OpaqueJSValue>;
 pub type JSObjectCallAsConstructorCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 constructor: JSObjectRef,
-                                                 argumentCount: usize,
-                                                 arguments: *const JSValueRef,
-                                                 exception: *mut JSValueRef)
-                                                 -> *mut OpaqueJSValue>;
+                                               constructor: JSObjectRef,
+                                               argumentCount: usize,
+                                               arguments: *const JSValueRef,
+                                               exception: *mut JSValueRef)
+                                               -> *mut OpaqueJSValue>;
 pub type JSObjectHasInstanceCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 constructor: JSObjectRef,
-                                                 possibleInstance: JSValueRef,
-                                                 exception: *mut JSValueRef)
-                                                 -> bool>;
+                                               constructor: JSObjectRef,
+                                               possibleInstance: JSValueRef,
+                                               exception: *mut JSValueRef)
+                                               -> bool>;
 pub type JSObjectConvertToTypeCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                                 object: JSObjectRef,
-                                                 type_: JSType,
-                                                 exception: *mut JSValueRef)
-                                                 -> *const OpaqueJSValue>;
+                                               object: JSObjectRef,
+                                               type_: JSType,
+                                               exception: *mut JSValueRef)
+                                               -> *const OpaqueJSValue>;
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JSStaticValue {
