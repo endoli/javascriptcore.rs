@@ -103,31 +103,53 @@ extern "C" {
     /// * `ctx`: The execution context to use.
     pub fn JSGarbageCollect(ctx: JSContextRef);
 }
+
+/// A constant identifying the type of a `JSValue`.
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum JSType {
+    /// The unique `undefined` value.
     kJSTypeUndefined = 0,
+    /// The unique `null` value.
     kJSTypeNull = 1,
+    /// A primitive boolean value, one of `true` or `false`.
     kJSTypeBoolean = 2,
+    /// A primitive number value.
     kJSTypeNumber = 3,
+    /// A primitive string value.
     kJSTypeString = 4,
+    /// An object value (meaning that this `JSValueRef` is a `JSObjectRef`).
     kJSTypeObject = 5,
 }
+
+/// A constant identifying the Typed Array type of a `JSObjectRef`.
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum JSTypedArrayType {
+    /// `Int8Array`
     kJSTypedArrayTypeInt8Array = 0,
+    /// `Int16Array`
     kJSTypedArrayTypeInt16Array = 1,
+    /// `Int32Array`
     kJSTypedArrayTypeInt32Array = 2,
+    /// `Uint8Array`
     kJSTypedArrayTypeUint8Array = 3,
+    /// `Uint8ClampedArray`
     kJSTypedArrayTypeUint8ClampedArray = 4,
+    /// `Uint16Array`
     kJSTypedArrayTypeUint16Array = 5,
+    /// `Uint32Array`
     kJSTypedArrayTypeUint32Array = 6,
+    /// `Float32Array`
     kJSTypedArrayTypeFloat32Array = 7,
+    /// `Float64Array`
     kJSTypedArrayTypeFloat64Array = 8,
+    /// `ArrayBuffer`
     kJSTypedArrayTypeArrayBuffer = 9,
+    /// Not a Typed Array
     kJSTypedArrayTypeNone = 10,
 }
+
 extern "C" {
     /// Returns a JavaScript value's type.
     ///
@@ -417,12 +439,42 @@ extern "C" {
     /// * `value`: The `JSValue` to unprotect.
     pub fn JSValueUnprotect(ctx: JSContextRef, value: JSValueRef);
 }
+/// A set of `JSPropertyAttribute`s.
+///
+/// Combine multiple attributes by logically ORing them together.
 pub type JSPropertyAttributes = ::std::os::raw::c_uint;
+
+/// A set of `JSClassAttribute`s.
+///
+/// Combine multiple attributes by logically ORing them together.
 pub type JSClassAttributes = ::std::os::raw::c_uint;
+
+/// The callback invoked when an object is first created.
+///
+/// * `ctx`: The execution context to use.
+/// * `object`: The `JSObject` being created.
+///
+/// Unlike the other object callbacks, the initialize callback is
+/// called on the least derived class (the parent class) first,
+/// and the most derived class last.
 pub type JSObjectInitializeCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef, object: JSObjectRef)>;
+
+/// The callback invoked when an object is finalized (prepared
+/// for garbage collection). An object may be finalized on any thread.
+///
+/// * `object`: The `JSObject` being finalized.
+///
+/// The finalize callback is called on the most derived class
+/// first, and the least derived class (the parent class) last.
+///
+/// You must not call any function that may cause a garbage
+/// collection or an allocation of a garbage collected object
+/// from within a `JSObjectFinalizeCallback`. This includes
+/// all functions that have a `JSContextRef` parameter.
 pub type JSObjectFinalizeCallback =
     ::std::option::Option<unsafe extern "C" fn(object: JSObjectRef)>;
+
 pub type JSObjectHasPropertyCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
                                                object: JSObjectRef,
@@ -724,8 +776,24 @@ extern "C" {
     ///
     /// `jsClass`: The `JSClass` to release.
     pub fn JSClassRelease(jsClass: JSClassRef);
-}
-extern "C" {
+
+    /// Creates a JavaScript object.
+    ///
+    /// The default object class does not allocate storage for private data,
+    /// so you must provide a non-`NULL` `jsClass` to `JSObjectMake` if you
+    /// want your object to be able to store private data.
+    ///
+    /// `data` is set on the created object before the initialize methods in
+    /// its class chain are called. This enables the initialize methods to
+    /// retrieve and manipulate data through `JSObjectGetPrivate`.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `jsClass`: The `JSClass` to assign to the object. Pass `NULL` to use
+    ///   the default object class.
+    /// * `data`: A `void*` to set as the object's private data.
+    ///    Pass NULL to specify no private data.
+    ///
+    /// Returns a `JSObject` with the given class and private data.
     pub fn JSObjectMake(ctx: JSContextRef,
                         jsClass: JSClassRef,
                         data: *mut ::std::os::raw::c_void)
