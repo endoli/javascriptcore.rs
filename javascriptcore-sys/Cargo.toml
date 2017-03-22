@@ -13,4 +13,4 @@ categories = ["external-ffi-bindings"]
 build = "build.rs"
 
 [target.'cfg(target_os = "linux")'.build-dependencies]
-pkg-config = "*"
+pkg-config = "0.3.9"
