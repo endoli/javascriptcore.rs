@@ -9,6 +9,7 @@ keywords = ["javascript", "jsc", "scripting"]
 documentation = "https://endoli.github.io/javascriptcore.rs/javascriptcore_sys/index.html"
 homepage = "https://github.com/endoli/javascriptcore.rs"
 repository = "https://github.com/endoli/javascriptcore.rs"
+categories = ["external-ffi-bindings"]
 build = "build.rs"
 
 [target.'cfg(target_os = "linux")'.build-dependencies]

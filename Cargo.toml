@@ -9,6 +9,7 @@ keywords = ["javascript", "jsc", "scripting"]
 documentation = "https://endoli.github.io/javascriptcore.rs/"
 homepage = "https://github.com/endoli/javascriptcore.rs"
 repository = "https://github.com/endoli/javascriptcore.rs"
+categories = ["api-bindings"]
 exclude = ["javascript_core/**"]
 
 [dependencies]
