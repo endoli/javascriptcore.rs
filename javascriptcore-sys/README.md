@@ -6,6 +6,17 @@ This only works on macOS and Linux for now, but should be
 possible to use elsewhere once linking to the correct
 libraries has been configured.
 
+On Linux, you will need to have the correct packages installed.
+On Debian and Ubuntu, this includes:
+
+* ``pkg-config``
+* ``libglib2.0-dev``
+* ``libjavascriptcoregtk-3.0-dev``
+
+Other Linux distributions may need different packages and changes
+may need to be made to the ``build.rs`` script. Please submit bugs
+or patches to help out with these sorts of portability concerns.
+
 ## Support and Maintenance
 
 I am developing this library largely on my own so far. I am able
