@@ -2,9 +2,9 @@
 
 These are raw bindings for the JavaScriptCore library.
 
-This only works on macOS for now, but should be possible
-to use elsewhere once linking to the correct libraries
-has been configured.
+This only works on macOS and Linux for now, but should be
+possible to use elsewhere once linking to the correct
+libraries has been configured.
 
 ## Support and Maintenance
 

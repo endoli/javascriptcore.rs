@@ -10,3 +10,6 @@ documentation = "https://endoli.github.io/javascriptcore.rs/javascriptcore_sys/i
 homepage = "https://github.com/endoli/javascriptcore.rs"
 repository = "https://github.com/endoli/javascriptcore.rs"
 build = "build.rs"
+
+[target.'cfg(target_os = "linux")'.build-dependencies]
+pkg-config = "*"
