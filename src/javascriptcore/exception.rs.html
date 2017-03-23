@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `JSValueMakeNull` fn in crate `javascriptcore_sys`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, JSValueMakeNull">
+    <meta name="description" content="Source to the Rust file `src/exception.rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang">
 
-    <title>javascriptcore_sys::JSValueMakeNull - Rust</title>
+    <title>exception.rs.html -- source</title>
 
-    <link rel="stylesheet" type="text/css" href="../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../main.css">
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
     
 
     
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='index.html'>javascriptcore_sys</a></p><script>window.sidebarCurrent = {name: 'JSValueMakeNull', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        
     </nav>
 
     <nav class="sub">
@@ -43,20 +43,27 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>javascriptcore_sys</a>::<wbr><a class='fn' href=''>JSValueMakeNull</a></span><span class='out-of-band'><span id='render-detail'>
-                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                       [<span class='inner'>&#x2212;</span>]
-                   </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#363' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSValueMakeNull(ctx: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>) -&gt; <a class='type' href='../javascriptcore_sys/type.JSValueRef.html' title='javascriptcore_sys::JSValueRef'>JSValueRef</a></pre><div class='docblock'><p>Creates a JavaScript value of the <code>null</code> type.</p>
+    <section id='main' class="content source"><pre class="line-numbers"><span id="1">1</span>
+<span id="2">2</span>
+<span id="3">3</span>
+<span id="4">4</span>
+<span id="5">5</span>
+<span id="6">6</span>
+<span id="7">7</span>
+<span id="8">8</span>
+<span id="9">9</span>
+</pre><pre class='rust '>
+<span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
+<span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
+<span class='comment'>// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your</span>
+<span class='comment'>// option. This file may not be copied, modified, or distributed</span>
+<span class='comment'>// except according to those terms.</span>
 
-<ul>
-<li><code>ctx</code>: The execution context to use.</li>
-</ul>
+<span class='kw'>use</span> <span class='kw'>super</span>::<span class='ident'>JSException</span>;
 
-<p>Returns the unique <code>null</code> value.</p>
-</div></section>
+<span class='kw'>impl</span> <span class='ident'>JSException</span> {}
+</pre>
+</section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
@@ -110,11 +117,11 @@
     
 
     <script>
-        window.rootPath = "../";
-        window.currentCrate = "javascriptcore_sys";
+        window.rootPath = "../../";
+        window.currentCrate = "javascriptcore";
     </script>
-    <script src="../jquery.js"></script>
-    <script src="../main.js"></script>
-    <script defer src="../search-index.js"></script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
 </body>
 </html>

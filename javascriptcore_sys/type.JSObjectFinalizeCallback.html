@@ -9,6 +9,7 @@
 
     <title>javascriptcore_sys::JSObjectFinalizeCallback - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
     
@@ -47,8 +48,22 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#426-427' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSObjectFinalizeCallback = <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;unsafe extern fn(object: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>)&gt;;</pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#526-527' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type JSObjectFinalizeCallback = <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;unsafe extern fn(_: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>)&gt;;</pre><div class='docblock'><p>The callback invoked when an object is finalized (prepared
+for garbage collection). An object may be finalized on any thread.</p>
+
+<ul>
+<li><code>object</code>: The <code>JSObject</code> being finalized.</li>
+</ul>
+
+<p>The finalize callback is called on the most derived class
+first, and the least derived class (the parent class) last.</p>
+
+<p>You must not call any function that may cause a garbage
+collection or an allocation of a garbage collected object
+from within a <code>JSObjectFinalizeCallback</code>. This includes
+all functions that have a <code>JSContextRef</code> parameter.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

@@ -9,6 +9,7 @@
 
     <title>javascriptcore_sys::JSObjectInitializeCallback - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
     
@@ -47,8 +48,18 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#424-425' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSObjectInitializeCallback = <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;unsafe extern fn(ctx: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>, object: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>)&gt;;</pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#511-512' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type JSObjectInitializeCallback = <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;unsafe extern fn(_: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>, _: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>)&gt;;</pre><div class='docblock'><p>The callback invoked when an object is first created.</p>
+
+<ul>
+<li><code>ctx</code>: The execution context to use.</li>
+<li><code>object</code>: The <code>JSObject</code> being created.</li>
+</ul>
+
+<p>Unlike the other object callbacks, the initialize callback is
+called on the least derived class (the parent class) first,
+and the most derived class last.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
