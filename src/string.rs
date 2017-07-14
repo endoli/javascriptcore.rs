@@ -39,11 +39,15 @@ impl<'s> From<&'s JSString> for String {
         let result = unsafe {
             let max_size = sys::JSStringGetMaximumUTF8CStringSize(s.raw);
             let mut buffer: Vec<u8> = Vec::with_capacity(max_size);
-            let actual_size = sys::JSStringGetUTF8CString(s.raw, buffer.as_mut_ptr() as *mut ::std::os::raw::c_char, max_size);
+            let actual_size = sys::JSStringGetUTF8CString(
+                s.raw,
+                buffer.as_mut_ptr() as *mut ::std::os::raw::c_char,
+                max_size,
+            );
             buffer.set_len(actual_size - 1);
             String::from_utf8(buffer)
         };
-       
+
         match result {
             Ok(value) => value,
             Err(_) => String::from("UTF8 conversion failed"),

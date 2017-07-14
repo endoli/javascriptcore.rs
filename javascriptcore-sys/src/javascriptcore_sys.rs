@@ -68,8 +68,10 @@ pub type JSPropertyNameAccumulatorRef = *mut OpaqueJSPropertyNameAccumulator;
 /// The second is a pointer to additional information desired at the time
 /// the bytes are to be freed.
 pub type JSTypedArrayBytesDeallocator =
-    ::std::option::Option<unsafe extern "C" fn(bytes: *mut ::std::os::raw::c_void,
-                                               deallocatorContext: *mut ::std::os::raw::c_void)>;
+    ::std::option::Option<
+        unsafe extern "C" fn(bytes: *mut ::std::os::raw::c_void,
+                             deallocatorContext: *mut ::std::os::raw::c_void),
+    >;
 
 /// A JavaScript value.
 /// The base type for all JavaScript values, and polymorphic functions on them.
@@ -105,13 +107,14 @@ extern "C" {
     ///   exception.
     ///
     /// The `JSValue` that results from evaluating script, or `NULL` if an exception is thrown.
-    pub fn JSEvaluateScript(ctx: JSContextRef,
-                            script: JSStringRef,
-                            thisObject: JSObjectRef,
-                            sourceURL: JSStringRef,
-                            startingLineNumber: ::std::os::raw::c_int,
-                            exception: *mut JSValueRef)
-                            -> JSValueRef;
+    pub fn JSEvaluateScript(
+        ctx: JSContextRef,
+        script: JSStringRef,
+        thisObject: JSObjectRef,
+        sourceURL: JSStringRef,
+        startingLineNumber: ::std::os::raw::c_int,
+        exception: *mut JSValueRef,
+    ) -> JSValueRef;
 
     /// Checks for syntax errors in a string of JavaScript.
     ///
@@ -132,12 +135,13 @@ extern "C" {
     ///   to store a syntax error exception.
     ///
     /// Returns `true` if the script is syntactically correct, otherwise `false`.
-    pub fn JSCheckScriptSyntax(ctx: JSContextRef,
-                               script: JSStringRef,
-                               sourceURL: JSStringRef,
-                               startingLineNumber: ::std::os::raw::c_int,
-                               exception: *mut JSValueRef)
-                               -> bool;
+    pub fn JSCheckScriptSyntax(
+        ctx: JSContextRef,
+        script: JSStringRef,
+        sourceURL: JSStringRef,
+        startingLineNumber: ::std::os::raw::c_int,
+        exception: *mut JSValueRef,
+    ) -> bool;
 
     /// Performs a JavaScript garbage collection.
     ///
@@ -266,10 +270,11 @@ extern "C" {
     ///
     /// Returns `true` if `value` is an `object` and has `jsClass` in its
     /// class chain, otherwise `false`.
-    pub fn JSValueIsObjectOfClass(ctx: JSContextRef,
-                                  value: JSValueRef,
-                                  jsClass: JSClassRef)
-                                  -> bool;
+    pub fn JSValueIsObjectOfClass(
+        ctx: JSContextRef,
+        value: JSValueRef,
+        jsClass: JSClassRef,
+    ) -> bool;
 
     /// Tests whether a JavaScript value is an `array`.
     ///
@@ -298,10 +303,11 @@ extern "C" {
     /// Returns a value of type `JSTypedArrayType` that identifies
     /// value's Typed Array type, or `kJSTypedArrayTypeNone` if the
     /// value is not a Typed Array object.
-    pub fn JSValueGetTypedArrayType(ctx: JSContextRef,
-                                    value: JSValueRef,
-                                    exception: *mut JSValueRef)
-                                    -> JSTypedArrayType;
+    pub fn JSValueGetTypedArrayType(
+        ctx: JSContextRef,
+        value: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSTypedArrayType;
 
     /// Tests whether two JavaScript values are equal, as compared by the JS `==` operator.
     ///
@@ -314,11 +320,12 @@ extern "C" {
     ///
     /// Returns `true` if the two values are equal, `false` if
     /// they are not equal or an exception is thrown.
-    pub fn JSValueIsEqual(ctx: JSContextRef,
-                          a: JSValueRef,
-                          b: JSValueRef,
-                          exception: *mut JSValueRef)
-                          -> bool;
+    pub fn JSValueIsEqual(
+        ctx: JSContextRef,
+        a: JSValueRef,
+        b: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> bool;
 
     /// Tests whether two JavaScript values are strict equal, as compared
     /// by the JS `===` operator.
@@ -342,11 +349,12 @@ extern "C" {
     ///
     /// Returns `true` if value is an object constructed by constructor,
     /// as compared by the JS `instanceof` operator, otherwise `false`.
-    pub fn JSValueIsInstanceOfConstructor(ctx: JSContextRef,
-                                          value: JSValueRef,
-                                          constructor: JSObjectRef,
-                                          exception: *mut JSValueRef)
-                                          -> bool;
+    pub fn JSValueIsInstanceOfConstructor(
+        ctx: JSContextRef,
+        value: JSValueRef,
+        constructor: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> bool;
 
     /// Creates a JavaScript value of the `undefined` type.
     ///
@@ -408,11 +416,12 @@ extern "C" {
     ///   care to store an exception.
     ///
     /// Returns a `JSString` with the result of serialization, or `NULL` if an exception is thrown.
-    pub fn JSValueCreateJSONString(ctx: JSContextRef,
-                                   value: JSValueRef,
-                                   indent: ::std::os::raw::c_uint,
-                                   exception: *mut JSValueRef)
-                                   -> JSStringRef;
+    pub fn JSValueCreateJSONString(
+        ctx: JSContextRef,
+        value: JSValueRef,
+        indent: ::std::os::raw::c_uint,
+        exception: *mut JSValueRef,
+    ) -> JSStringRef;
 
     /// Converts a JavaScript value to boolean and returns the resulting boolean.
     ///
@@ -431,10 +440,8 @@ extern "C" {
     ///   exception.
     ///
     /// Returns the numeric result of conversion, or `NaN` if an exception is thrown.
-    pub fn JSValueToNumber(ctx: JSContextRef,
-                           value: JSValueRef,
-                           exception: *mut JSValueRef)
-                           -> f64;
+    pub fn JSValueToNumber(ctx: JSContextRef, value: JSValueRef, exception: *mut JSValueRef)
+        -> f64;
 
     /// Converts a JavaScript value to string and copies the result into a JavaScript string.
     ///
@@ -446,10 +453,11 @@ extern "C" {
     ///
     /// Returns a `JSString` with the result of conversion, or `NULL`
     /// if an exception is thrown. Ownership follows the Create Rule.
-    pub fn JSValueToStringCopy(ctx: JSContextRef,
-                               value: JSValueRef,
-                               exception: *mut JSValueRef)
-                               -> JSStringRef;
+    pub fn JSValueToStringCopy(
+        ctx: JSContextRef,
+        value: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSStringRef;
 
     /// Converts a JavaScript value to object and returns the resulting object.
     ///
@@ -461,10 +469,11 @@ extern "C" {
     ///
     /// Returns the `JSObject` result of conversion, or `NULL` if
     /// an exception is thrown.
-    pub fn JSValueToObject(ctx: JSContextRef,
-                           value: JSValueRef,
-                           exception: *mut JSValueRef)
-                           -> JSObjectRef;
+    pub fn JSValueToObject(
+        ctx: JSContextRef,
+        value: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 
     /// Protects a JavaScript value from garbage collection.
     ///
@@ -527,60 +536,78 @@ pub type JSObjectFinalizeCallback =
     ::std::option::Option<unsafe extern "C" fn(object: JSObjectRef)>;
 
 pub type JSObjectHasPropertyCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               object: JSObjectRef,
-                                               propertyName: JSStringRef)
-                                               -> bool>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             object: JSObjectRef,
+                             propertyName: JSStringRef)
+                             -> bool,
+    >;
 pub type JSObjectGetPropertyCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               object: JSObjectRef,
-                                               propertyName: JSStringRef,
-                                               exception: *mut JSValueRef)
-                                               -> *const OpaqueJSValue>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             object: JSObjectRef,
+                             propertyName: JSStringRef,
+                             exception: *mut JSValueRef)
+                             -> *const OpaqueJSValue,
+    >;
 pub type JSObjectSetPropertyCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               object: JSObjectRef,
-                                               propertyName: JSStringRef,
-                                               value: JSValueRef,
-                                               exception: *mut JSValueRef)
-                                               -> bool>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             object: JSObjectRef,
+                             propertyName: JSStringRef,
+                             value: JSValueRef,
+                             exception: *mut JSValueRef)
+                             -> bool,
+    >;
 pub type JSObjectDeletePropertyCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               object: JSObjectRef,
-                                               propertyName: JSStringRef,
-                                               exception: *mut JSValueRef)
-                                               -> bool>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             object: JSObjectRef,
+                             propertyName: JSStringRef,
+                             exception: *mut JSValueRef)
+                             -> bool,
+    >;
 pub type JSObjectGetPropertyNamesCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               object: JSObjectRef,
-                                               propertyNames: JSPropertyNameAccumulatorRef)>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             object: JSObjectRef,
+                             propertyNames: JSPropertyNameAccumulatorRef),
+    >;
 pub type JSObjectCallAsFunctionCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               function: JSObjectRef,
-                                               thisObject: JSObjectRef,
-                                               argumentCount: usize,
-                                               arguments: *const JSValueRef,
-                                               exception: *mut JSValueRef)
-                                               -> *const OpaqueJSValue>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             function: JSObjectRef,
+                             thisObject: JSObjectRef,
+                             argumentCount: usize,
+                             arguments: *const JSValueRef,
+                             exception: *mut JSValueRef)
+                             -> *const OpaqueJSValue,
+    >;
 pub type JSObjectCallAsConstructorCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               constructor: JSObjectRef,
-                                               argumentCount: usize,
-                                               arguments: *const JSValueRef,
-                                               exception: *mut JSValueRef)
-                                               -> *mut OpaqueJSValue>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             constructor: JSObjectRef,
+                             argumentCount: usize,
+                             arguments: *const JSValueRef,
+                             exception: *mut JSValueRef)
+                             -> *mut OpaqueJSValue,
+    >;
 pub type JSObjectHasInstanceCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               constructor: JSObjectRef,
-                                               possibleInstance: JSValueRef,
-                                               exception: *mut JSValueRef)
-                                               -> bool>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             constructor: JSObjectRef,
+                             possibleInstance: JSValueRef,
+                             exception: *mut JSValueRef)
+                             -> bool,
+    >;
 pub type JSObjectConvertToTypeCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctx: JSContextRef,
-                                               object: JSObjectRef,
-                                               type_: JSType,
-                                               exception: *mut JSValueRef)
-                                               -> *const OpaqueJSValue>;
+    ::std::option::Option<
+        unsafe extern "C" fn(ctx: JSContextRef,
+                             object: JSObjectRef,
+                             type_: JSType,
+                             exception: *mut JSValueRef)
+                             -> *const OpaqueJSValue,
+    >;
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JSStaticValue {
@@ -591,36 +618,56 @@ pub struct JSStaticValue {
 }
 #[test]
 fn bindgen_test_layout_JSStaticValue() {
-    assert_eq!(::std::mem::size_of::<JSStaticValue>(),
-               32usize,
-               concat!("Size of: ", stringify!(JSStaticValue)));
-    assert_eq!(::std::mem::align_of::<JSStaticValue>(),
-               8usize,
-               concat!("Alignment of ", stringify!(JSStaticValue)));
-    assert_eq!(unsafe { &(*(0 as *const JSStaticValue)).name as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSStaticValue),
-                       "::",
-                       stringify!(name)));
-    assert_eq!(unsafe { &(*(0 as *const JSStaticValue)).getProperty as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSStaticValue),
-                       "::",
-                       stringify!(getProperty)));
-    assert_eq!(unsafe { &(*(0 as *const JSStaticValue)).setProperty as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSStaticValue),
-                       "::",
-                       stringify!(setProperty)));
-    assert_eq!(unsafe { &(*(0 as *const JSStaticValue)).attributes as *const _ as usize },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSStaticValue),
-                       "::",
-                       stringify!(attributes)));
+    assert_eq!(
+        ::std::mem::size_of::<JSStaticValue>(),
+        32usize,
+        concat!("Size of: ", stringify!(JSStaticValue))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<JSStaticValue>(),
+        8usize,
+        concat!("Alignment of ", stringify!(JSStaticValue))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSStaticValue)).name as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSStaticValue),
+            "::",
+            stringify!(name)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSStaticValue)).getProperty as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSStaticValue),
+            "::",
+            stringify!(getProperty)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSStaticValue)).setProperty as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSStaticValue),
+            "::",
+            stringify!(setProperty)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSStaticValue)).attributes as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSStaticValue),
+            "::",
+            stringify!(attributes)
+        )
+    );
 }
 impl Clone for JSStaticValue {
     fn clone(&self) -> Self {
@@ -636,30 +683,46 @@ pub struct JSStaticFunction {
 }
 #[test]
 fn bindgen_test_layout_JSStaticFunction() {
-    assert_eq!(::std::mem::size_of::<JSStaticFunction>(),
-               24usize,
-               concat!("Size of: ", stringify!(JSStaticFunction)));
-    assert_eq!(::std::mem::align_of::<JSStaticFunction>(),
-               8usize,
-               concat!("Alignment of ", stringify!(JSStaticFunction)));
-    assert_eq!(unsafe { &(*(0 as *const JSStaticFunction)).name as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSStaticFunction),
-                       "::",
-                       stringify!(name)));
-    assert_eq!(unsafe { &(*(0 as *const JSStaticFunction)).callAsFunction as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSStaticFunction),
-                       "::",
-                       stringify!(callAsFunction)));
-    assert_eq!(unsafe { &(*(0 as *const JSStaticFunction)).attributes as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSStaticFunction),
-                       "::",
-                       stringify!(attributes)));
+    assert_eq!(
+        ::std::mem::size_of::<JSStaticFunction>(),
+        24usize,
+        concat!("Size of: ", stringify!(JSStaticFunction))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<JSStaticFunction>(),
+        8usize,
+        concat!("Alignment of ", stringify!(JSStaticFunction))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSStaticFunction)).name as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSStaticFunction),
+            "::",
+            stringify!(name)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSStaticFunction)).callAsFunction as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSStaticFunction),
+            "::",
+            stringify!(callAsFunction)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSStaticFunction)).attributes as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSStaticFunction),
+            "::",
+            stringify!(attributes)
+        )
+    );
 }
 impl Clone for JSStaticFunction {
     fn clone(&self) -> Self {
@@ -689,118 +752,186 @@ pub struct JSClassDefinition {
 }
 #[test]
 fn bindgen_test_layout_JSClassDefinition() {
-    assert_eq!(::std::mem::size_of::<JSClassDefinition>(),
-               128usize,
-               concat!("Size of: ", stringify!(JSClassDefinition)));
-    assert_eq!(::std::mem::align_of::<JSClassDefinition>(),
-               8usize,
-               concat!("Alignment of ", stringify!(JSClassDefinition)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).version as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(version)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).attributes as *const _ as usize },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(attributes)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).className as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(className)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).parentClass as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(parentClass)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).staticValues as *const _ as usize },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(staticValues)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).staticFunctions as *const _ as usize },
-               32usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(staticFunctions)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).initialize as *const _ as usize },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(initialize)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).finalize as *const _ as usize },
-               48usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(finalize)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).hasProperty as *const _ as usize },
-               56usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(hasProperty)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).getProperty as *const _ as usize },
-               64usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(getProperty)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).setProperty as *const _ as usize },
-               72usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(setProperty)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).deleteProperty as *const _ as usize },
-               80usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(deleteProperty)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const JSClassDefinition)).getPropertyNames as *const _ as usize
-               },
-               88usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(getPropertyNames)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).callAsFunction as *const _ as usize },
-               96usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(callAsFunction)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const JSClassDefinition)).callAsConstructor as *const _ as usize
-               },
-               104usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(callAsConstructor)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).hasInstance as *const _ as usize },
-               112usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(hasInstance)));
-    assert_eq!(unsafe { &(*(0 as *const JSClassDefinition)).convertToType as *const _ as usize },
-               120usize,
-               concat!("Alignment of field: ",
-                       stringify!(JSClassDefinition),
-                       "::",
-                       stringify!(convertToType)));
+    assert_eq!(
+        ::std::mem::size_of::<JSClassDefinition>(),
+        128usize,
+        concat!("Size of: ", stringify!(JSClassDefinition))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<JSClassDefinition>(),
+        8usize,
+        concat!("Alignment of ", stringify!(JSClassDefinition))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).version as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(version)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).attributes as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(attributes)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).className as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(className)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).parentClass as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(parentClass)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).staticValues as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(staticValues)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).staticFunctions as *const _ as usize },
+        32usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(staticFunctions)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).initialize as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(initialize)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).finalize as *const _ as usize },
+        48usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(finalize)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).hasProperty as *const _ as usize },
+        56usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(hasProperty)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).getProperty as *const _ as usize },
+        64usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(getProperty)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).setProperty as *const _ as usize },
+        72usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(setProperty)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).deleteProperty as *const _ as usize },
+        80usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(deleteProperty)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).getPropertyNames as *const _ as usize },
+        88usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(getPropertyNames)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).callAsFunction as *const _ as usize },
+        96usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(callAsFunction)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).callAsConstructor as *const _ as usize },
+        104usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(callAsConstructor)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).hasInstance as *const _ as usize },
+        112usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(hasInstance)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const JSClassDefinition)).convertToType as *const _ as usize },
+        120usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(JSClassDefinition),
+            "::",
+            stringify!(convertToType)
+        )
+    );
 }
 impl Clone for JSClassDefinition {
     fn clone(&self) -> Self {
@@ -845,61 +976,69 @@ extern "C" {
     ///    Pass NULL to specify no private data.
     ///
     /// Returns a `JSObject` with the given class and private data.
-    pub fn JSObjectMake(ctx: JSContextRef,
-                        jsClass: JSClassRef,
-                        data: *mut ::std::os::raw::c_void)
-                        -> JSObjectRef;
+    pub fn JSObjectMake(
+        ctx: JSContextRef,
+        jsClass: JSClassRef,
+        data: *mut ::std::os::raw::c_void,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeFunctionWithCallback(ctx: JSContextRef,
-                                            name: JSStringRef,
-                                            callAsFunction: JSObjectCallAsFunctionCallback)
-                                            -> JSObjectRef;
+    pub fn JSObjectMakeFunctionWithCallback(
+        ctx: JSContextRef,
+        name: JSStringRef,
+        callAsFunction: JSObjectCallAsFunctionCallback,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeConstructor(ctx: JSContextRef,
-                                   jsClass: JSClassRef,
-                                   callAsConstructor: JSObjectCallAsConstructorCallback)
-                                   -> JSObjectRef;
+    pub fn JSObjectMakeConstructor(
+        ctx: JSContextRef,
+        jsClass: JSClassRef,
+        callAsConstructor: JSObjectCallAsConstructorCallback,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeArray(ctx: JSContextRef,
-                             argumentCount: usize,
-                             arguments: *const JSValueRef,
-                             exception: *mut JSValueRef)
-                             -> JSObjectRef;
+    pub fn JSObjectMakeArray(
+        ctx: JSContextRef,
+        argumentCount: usize,
+        arguments: *const JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeDate(ctx: JSContextRef,
-                            argumentCount: usize,
-                            arguments: *const JSValueRef,
-                            exception: *mut JSValueRef)
-                            -> JSObjectRef;
+    pub fn JSObjectMakeDate(
+        ctx: JSContextRef,
+        argumentCount: usize,
+        arguments: *const JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeError(ctx: JSContextRef,
-                             argumentCount: usize,
-                             arguments: *const JSValueRef,
-                             exception: *mut JSValueRef)
-                             -> JSObjectRef;
+    pub fn JSObjectMakeError(
+        ctx: JSContextRef,
+        argumentCount: usize,
+        arguments: *const JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeRegExp(ctx: JSContextRef,
-                              argumentCount: usize,
-                              arguments: *const JSValueRef,
-                              exception: *mut JSValueRef)
-                              -> JSObjectRef;
+    pub fn JSObjectMakeRegExp(
+        ctx: JSContextRef,
+        argumentCount: usize,
+        arguments: *const JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeFunction(ctx: JSContextRef,
-                                name: JSStringRef,
-                                parameterCount: ::std::os::raw::c_uint,
-                                parameterNames: *const JSStringRef,
-                                body: JSStringRef,
-                                sourceURL: JSStringRef,
-                                startingLineNumber: ::std::os::raw::c_int,
-                                exception: *mut JSValueRef)
-                                -> JSObjectRef;
+    pub fn JSObjectMakeFunction(
+        ctx: JSContextRef,
+        name: JSStringRef,
+        parameterCount: ::std::os::raw::c_uint,
+        parameterNames: *const JSStringRef,
+        body: JSStringRef,
+        sourceURL: JSStringRef,
+        startingLineNumber: ::std::os::raw::c_int,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
     pub fn JSObjectGetPrototype(ctx: JSContextRef, object: JSObjectRef) -> JSValueRef;
@@ -908,46 +1047,54 @@ extern "C" {
     pub fn JSObjectSetPrototype(ctx: JSContextRef, object: JSObjectRef, value: JSValueRef);
 }
 extern "C" {
-    pub fn JSObjectHasProperty(ctx: JSContextRef,
-                               object: JSObjectRef,
-                               propertyName: JSStringRef)
-                               -> bool;
+    pub fn JSObjectHasProperty(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyName: JSStringRef,
+    ) -> bool;
 }
 extern "C" {
-    pub fn JSObjectGetProperty(ctx: JSContextRef,
-                               object: JSObjectRef,
-                               propertyName: JSStringRef,
-                               exception: *mut JSValueRef)
-                               -> JSValueRef;
+    pub fn JSObjectGetProperty(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyName: JSStringRef,
+        exception: *mut JSValueRef,
+    ) -> JSValueRef;
 }
 extern "C" {
-    pub fn JSObjectSetProperty(ctx: JSContextRef,
-                               object: JSObjectRef,
-                               propertyName: JSStringRef,
-                               value: JSValueRef,
-                               attributes: JSPropertyAttributes,
-                               exception: *mut JSValueRef);
+    pub fn JSObjectSetProperty(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyName: JSStringRef,
+        value: JSValueRef,
+        attributes: JSPropertyAttributes,
+        exception: *mut JSValueRef,
+    );
 }
 extern "C" {
-    pub fn JSObjectDeleteProperty(ctx: JSContextRef,
-                                  object: JSObjectRef,
-                                  propertyName: JSStringRef,
-                                  exception: *mut JSValueRef)
-                                  -> bool;
+    pub fn JSObjectDeleteProperty(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyName: JSStringRef,
+        exception: *mut JSValueRef,
+    ) -> bool;
 }
 extern "C" {
-    pub fn JSObjectGetPropertyAtIndex(ctx: JSContextRef,
-                                      object: JSObjectRef,
-                                      propertyIndex: ::std::os::raw::c_uint,
-                                      exception: *mut JSValueRef)
-                                      -> JSValueRef;
+    pub fn JSObjectGetPropertyAtIndex(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyIndex: ::std::os::raw::c_uint,
+        exception: *mut JSValueRef,
+    ) -> JSValueRef;
 }
 extern "C" {
-    pub fn JSObjectSetPropertyAtIndex(ctx: JSContextRef,
-                                      object: JSObjectRef,
-                                      propertyIndex: ::std::os::raw::c_uint,
-                                      value: JSValueRef,
-                                      exception: *mut JSValueRef);
+    pub fn JSObjectSetPropertyAtIndex(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyIndex: ::std::os::raw::c_uint,
+        value: JSValueRef,
+        exception: *mut JSValueRef,
+    );
 }
 extern "C" {
     pub fn JSObjectGetPrivate(object: JSObjectRef) -> *mut ::std::os::raw::c_void;
@@ -959,29 +1106,32 @@ extern "C" {
     pub fn JSObjectIsFunction(ctx: JSContextRef, object: JSObjectRef) -> bool;
 }
 extern "C" {
-    pub fn JSObjectCallAsFunction(ctx: JSContextRef,
-                                  object: JSObjectRef,
-                                  thisObject: JSObjectRef,
-                                  argumentCount: usize,
-                                  arguments: *const JSValueRef,
-                                  exception: *mut JSValueRef)
-                                  -> JSValueRef;
+    pub fn JSObjectCallAsFunction(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        thisObject: JSObjectRef,
+        argumentCount: usize,
+        arguments: *const JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSValueRef;
 }
 extern "C" {
     pub fn JSObjectIsConstructor(ctx: JSContextRef, object: JSObjectRef) -> bool;
 }
 extern "C" {
-    pub fn JSObjectCallAsConstructor(ctx: JSContextRef,
-                                     object: JSObjectRef,
-                                     argumentCount: usize,
-                                     arguments: *const JSValueRef,
-                                     exception: *mut JSValueRef)
-                                     -> JSObjectRef;
+    pub fn JSObjectCallAsConstructor(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        argumentCount: usize,
+        arguments: *const JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectCopyPropertyNames(ctx: JSContextRef,
-                                     object: JSObjectRef)
-                                     -> JSPropertyNameArrayRef;
+    pub fn JSObjectCopyPropertyNames(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+    ) -> JSPropertyNameArrayRef;
 }
 extern "C" {
     pub fn JSPropertyNameArrayRetain(array: JSPropertyNameArrayRef) -> JSPropertyNameArrayRef;
@@ -993,13 +1143,16 @@ extern "C" {
     pub fn JSPropertyNameArrayGetCount(array: JSPropertyNameArrayRef) -> usize;
 }
 extern "C" {
-    pub fn JSPropertyNameArrayGetNameAtIndex(array: JSPropertyNameArrayRef,
-                                             index: usize)
-                                             -> JSStringRef;
+    pub fn JSPropertyNameArrayGetNameAtIndex(
+        array: JSPropertyNameArrayRef,
+        index: usize,
+    ) -> JSStringRef;
 }
 extern "C" {
-    pub fn JSPropertyNameAccumulatorAddName(accumulator: JSPropertyNameAccumulatorRef,
-                                            propertyName: JSStringRef);
+    pub fn JSPropertyNameAccumulatorAddName(
+        accumulator: JSPropertyNameAccumulatorRef,
+        propertyName: JSStringRef,
+    );
 }
 extern "C" {
 
@@ -1061,9 +1214,10 @@ extern "C" {
     ///
     /// Returns a `JSGlobalContext` with a global object of class
     /// `globalObjectClass` and a context group equal to `group`.
-    pub fn JSGlobalContextCreateInGroup(group: JSContextGroupRef,
-                                        globalObjectClass: JSClassRef)
-                                        -> JSGlobalContextRef;
+    pub fn JSGlobalContextCreateInGroup(
+        group: JSContextGroupRef,
+        globalObjectClass: JSClassRef,
+    ) -> JSGlobalContextRef;
 
     /// Retains a global JavaScript execution context.
     ///
@@ -1197,10 +1351,11 @@ extern "C" {
     /// * `bufferSize`: The size of the external buffer in bytes.
     ///
     /// Returns the number of bytes written into buffer (including the null-terminator byte).
-    pub fn JSStringGetUTF8CString(string: JSStringRef,
-                                  buffer: *mut ::std::os::raw::c_char,
-                                  bufferSize: usize)
-                                  -> usize;
+    pub fn JSStringGetUTF8CString(
+        string: JSStringRef,
+        buffer: *mut ::std::os::raw::c_char,
+        bufferSize: usize,
+    ) -> usize;
 
     /// Tests whether two JavaScript strings match.
     ///
@@ -1220,86 +1375,98 @@ extern "C" {
     pub fn JSStringIsEqualToUTF8CString(a: JSStringRef, b: *const ::std::os::raw::c_char) -> bool;
 }
 extern "C" {
-    pub fn JSObjectMakeTypedArray(ctx: JSContextRef,
-                                  arrayType: JSTypedArrayType,
-                                  length: usize,
-                                  exception: *mut JSValueRef)
-                                  -> JSObjectRef;
+    pub fn JSObjectMakeTypedArray(
+        ctx: JSContextRef,
+        arrayType: JSTypedArrayType,
+        length: usize,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeTypedArrayWithBytesNoCopy(ctx: JSContextRef,
-                                                 arrayType: JSTypedArrayType,
-                                                 bytes: *mut ::std::os::raw::c_void,
-                                                 byteLength: usize,
-                                                 bytesDeallocator: JSTypedArrayBytesDeallocator,
-                                                 deallocatorContext: *mut ::std::os::raw::c_void,
-                                                 exception: *mut JSValueRef)
-                                                 -> JSObjectRef;
+    pub fn JSObjectMakeTypedArrayWithBytesNoCopy(
+        ctx: JSContextRef,
+        arrayType: JSTypedArrayType,
+        bytes: *mut ::std::os::raw::c_void,
+        byteLength: usize,
+        bytesDeallocator: JSTypedArrayBytesDeallocator,
+        deallocatorContext: *mut ::std::os::raw::c_void,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeTypedArrayWithArrayBuffer(ctx: JSContextRef,
-                                                 arrayType: JSTypedArrayType,
-                                                 buffer: JSObjectRef,
-                                                 exception: *mut JSValueRef)
-                                                 -> JSObjectRef;
+    pub fn JSObjectMakeTypedArrayWithArrayBuffer(
+        ctx: JSContextRef,
+        arrayType: JSTypedArrayType,
+        buffer: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeTypedArrayWithArrayBufferAndOffset(ctx: JSContextRef,
-                                                          arrayType: JSTypedArrayType,
-                                                          buffer: JSObjectRef,
-                                                          byteOffset: usize,
-                                                          length: usize,
-                                                          exception: *mut JSValueRef)
-                                                          -> JSObjectRef;
+    pub fn JSObjectMakeTypedArrayWithArrayBufferAndOffset(
+        ctx: JSContextRef,
+        arrayType: JSTypedArrayType,
+        buffer: JSObjectRef,
+        byteOffset: usize,
+        length: usize,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectGetTypedArrayBytesPtr(ctx: JSContextRef,
-                                         object: JSObjectRef,
-                                         exception: *mut JSValueRef)
-                                         -> *mut ::std::os::raw::c_void;
+    pub fn JSObjectGetTypedArrayBytesPtr(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> *mut ::std::os::raw::c_void;
 }
 extern "C" {
-    pub fn JSObjectGetTypedArrayLength(ctx: JSContextRef,
-                                       object: JSObjectRef,
-                                       exception: *mut JSValueRef)
-                                       -> usize;
+    pub fn JSObjectGetTypedArrayLength(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> usize;
 }
 extern "C" {
-    pub fn JSObjectGetTypedArrayByteLength(ctx: JSContextRef,
-                                           object: JSObjectRef,
-                                           exception: *mut JSValueRef)
-                                           -> usize;
+    pub fn JSObjectGetTypedArrayByteLength(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> usize;
 }
 extern "C" {
-    pub fn JSObjectGetTypedArrayByteOffset(ctx: JSContextRef,
-                                           object: JSObjectRef,
-                                           exception: *mut JSValueRef)
-                                           -> usize;
+    pub fn JSObjectGetTypedArrayByteOffset(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> usize;
 }
 extern "C" {
-    pub fn JSObjectGetTypedArrayBuffer(ctx: JSContextRef,
-                                       object: JSObjectRef,
-                                       exception: *mut JSValueRef)
-                                       -> JSObjectRef;
+    pub fn JSObjectGetTypedArrayBuffer(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectMakeArrayBufferWithBytesNoCopy(ctx: JSContextRef,
-                                                  bytes: *mut ::std::os::raw::c_void,
-                                                  byteLength: usize,
-                                                  bytesDeallocator: JSTypedArrayBytesDeallocator,
-                                                  deallocatorContext: *mut ::std::os::raw::c_void,
-                                                  exception: *mut JSValueRef)
-                                                  -> JSObjectRef;
+    pub fn JSObjectMakeArrayBufferWithBytesNoCopy(
+        ctx: JSContextRef,
+        bytes: *mut ::std::os::raw::c_void,
+        byteLength: usize,
+        bytesDeallocator: JSTypedArrayBytesDeallocator,
+        deallocatorContext: *mut ::std::os::raw::c_void,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
 }
 extern "C" {
-    pub fn JSObjectGetArrayBufferBytesPtr(ctx: JSContextRef,
-                                          object: JSObjectRef,
-                                          exception: *mut JSValueRef)
-                                          -> *mut ::std::os::raw::c_void;
+    pub fn JSObjectGetArrayBufferBytesPtr(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> *mut ::std::os::raw::c_void;
 }
 extern "C" {
-    pub fn JSObjectGetArrayBufferByteLength(ctx: JSContextRef,
-                                            object: JSObjectRef,
-                                            exception: *mut JSValueRef)
-                                            -> usize;
+    pub fn JSObjectGetArrayBufferByteLength(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> usize;
 }

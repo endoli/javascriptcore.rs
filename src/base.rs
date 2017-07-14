@@ -26,21 +26,23 @@ use sys;
 ///
 /// Returns either the `Option<JSValue>` that results from evaluating the script or
 /// the exception that occurred.
-pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>
-    (ctx: &JSContext,
-     script: S,
-     this_object: Option<&JSObject>,
-     source_url: U,
-     starting_line_number: i32)
-     -> Result<Option<JSValue>, JSException> {
+pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
+    ctx: &JSContext,
+    script: S,
+    this_object: Option<&JSObject>,
+    source_url: U,
+    starting_line_number: i32,
+) -> Result<Option<JSValue>, JSException> {
     unsafe {
         let mut e: sys::JSValueRef = ptr::null_mut();
-        let r = sys::JSEvaluateScript(ctx.raw,
-                                      script.into().raw,
-                                      this_object.map(|t| t.raw).unwrap_or(ptr::null_mut()),
-                                      source_url.into().raw,
-                                      starting_line_number,
-                                      &mut e);
+        let r = sys::JSEvaluateScript(
+            ctx.raw,
+            script.into().raw,
+            this_object.map(|t| t.raw).unwrap_or(ptr::null_mut()),
+            source_url.into().raw,
+            starting_line_number,
+            &mut e,
+        );
         if e.is_null() {
             Err(JSException { value: JSValue { raw: e } })
         } else if r.is_null() {
@@ -68,18 +70,21 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>
 ///
 /// Returns `Ok` if the script is syntactically correct, otherwise
 /// returns an exception.
-pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(ctx: &JSContext,
-                                                                 script: S,
-                                                                 source_url: U,
-                                                                 starting_line_number: i32)
-                                                                 -> Result<(), JSException> {
+pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
+    ctx: &JSContext,
+    script: S,
+    source_url: U,
+    starting_line_number: i32,
+) -> Result<(), JSException> {
     unsafe {
         let mut e: sys::JSValueRef = ptr::null_mut();
-        let r = sys::JSCheckScriptSyntax(ctx.raw,
-                                         script.into().raw,
-                                         source_url.into().raw,
-                                         starting_line_number,
-                                         &mut e);
+        let r = sys::JSCheckScriptSyntax(
+            ctx.raw,
+            script.into().raw,
+            source_url.into().raw,
+            starting_line_number,
+            &mut e,
+        );
         if r {
             Ok(())
         } else {
