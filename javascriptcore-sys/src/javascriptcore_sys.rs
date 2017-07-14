@@ -514,6 +514,13 @@ pub type JSClassAttributes = ::std::os::raw::c_uint;
 /// * `ctx`: The execution context to use.
 /// * `object`: The `JSObject` being created.
 ///
+/// If you named your function `Initialize`, you would declare it like this:
+///
+/// ```ignore
+/// void
+/// Initialize(JSContextRef ctx, JSObjectRef object);
+/// ```
+///
 /// Unlike the other object callbacks, the initialize callback is
 /// called on the least derived class (the parent class) first,
 /// and the most derived class last.
@@ -525,6 +532,13 @@ pub type JSObjectInitializeCallback =
 ///
 /// * `object`: The `JSObject` being finalized.
 ///
+/// If you named your function `Finalize`, you would declare it like this:
+///
+/// ```ignore
+/// void
+/// Finalize(JSObjectRef object);
+/// ```
+///
 /// The finalize callback is called on the most derived class
 /// first, and the least derived class (the parent class) last.
 ///
@@ -535,6 +549,31 @@ pub type JSObjectInitializeCallback =
 pub type JSObjectFinalizeCallback =
     ::std::option::Option<unsafe extern "C" fn(object: JSObjectRef)>;
 
+/// The callback invoked when determining whether an object has a property.
+///
+/// * `ctx`: The execution context to use.
+/// * `object`: The `JSObject` to search for the property.
+/// * `propertyName`: A `JSString` containing the name of the property look up.
+///
+/// Returns `true` if object has the property, otherwise `false`.
+///
+/// If you named your function `HasProperty`, you would declare it like this:
+///
+/// ```ignore
+/// bool
+/// HasProperty(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName);
+/// ```
+///
+/// If this function returns `false`, the `hasProperty` request
+/// forwards to object's statically declared properties, then
+/// its parent class chain (which includes the default object
+/// class), then its prototype chain.
+///
+/// This callback enables optimization in cases where only a
+/// property's existence needs to be known, not its value,
+/// and computing its value would be expensive.
+///
+/// If this callback is NULL, the getProperty callback will be used to service hasProperty requests.
 pub type JSObjectHasPropertyCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -542,6 +581,27 @@ pub type JSObjectHasPropertyCallback =
                              propertyName: JSStringRef)
                              -> bool,
     >;
+
+/// The callback invoked when getting a property's value.
+///
+/// * `ctx`: The execution context to use.
+/// * `object`: The `JSObject` to search for the property.
+/// * `propertyName`: A `JSString` containing the name of the property to get.
+/// * `exception`: A pointer to a `JSValueRef` in which to return an exception, if any.
+///
+/// Returns the property's value if object has the property, otherwise `NULL`.
+///
+/// If you named your function `GetProperty`, you would declare it like this:
+///
+/// ```ignore
+/// JSValueRef
+/// GetProperty(JSContextRef ctx, JSObjectRef object,
+///             JSStringRef propertyName, JSValueRef* exception);
+/// ```
+///
+/// If this function returns `NULL`, the get request forwards to `object`'s
+/// statically declared properties, then its parent class chain (which
+/// includes the default object class), then its prototype chain.
 pub type JSObjectGetPropertyCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -550,6 +610,29 @@ pub type JSObjectGetPropertyCallback =
                              exception: *mut JSValueRef)
                              -> *const OpaqueJSValue,
     >;
+
+/// The callback invoked when setting a property's value.
+///
+/// * `ctx`: The execution context to use.
+/// * `object`: The `JSObject` on which to set the property's value.
+/// * `propertyName`: A `JSString` containing the name of the property to set.
+/// * `value`: A `JSValue` to use as the property's value.
+/// * `exception`: A pointer to a `JSValueRef` in which to return an exception, if any.
+///
+/// Returns `true` if the property was set, otherwise `false`.
+///
+/// If you named your function `SetProperty`, you would declare it like this:
+///
+/// ```ignore
+/// bool
+/// SetProperty(JSContextRef ctx, JSObjectRef object,
+///             JSStringRef propertyName, JSValueRef value,
+///             JSValueRef* exception);
+/// ```
+///
+/// If this function returns `false`, the set request forwards to
+/// `object`'s statically declared properties, then its parent class
+/// chain (which includes the default object class).
 pub type JSObjectSetPropertyCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -559,6 +642,27 @@ pub type JSObjectSetPropertyCallback =
                              exception: *mut JSValueRef)
                              -> bool,
     >;
+
+/// The callback invoked when deleting a property.
+///
+/// * `ctx`: The execution context to use.
+/// * `object`: The `JSObject` in which to delete the property.
+/// * `propertyName`: A `JSString` containing the name of the property to delete.
+/// * `exception`: A pointer to a `JSValueRef` in which to return an exception, if any.
+///
+/// Returns `true` if `propertyName` was successfully deleted, otherwise `false`.
+///
+/// If you named your function `DeleteProperty`, you would declare it like this:
+///
+/// ```ignore
+/// bool
+/// DeleteProperty(JSContextRef ctx, JSObjectRef object,
+///                JSStringRef propertyName, JSValueRef* exception);
+/// ```
+///
+/// If this function returns `false`, the delete request forwards to
+/// `object`'s statically declared properties, then its parent class
+/// chain (which includes the default object class).
 pub type JSObjectDeletePropertyCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -567,12 +671,66 @@ pub type JSObjectDeletePropertyCallback =
                              exception: *mut JSValueRef)
                              -> bool,
     >;
+
+/// The callback invoked when collecting the names of an object's properties.
+///
+/// * `ctx`: The execution context to use.
+/// * `object`: The `JSObject` whose property names are being collected.
+/// * `propertyNames`: A JavaScript property name accumulator in which to
+///   accumulate the names of object's properties.
+///
+/// If you named your function `GetPropertyNames`, you would declare it like this:
+///
+/// ```ignore
+/// void
+/// GetPropertyNames(JSContextRef ctx, JSObjectRef object,
+///                  JSPropertyNameAccumulatorRef propertyNames);
+/// ```
+///
+/// Property name accumulators are used by `JSObjectCopyPropertyNames`
+/// and JavaScript `for...in` loops.
+///
+/// Use `JSPropertyNameAccumulatorAddName` to add property names to
+/// accumulator. A class's `getPropertyNames` callback only needs to
+/// provide the names of properties that the class vends through a
+/// custom `getProperty` or `setProperty` callback. Other properties,
+/// including statically declared properties, properties vended by
+/// other classes, and properties belonging to object's prototype,
+/// are added independently.
 pub type JSObjectGetPropertyNamesCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
                              object: JSObjectRef,
                              propertyNames: JSPropertyNameAccumulatorRef),
     >;
+
+/// The callback invoked when an object is called as a function.
+///
+/// * `ctx`: The execution context to use.
+/// * `function`: A `JSObject` that is the function being called.
+/// * `thisObject`: A `JSObject` that is the `this` variable in the function's scope.
+/// * `argumentCount`: An integer count of the number of arguments in `arguments`.
+/// * `arguments`: A `JSValue` array of the arguments passed to the function.
+/// * `exception`: A pointer to a `JSValueRef` in which to return an exception, if any.
+///
+/// Returns a `JSValue` that is the function's return value.
+///
+/// If you named your function `CallAsFunction`, you would declare it like this:
+///
+/// ```ignore
+/// JSValueRef
+/// CallAsFunction(JSContextRef ctx, JSObjectRef function,
+///                JSObjectRef thisObject,
+///                size_t argumentCount, const JSValueRef arguments[],
+///                JSValueRef* exception);
+/// ```
+///
+/// If your callback were invoked by the JavaScript expression
+/// `myObject.myFunction()`, function would be set to `myFunction`,
+/// and `thisObject` would be set to `myObject`.
+///
+/// If this callback is `NULL`, calling your object as a function
+/// will throw an exception.
 pub type JSObjectCallAsFunctionCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -583,6 +741,31 @@ pub type JSObjectCallAsFunctionCallback =
                              exception: *mut JSValueRef)
                              -> *const OpaqueJSValue,
     >;
+
+/// The callback invoked when an object is used as a constructor in a `new` expression.
+///
+/// * `ctx`: The execution context to use.
+/// * `constructor`: A `JSObject` that is the constructor being called.
+/// * `argumentCount`: An integer count of the number of arguments in `arguments`.
+/// * `arguments`: A `JSValue` array of the arguments passed to the function.
+/// * `exception`: A pointer to a `JSValueRef` in which to return an exception, if any.
+///
+/// Returns a `JSObject` that is the constructor's return value.
+///
+/// If you named your function `CallAsConstructor`, you would declare it like this:
+///
+/// ```ignore
+/// JSObjectRef
+/// CallAsConstructor(JSContextRef ctx, JSObjectRef constructor,
+///                   size_t argumentCount, const JSValueRef arguments[],
+///                   JSValueRef* exception);
+/// ```
+///
+/// If your callback were invoked by the JavaScript expression
+/// `new myConstructor()`, constructor would be set to `myConstructor`.
+///
+/// If this callback is `NULL`, using your object as a constructor in a
+/// `new` expression will throw an exception.
 pub type JSObjectCallAsConstructorCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -592,6 +775,38 @@ pub type JSObjectCallAsConstructorCallback =
                              exception: *mut JSValueRef)
                              -> *mut OpaqueJSValue,
     >;
+
+/// The callback invoked when an object is used as the target
+/// of an `instanceof` expression.
+///
+/// * `ctx`: The execution context to use.
+/// * `constructor`: The `JSObject` that is the target of the
+///   `instanceof` expression.
+/// * `possibleInstance`: The `JSValue` being tested to determine if it
+///   is an instance of `constructor`.
+/// * `exception`: A pointer to a `JSValueRef` in which to return an exception, if any.
+///
+/// Returns `true` if `possibleInstance` is an instance of `constructor`,
+/// otherwise `false`.
+///
+/// If you named your function `HasInstance`, you would declare it like this:
+///
+/// ```ignore
+/// bool
+/// HasInstance(JSContextRef ctx, JSObjectRef constructor,
+///             JSValueRef possibleInstance, JSValueRef* exception);
+/// ```
+///
+/// If your callback were invoked by the JavaScript expression
+/// `someValue instanceof myObject`, constructor would be set
+/// to `myObject` and `possibleInstance` would be set to `someValue`.
+///
+/// If this callback is `NULL`, `instanceof` expressions that target
+/// your object will return `false`.
+///
+/// Standard JavaScript practice calls for objects that implement
+/// the `callAsConstructor` callback to implement the `hasInstance`
+/// callback as well.
 pub type JSObjectHasInstanceCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -600,6 +815,32 @@ pub type JSObjectHasInstanceCallback =
                              exception: *mut JSValueRef)
                              -> bool,
     >;
+
+/// The callback invoked when converting an object to a particular
+/// JavaScript type.
+///
+/// * `ctx`: The execution context to use.
+/// * `object`: The `JSObject` to convert.
+/// * `type`: A `JSType` specifying the JavaScript type to convert to.
+/// * `exception`: A pointer to a `JSValueRef` in which to return an exception, if any.
+///
+///Returns the objects's converted value, or `NULL` if the object was not converted.
+///
+/// If you named your function `ConvertToType`, you would declare it like this:
+///
+/// ```ignore
+/// JSValueRef
+/// ConvertToType(JSContextRef ctx, JSObjectRef object, JSType type,
+///               JSValueRef* exception);
+/// ```
+///
+/// If this function returns `false`, the conversion request forwards
+/// to object's parent class chain (which includes the default object
+/// class).
+///
+/// This function is only invoked when converting an object to number
+/// or string. An object converted to boolean is `true`. An object
+/// converted to object is itself.
 pub type JSObjectConvertToTypeCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -608,12 +849,19 @@ pub type JSObjectConvertToTypeCallback =
                              exception: *mut JSValueRef)
                              -> *const OpaqueJSValue,
     >;
+
+/// A statically declared value property.
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JSStaticValue {
+    /// A null-terminated UTF8 string containing the property's name.
     pub name: *const ::std::os::raw::c_char,
+    /// A `JSObjectGetPropertyCallback` to invoke when getting the property's value.
     pub getProperty: JSObjectGetPropertyCallback,
+    /// A `JSObjectSetPropertyCallback` to invoke when setting the property's value.
+    /// May be `NULL` if the `ReadOnly` attribute is set.
     pub setProperty: JSObjectSetPropertyCallback,
+    /// A logically ORed set of `JSPropertyAttributes` to give to the property.
     pub attributes: JSPropertyAttributes,
 }
 #[test]
@@ -674,11 +922,16 @@ impl Clone for JSStaticValue {
         *self
     }
 }
+/// A statically declared function property.
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JSStaticFunction {
+    /// A null-terminated UTF8 string containing the property's name.
     pub name: *const ::std::os::raw::c_char,
+    /// A `JSObjectCallAsFunctionCallback` to invoke when the property
+    /// is called as a function.
     pub callAsFunction: JSObjectCallAsFunctionCallback,
+    /// A logically ORed set of `JSPropertyAttributes` to give to the property.
     pub attributes: JSPropertyAttributes,
 }
 #[test]
@@ -981,54 +1234,162 @@ extern "C" {
         jsClass: JSClassRef,
         data: *mut ::std::os::raw::c_void,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Convenience method for creating a JavaScript function with a given
+    /// callback as its implementation.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `name`: A `JSString` containing the function's name. This will be
+    ///   used when converting the function to string. Pass `NULL` to create
+    ///   an anonymous function.
+    /// * `callAsFunction`: The `JSObjectCallAsFunctionCallback` to invoke
+    ///   when the function is called.
+    ///
+    /// Returns a `JSObject` that is a function. The object's prototype will be
+    /// the default function prototype.
     pub fn JSObjectMakeFunctionWithCallback(
         ctx: JSContextRef,
         name: JSStringRef,
         callAsFunction: JSObjectCallAsFunctionCallback,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Convenience method for creating a JavaScript constructor.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `jsClass`: A `JSClass` that is the class your constructor
+    ///   will assign to the objects its constructs. `jsClass` will
+    ///   be used to set the constructor's `.prototype` property, and
+    ///   to evaluate `instanceof` expressions. Pass `NULL` to use
+    ///   the default object class.
+    /// * `callAsConstructor` A `JSObjectCallAsConstructorCallback` to
+    ///   invoke when your constructor is used in a `new` expression.
+    ///   Pass `NULL` to use the default object constructor.
+    ///
+    /// Returns a `JSObject` that is a constructor. The object's
+    /// prototype will be the default object prototype.
+    ///
+    /// The default object constructor takes no arguments and constructs
+    /// an object of class `jsClass` with no private data.
     pub fn JSObjectMakeConstructor(
         ctx: JSContextRef,
         jsClass: JSClassRef,
         callAsConstructor: JSObjectCallAsConstructorCallback,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript Array object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `argumentCount`: An integer count of the number of
+    ///   arguments in `arguments`.
+    /// * `arguments`: A `JSValue` array of data to populate the
+    ///   `Array` with. Pass `NULL` if `argumentCount` is `0`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObject` that is an `Array`.
+    ///
+    /// The behavior of this function does not exactly match the behavior
+    /// of the built-in `Array` constructor. Specifically, if one argument
+    ///  is supplied, this function returns an array with one element.
     pub fn JSObjectMakeArray(
         ctx: JSContextRef,
         argumentCount: usize,
         arguments: *const JSValueRef,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript `Date` object, as if by invoking the
+    /// built-in `Date` constructor.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `argumentCount`: An integer count of the number of
+    ///   arguments in `arguments`.
+    /// * `arguments`: A `JSValue` array of arguments to pass to
+    ///   the `Date` constructor. Pass `NULL` if `argumentCount` is `0`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObject` that is a `Date`.
     pub fn JSObjectMakeDate(
         ctx: JSContextRef,
         argumentCount: usize,
         arguments: *const JSValueRef,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript `Error` object, as if by invoking the
+    /// built-in `Error` constructor.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `argumentCount`: An integer count of the number of
+    ///   arguments in `arguments`.
+    /// * `arguments`: A `JSValue` array of arguments to pass to
+    ///   the `Error` constructor. Pass `NULL` if `argumentCount` is `0`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObject` that is a `Error`.
     pub fn JSObjectMakeError(
         ctx: JSContextRef,
         argumentCount: usize,
         arguments: *const JSValueRef,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript `RegExp` object, as if by invoking the
+    /// built-in `RegExp` constructor.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `argumentCount`: An integer count of the number of
+    ///   arguments in `arguments`.
+    /// * `arguments`: A `JSValue` array of arguments to pass to
+    ///   the `RegExp` constructor. Pass `NULL` if `argumentCount` is `0`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObject` that is a `RegExp`.
     pub fn JSObjectMakeRegExp(
         ctx: JSContextRef,
         argumentCount: usize,
         arguments: *const JSValueRef,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a function with a given script as its body.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `name`: A `JSString` containing the function's name. This
+    ///   will be used when converting the function to string. Pass
+    ///   `NULL` to create an anonymous function.
+    /// * `parameterCount`: An integer count of the number of parameter
+    ///   names in `parameterNames`.
+    /// * `parameterNames`: A `JSString` array containing the names of
+    ///   the function's parameters. Pass `NULL` if `parameterCount` is `0`.
+    /// * `body`: A `JSString` containing the script to use as the
+    ///   function's body.
+    /// * `sourceURL` A `JSString` containing a URL for the script's
+    ///   source file. This is only used when reporting exceptions.
+    ///   Pass `NULL` if you do not care to include source file
+    ///   information in exceptions.
+    /// * `startingLineNumber`: An integer value specifying the
+    ///   script's starting line number in the file located at
+    ///   `sourceURL`. This is only used when reporting exceptions.
+    ///   The value is one-based, so the first line is line `1`
+    ///   and invalid values are clamped to `1`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObject` that is a function, or `NULL` if either
+    /// body or `parameterNames` contains a syntax error. The
+    /// object's prototype will be the default function prototype.
+    ///
+    /// Use this method when you want to execute a script repeatedly, to
+    /// avoid the cost of re-parsing the script before each execution.
     pub fn JSObjectMakeFunction(
         ctx: JSContextRef,
         name: JSStringRef,
@@ -1039,29 +1400,62 @@ extern "C" {
         startingLineNumber: ::std::os::raw::c_int,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Gets an object's prototype.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: A `JSObject` whose prototype you want to get.
+    ///
+    /// Returns a `JSValue` that is the object's prototype.
     pub fn JSObjectGetPrototype(ctx: JSContextRef, object: JSObjectRef) -> JSValueRef;
-}
-extern "C" {
+
+    ///Sets an object's prototype.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` whose prototype you want to set.
+    /// * `value`: A `JSValue` to set as the object's prototype.
     pub fn JSObjectSetPrototype(ctx: JSContextRef, object: JSObjectRef, value: JSValueRef);
-}
-extern "C" {
+
+    /// Tests whether an object has a given property.
+    ///
+    /// * `object`: The `JSObject` to test.
+    /// * `propertyName`: A `JSString` containing the property's name.
+    /// Returns `true` if the object has a property whose name matches
+    /// `propertyName`, otherwise `false`.
     pub fn JSObjectHasProperty(
         ctx: JSContextRef,
         object: JSObjectRef,
         propertyName: JSStringRef,
     ) -> bool;
-}
-extern "C" {
+
+    /// Gets a property from an object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` whose property you want to get.
+    /// * `propertyName`: A `JSString` containing the property's name.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns the property's value if object has the property, otherwise
+    /// the undefined value.
     pub fn JSObjectGetProperty(
         ctx: JSContextRef,
         object: JSObjectRef,
         propertyName: JSStringRef,
         exception: *mut JSValueRef,
     ) -> JSValueRef;
-}
-extern "C" {
+
+    /// Sets a property on an object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` whose property you want to set.
+    /// * `propertyName`: A `JSString` containing the property's name.
+    /// * `value`: A `JSValue` to use as the property's value.
+    /// * `attributes`: A logically ORed set of `JSPropertyAttributes` to give to the property.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
     pub fn JSObjectSetProperty(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1070,24 +1464,63 @@ extern "C" {
         attributes: JSPropertyAttributes,
         exception: *mut JSValueRef,
     );
-}
-extern "C" {
+
+    /// Deletes a property from an object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` whose property you want to delete.
+    /// * `propertyName`: A `JSString` containing the property's name.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns `true` if the delete operation succeeds, otherwise `false`
+    /// (for example, if the property has the `kJSPropertyAttributeDontDelete`
+    /// attribute set).
     pub fn JSObjectDeleteProperty(
         ctx: JSContextRef,
         object: JSObjectRef,
         propertyName: JSStringRef,
         exception: *mut JSValueRef,
     ) -> bool;
-}
-extern "C" {
+
+    /// Gets a property from an object by numeric index.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` whose property you want to get.
+    /// * `propertyIndex`: An integer value that is the property's name.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns the property's value if object has the property,
+    /// otherwise the undefined value.
+    ///
+    /// Calling `JSObjectGetPropertyAtIndex` is equivalent to calling
+    /// `JSObjectGetProperty` with a string containing `propertyIndex`,
+    /// but `JSObjectGetPropertyAtIndex` provides optimized access to
+    /// numeric properties.
     pub fn JSObjectGetPropertyAtIndex(
         ctx: JSContextRef,
         object: JSObjectRef,
         propertyIndex: ::std::os::raw::c_uint,
         exception: *mut JSValueRef,
     ) -> JSValueRef;
-}
-extern "C" {
+
+    /// Sets a property on an object by numeric index.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` whose property you want to set.
+    /// * `propertyIndex`: The property's name as a number.
+    /// * `value`: A `JSValue` to use as the property's value.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Calling `JSObjectSetPropertyAtIndex` is equivalent to calling
+    /// `JSObjectSetProperty` with a string containing `propertyIndex`,
+    /// but `JSObjectSetPropertyAtIndex` provides optimized access to
+    /// numeric properties.
     pub fn JSObjectSetPropertyAtIndex(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1095,17 +1528,48 @@ extern "C" {
         value: JSValueRef,
         exception: *mut JSValueRef,
     );
-}
-extern "C" {
+
+    /// Gets an object's private data.
+    ///
+    /// * `object`: A `JSObject` whose private data you want to get.
+    ///
+    /// Returns a `void*` that is the object's private data, if the
+    /// object has private data, otherwise `NULL`.
     pub fn JSObjectGetPrivate(object: JSObjectRef) -> *mut ::std::os::raw::c_void;
-}
-extern "C" {
+
+    /// Sets a pointer to private data on an object.
+    ///
+    /// * `object`: The `JSObject` whose private data you want to set.
+    /// * `data`: A `void*` to set as the object's private data.
+    ///
+    /// Returns `true` if object can store private data, otherwise `false`.
+    ///
+    /// The default object class does not allocate storage for private data.
+    /// Only objects created with a non-`NULL` `JSClass` can store private data.
     pub fn JSObjectSetPrivate(object: JSObjectRef, data: *mut ::std::os::raw::c_void) -> bool;
-}
-extern "C" {
+
+    /// Tests whether an object can be called as a function.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` to test.
+    ///
+    /// Returns `true` if the object can be called as a function, otherwise `false`.
     pub fn JSObjectIsFunction(ctx: JSContextRef, object: JSObjectRef) -> bool;
-}
-extern "C" {
+
+    /// Calls an object as a function.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` to call as a function.
+    /// * `thisObject`: The object to use as `this`, or `NULL` to use the global object as `this`.
+    /// * `argumentCount`: An integer count of the number of arguments in `arguments`.
+    /// * `arguments`: A `JSValue` array of arguments to pass to the function.
+    ///   Pass `NULL` if `argumentCount` is `0`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns the `JSValue` that results from calling `object` as a function,
+    /// or `NULL` if an exception is thrown or `object` is not a function.
     pub fn JSObjectCallAsFunction(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1114,11 +1578,28 @@ extern "C" {
         arguments: *const JSValueRef,
         exception: *mut JSValueRef,
     ) -> JSValueRef;
-}
-extern "C" {
+
+    /// Tests whether an object can be called as a constructor.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` to test.
+    ///
+    /// Returns `true` if the object can be called as a constructor, otherwise `false`.
     pub fn JSObjectIsConstructor(ctx: JSContextRef, object: JSObjectRef) -> bool;
-}
-extern "C" {
+
+    /// Calls an object as a constructor.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` to call as a constructor.
+    /// * `argumentCount`: An integer count of the number of arguments in `arguments`.
+    /// * `arguments`: A `JSValue` array of arguments to pass to the constructor.
+    ///   Pass `NULL` if `argumentCount` is `0`.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns the `JSObject` that results from calling `object` as a constructor,
+    /// or `NULL` if an exception is thrown or `object` is not a constructor.
     pub fn JSObjectCallAsConstructor(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1126,35 +1607,57 @@ extern "C" {
         arguments: *const JSValueRef,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Gets the names of an object's enumerable properties.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The object whose property names you want to get.
+    ///
+    /// Returns a `JSPropertyNameArray` containing the names of `object`'s
+    /// enumerable properties. Ownership follows the Create Rule.
     pub fn JSObjectCopyPropertyNames(
         ctx: JSContextRef,
         object: JSObjectRef,
     ) -> JSPropertyNameArrayRef;
-}
-extern "C" {
+
+    /// Retains a JavaScript property name array.
+    ///
+    /// * `array`: The `JSPropertyNameArray` to retain.
+    ///
+    /// Returns a `JSPropertyNameArray` that is the same as array.
     pub fn JSPropertyNameArrayRetain(array: JSPropertyNameArrayRef) -> JSPropertyNameArrayRef;
-}
-extern "C" {
+
+    /// Releases a JavaScript property name array.
+    ///
+    /// * `array` The `JSPropertyNameArray` to release.
     pub fn JSPropertyNameArrayRelease(array: JSPropertyNameArrayRef);
-}
-extern "C" {
+
+    /// Gets a count of the number of items in a JavaScript property name array.
+    ///
+    /// * `array`: The array from which to retrieve the count.
+    ///
+    /// Return an integer count of the number of names in `array`.
     pub fn JSPropertyNameArrayGetCount(array: JSPropertyNameArrayRef) -> usize;
-}
-extern "C" {
+
+    /// Gets a property name at a given index in a JavaScript property name array.
+    ///
+    /// * `array`: The array from which to retrieve the property name.
+    /// * `index`: The index of the property name to retrieve.
+    ///
+    /// Returns a `JSStringRef` containing the property name.
     pub fn JSPropertyNameArrayGetNameAtIndex(
         array: JSPropertyNameArrayRef,
         index: usize,
     ) -> JSStringRef;
-}
-extern "C" {
+
+    /// Adds a property name to a JavaScript property name accumulator.
+    ///
+    /// * `accumulator`: The accumulator object to which to add the property name.
+    /// * `propertyName`: The property name to add.
     pub fn JSPropertyNameAccumulatorAddName(
         accumulator: JSPropertyNameAccumulatorRef,
         propertyName: JSStringRef,
     );
-}
-extern "C" {
 
     /// Creates a JavaScript context group.
     ///
