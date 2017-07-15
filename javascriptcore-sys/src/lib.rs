@@ -1745,16 +1745,48 @@ extern "C" {
     ///
     /// Returns `true` if the two strings match, otherwise `false`.
     pub fn JSStringIsEqualToUTF8CString(a: JSStringRef, b: *const ::std::os::raw::c_char) -> bool;
-}
-extern "C" {
+
+    /// Creates a JavaScript Typed Array object with the given number of elements.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `arrayType`: A value identifying the type of array to
+    ///   create. If `arrayType` is `JSTypedArrayType::None` or
+    ///   `JSTypedArrayType::ArrayBuffer` then `NULL` will be returned.
+    /// * `length`: The number of elements to be in the new Typed Array.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObjectRef` that is a Typed Array with all elements set to
+    /// zero or `NULL` if there was an error.
     pub fn JSObjectMakeTypedArray(
         ctx: JSContextRef,
         arrayType: JSTypedArrayType,
         length: usize,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript Typed Array object from an existing pointer.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `arrayType`: A value identifying the type of array to
+    ///   create. If `arrayType` is `JSTypedArrayType::None` or
+    ///   `JSTypedArrayType::ArrayBuffer` then `NULL` will be returned.
+    /// * `bytes`: A pointer to the byte buffer to be used as the backing store
+    ///   of the Typed Array object.
+    /// * `byteLength`: The number of bytes pointed to by the parameter bytes.
+    /// * `bytesDeallocator`: The allocator to use to deallocate the external
+    ///    buffer when the JSTypedArrayData object is deallocated.
+    /// * `deallocatorContext A pointer to pass back to the deallocator.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObjectRef` Typed Array whose backing store is the same as
+    /// the one pointed to by `bytes` or `NULL` if there was an error.
+    ///
+    /// If an exception is thrown during this function the `bytesDeallocator`
+    /// will always be called.
     pub fn JSObjectMakeTypedArrayWithBytesNoCopy(
         ctx: JSContextRef,
         arrayType: JSTypedArrayType,
@@ -1764,16 +1796,48 @@ extern "C" {
         deallocatorContext: *mut ::std::os::raw::c_void,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript Typed Array object from an existing
+    /// JavaScript Array Buffer object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `arrayType`: A value identifying the type of array to
+    ///   create. If `arrayType` is `JSTypedArrayType::None` or
+    ///   `JSTypedArrayType::ArrayBuffer` then `NULL` will be returned.
+    /// * `buffer`: An Array Buffer object that should be used as the
+    ///   backing store for the created JavaScript Typed Array object.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObjectRef` that is a Typed Array or `NULL` if there
+    /// was an error. The backing store of the Typed Array will be `buffer`.
     pub fn JSObjectMakeTypedArrayWithArrayBuffer(
         ctx: JSContextRef,
         arrayType: JSTypedArrayType,
         buffer: JSObjectRef,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript Typed Array object from an existing
+    /// JavaScript Array Buffer object with the given offset and
+    /// length.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `arrayType`: A value identifying the type of array to
+    ///   create. If `arrayType` is `JSTypedArrayType::None` or
+    ///   `JSTypedArrayType::ArrayBuffer` then `NULL` will be returned.
+    /// * `buffer`: An Array Buffer object that should be used as the
+    ///   backing store for the created JavaScript Typed Array object.
+    /// * `byteOffset`: The byte offset for the created Typed Array.
+    ///   `byteOffset` should aligned with the element size of `arrayType`.
+    /// * `length`: The number of elements to include in the Typed Array.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObjectRef` that is a Typed Array or `NULL` if there
+    /// was an error. The backing store of the Typed Array will be `buffer`.
     pub fn JSObjectMakeTypedArrayWithArrayBufferAndOffset(
         ctx: JSContextRef,
         arrayType: JSTypedArrayType,
@@ -1782,43 +1846,114 @@ extern "C" {
         length: usize,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Returns a temporary pointer to the backing store of a
+    /// JavaScript Typed Array object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The Typed Array object whose backing store pointer
+    ///   to return.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a pointer to the raw data buffer that serves as `object`'s
+    /// backing store or `NULL` if object is not a Typed Array object.
+    ///
+    /// The pointer returned by this function is temporary and is not
+    /// guaranteed to remain valid across JavaScriptCore API calls.
     pub fn JSObjectGetTypedArrayBytesPtr(
         ctx: JSContextRef,
         object: JSObjectRef,
         exception: *mut JSValueRef,
     ) -> *mut ::std::os::raw::c_void;
-}
-extern "C" {
+
+    /// Returns the length of a JavaScript Typed Array object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The Typed Array object whose length to return.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns the length of the Typed Array object or `0` if the object
+    /// is not a Typed Array object.
     pub fn JSObjectGetTypedArrayLength(
         ctx: JSContextRef,
         object: JSObjectRef,
         exception: *mut JSValueRef,
     ) -> usize;
-}
-extern "C" {
+
+    /// Returns the byte length of a JavaScript Typed Array object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The Typed Array object whose byte length to return.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns the byte length of the Typed Array object or `0` if the
+    /// object is not a Typed Array object.
     pub fn JSObjectGetTypedArrayByteLength(
         ctx: JSContextRef,
         object: JSObjectRef,
         exception: *mut JSValueRef,
     ) -> usize;
-}
-extern "C" {
+
+    /// Returns the byte offset of a JavaScript Typed Array object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The Typed Array object whose byte offset to return.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns the byte offset of the Typed Array object or `0` if the
+    /// object is not a Typed Array object.
     pub fn JSObjectGetTypedArrayByteOffset(
         ctx: JSContextRef,
         object: JSObjectRef,
         exception: *mut JSValueRef,
     ) -> usize;
-}
-extern "C" {
+
+    /// Returns the JavaScript Array Buffer object that is used as the
+    /// backing of a JavaScript Typed Array object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The JSObjectRef whose Typed Array type data pointer
+    ///   to obtain.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObjectRef` with a `JSTypedArrayType` of
+    /// `JSTypedArrayType::ArrayBuffer` or `NULL` if object is not
+    /// a Typed Array.
     pub fn JSObjectGetTypedArrayBuffer(
         ctx: JSContextRef,
         object: JSObjectRef,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Creates a JavaScript Array Buffer object from an existing pointer.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `bytes`: A pointer to the byte buffer to be used as the backing
+    ///   store of the Typed Array object.
+    /// * `byteLength`: The number of bytes pointed to by the parameter `bytes`.
+    /// * `bytesDeallocator`: The allocator to use to deallocate the
+    ///   external buffer when the Typed Array data object is deallocated.
+    /// * `deallocatorContext`: A pointer to pass back to the deallocator.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a `JSObjectRef` Array Buffer whose backing store is
+    /// the same as the one pointed to by `bytes` or `NULL` if there
+    /// was an error.
+    ///
+    /// If an exception is thrown during this function the `bytesDeallocator`
+    /// will always be called.
     pub fn JSObjectMakeArrayBufferWithBytesNoCopy(
         ctx: JSContextRef,
         bytes: *mut ::std::os::raw::c_void,
@@ -1827,15 +1962,38 @@ extern "C" {
         deallocatorContext: *mut ::std::os::raw::c_void,
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
-}
-extern "C" {
+
+    /// Returns a pointer to the data buffer that serves as the backing
+    /// store for a JavaScript Typed Array object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The Array Buffer object whose internal backing
+    ///   store pointer to return.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns a pointer to the raw data buffer that serves as
+    /// `object`'s backing store or `NULL` if `object` is not an
+    /// Array Buffer object.
+    ///
+    /// The pointer returned by this function is temporary and is not
+    /// guaranteed to remain valid across JavaScriptCore API calls.
     pub fn JSObjectGetArrayBufferBytesPtr(
         ctx: JSContextRef,
         object: JSObjectRef,
         exception: *mut JSValueRef,
     ) -> *mut ::std::os::raw::c_void;
-}
-extern "C" {
+
+    /// Returns the number of bytes in a JavaScript data object.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The JS Arary Buffer object whose length in bytes to return.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns the number of bytes stored in the data `object`.
     pub fn JSObjectGetArrayBufferByteLength(
         ctx: JSContextRef,
         object: JSObjectRef,
