@@ -55,6 +55,21 @@ pub type JSClassRef = *mut OpaqueJSClass;
 pub struct OpaqueJSPropertyNameArray([u8; 0]);
 
 /// An array of JavaScript property names.
+///
+/// Values of this type are obtained via [`JSObjectCopyPropertyNames`].
+///
+/// Operations:
+///
+/// * [`JSPropertyNameArrayGetCount`]
+/// * [`JSPropertyNameArrayGetNameAtIndex`]
+/// * [`JSPropertyNameArrayRelease`]
+/// * [`JSPropertyNameArrayRetain`]
+///
+/// [`JSObjectCopyPropertyNames`]: fn.JSObjectCopyPropertyNames.html
+/// [`JSPropertyNameArrayGetCount`]: fn.JSPropertyNameArrayGetCount.html
+/// [`JSPropertyNameArrayGetNameAtIndex`]: fn.JSPropertyNameArrayGetNameAtIndex.html
+/// [`JSPropertyNameArrayRelease`]: fn.JSPropertyNameArrayRelease.html
+/// [`JSPropertyNameArrayRetain`]: fn.JSPropertyNameArrayRetain.html
 pub type JSPropertyNameArrayRef = *mut OpaqueJSPropertyNameArray;
 
 /// An ordered set used to collect the names of
@@ -66,6 +81,12 @@ pub struct OpaqueJSPropertyNameAccumulator([u8; 0]);
 
 /// An ordered set used to collect the names of
 /// a JavaScript object's properties.
+///
+/// Values of this type are passed to the [getPropertyNames callback].
+/// Names are added to the accumulator using [`JSPropertyNameAccumulatorAddName`].
+///
+/// [getPropertyNames callback]: type.JSObjectGetPropertyNamesCallback.html
+/// [`JSPropertyNameAccumulatorAddName`]: fn.JSPropertyNameAccumulatorAddName.html
 pub type JSPropertyNameAccumulatorRef = *mut OpaqueJSPropertyNameAccumulator;
 
 /// A function used to deallocate bytes passed to a Typed Array constructor.
@@ -697,13 +718,15 @@ pub type JSObjectDeletePropertyCallback =
 /// Property name accumulators are used by `JSObjectCopyPropertyNames`
 /// and JavaScript `for...in` loops.
 ///
-/// Use `JSPropertyNameAccumulatorAddName` to add property names to
+/// Use [`JSPropertyNameAccumulatorAddName`] to add property names to
 /// accumulator. A class's `getPropertyNames` callback only needs to
 /// provide the names of properties that the class vends through a
 /// custom `getProperty` or `setProperty` callback. Other properties,
 /// including statically declared properties, properties vended by
 /// other classes, and properties belonging to object's prototype,
 /// are added independently.
+///
+/// [`JSPropertyNameAccumulatorAddName`]: fn.JSPropertyNameAccumulatorAddName.html
 pub type JSObjectGetPropertyNamesCallback =
     ::std::option::Option<
         unsafe extern "C" fn(ctx: JSContextRef,
@@ -1644,6 +1667,12 @@ extern "C" {
     /// * `array`: The array from which to retrieve the count.
     ///
     /// Return an integer count of the number of names in `array`.
+    ///
+    /// See also:
+    ///
+    /// * [`JSPropertyNameArrayGetNameAtIndex`]
+    ///
+    /// [`JSPropertyNameArrayGetNameAtIndex`]: fn.JSPropertyNameArrayGetNameAtIndex.html
     pub fn JSPropertyNameArrayGetCount(array: JSPropertyNameArrayRef) -> usize;
 
     /// Gets a property name at a given index in a JavaScript property name array.
@@ -1652,6 +1681,12 @@ extern "C" {
     /// * `index`: The index of the property name to retrieve.
     ///
     /// Returns a `JSStringRef` containing the property name.
+    ///
+    /// See also:
+    ///
+    /// * [`JSPropertyNameArrayGetCount`]
+    ///
+    /// [`JSPropertyNameArrayGetCount`]: fn.JSPropertyNameArrayGetCount.html
     pub fn JSPropertyNameArrayGetNameAtIndex(
         array: JSPropertyNameArrayRef,
         index: usize,
