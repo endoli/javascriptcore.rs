@@ -123,7 +123,7 @@ pub struct OpaqueJSValue([u8; 0]);
 /// The base type for all JavaScript values, and polymorphic functions on them.
 pub type JSValueRef = *const OpaqueJSValue;
 
-/// A JavaScript object. A JSObject is a JSValue.
+/// A JavaScript object. A `JSObjectRef` is a `JSValueRef`.
 pub type JSObjectRef = *mut OpaqueJSValue;
 
 extern "C" {
@@ -381,7 +381,7 @@ extern "C" {
     /// given constructor, as compared by the JS `instanceof` operator.
     ///
     /// * `ctx`: The execution context to use.
-    /// * `value`: The JSValue to test.
+    /// * `value`: The `JSValue` to test.
     /// * `constructor`: The constructor to test against.
     /// * `exception`: A pointer to a `JSValueRef` in which to
     ///   store an exception, if any. Pass `NULL` if you do
@@ -430,7 +430,7 @@ extern "C" {
     ///
     /// * `ctx`: The execution context to use.
     /// * `string`: The `JSString` to assign to the newly created
-    ///   JSValue`. The newly created `JSValue` retains string, and
+    ///   `JSValue`. The newly created `JSValue` retains string, and
     ///   releases it upon garbage collection.
     ///
     /// Returns a `JSValue` of the `string` type, representing the value of `string`.
@@ -466,7 +466,7 @@ extern "C" {
     /// Converts a JavaScript value to boolean and returns the resulting boolean.
     ///
     /// * `ctx`: The execution context to use.
-    /// * `value`: The JSValue to convert.
+    /// * `value`: The `JSValue` to convert.
     ///
     /// Returns the boolean result of conversion.
     pub fn JSValueToBoolean(ctx: JSContextRef, value: JSValueRef) -> bool;
@@ -1593,7 +1593,7 @@ extern "C" {
 
     /// Retains a global JavaScript execution context.
     ///
-    /// * `ctx`: The JSGlobalContext to retain.
+    /// * `ctx`: The `JSGlobalContext` to retain.
     ///
     /// Returns a `JSGlobalContext` that is the same as `ctx`.
     pub fn JSGlobalContextRetain(ctx: JSGlobalContextRef) -> JSGlobalContextRef;
@@ -1920,7 +1920,7 @@ extern "C" {
     /// backing of a JavaScript Typed Array object.
     ///
     /// * `ctx`: The execution context to use.
-    /// * `object`: The JSObjectRef whose Typed Array type data pointer
+    /// * `object`: The `JSObjectRef` whose Typed Array type data pointer
     ///   to obtain.
     /// * `exception`: A pointer to a `JSValueRef` in which to store
     ///   an exception, if any. Pass `NULL` if you do not care to
