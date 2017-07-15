@@ -24,7 +24,7 @@ use sys;
 ///   so the first line is line `1` and invalid values are clamped
 ///   to `1`.
 ///
-/// Returns either the `Option<JSValue>` that results from evaluating the script or
+/// Returns either the `JSValue` that results from evaluating the script or
 /// the exception that occurred.
 pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
     ctx: &JSContext,
@@ -32,7 +32,7 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
     this_object: Option<&JSObject>,
     source_url: U,
     starting_line_number: i32,
-) -> Result<Option<JSValue>, JSException> {
+) -> Result<JSValue, JSException> {
     unsafe {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let r = sys::JSEvaluateScript(
@@ -43,20 +43,18 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
             starting_line_number,
             &mut e,
         );
-        if e.is_null() {
+        if r.is_null() {
             Err(JSException {
                 value: JSValue {
                     raw: e,
                     ctx: ctx.raw,
                 },
             })
-        } else if r.is_null() {
-            Ok(None)
         } else {
-            Ok(Some(JSValue {
+            Ok(JSValue {
                 raw: r,
                 ctx: ctx.raw,
-            }))
+            })
         }
     }
 }
@@ -129,7 +127,7 @@ pub fn garbage_collect(ctx: &JSContext) {
 
 #[cfg(test)]
 mod tests {
-    use super::{JSContext, check_script_syntax, garbage_collect};
+    use super::{JSContext, check_script_syntax, evaluate_script, garbage_collect};
 
     #[test]
     fn can_check_script_syntax() {
@@ -140,6 +138,14 @@ mod tests {
 
         let f = check_script_syntax(&ctx, "alert('abc", "test.js", 1);
         assert!(f.is_err());
+    }
+
+    #[test]
+    fn can_evaluate_script() {
+        let ctx = JSContext::default();
+
+        let r = evaluate_script(&ctx, "2 + 2", None, "test.js", 1);
+        assert_eq!(r.unwrap().as_number().unwrap(), 4.0);
     }
 
     #[test]
