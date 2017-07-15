@@ -1012,25 +1012,91 @@ impl Clone for JSStaticFunction {
         *self
     }
 }
+
+/// Contains properties and callbacks that define a type of object.
+///
+/// All fields other than the version field are optional. Any pointer may be `NULL`.
+///
+/// The `staticValues` and `staticFunctions` arrays are the simplest and most
+/// efficient means for vending custom properties. Statically declared
+/// properties automatically service requests like `getProperty`,
+/// `setProperty`, and `getPropertyNames`. Property access callbacks
+/// are required only to implement unusual properties, like array
+/// indexes, whose names are not known at compile-time.
+///
+/// If you named your getter function `GetX` and your setter function
+/// `SetX`, you would declare a `JSStaticValue` array containing `"X"` like this:
+///
+/// ```ignore
+/// JSStaticValue StaticValueArray[] = {
+///     { "X", GetX, SetX, kJSPropertyAttributeNone },
+///     { 0, 0, 0, 0 }
+/// };
+/// ```
+///
+/// Standard JavaScript practice calls for storing function objects in
+/// prototypes, so they can be shared. The default `JSClass` created by
+/// `JSClassCreate` follows this idiom, instantiating objects with a
+/// shared, automatically generating prototype containing the class's
+/// function objects. The `kJSClassAttributeNoAutomaticPrototype`
+/// attribute specifies that a `JSClass` should not automatically
+/// generate such a prototype. The resulting `JSClass` instantiates
+/// objects with the default object prototype, and gives each instance
+/// object its own copy of the class's function objects.
+///
+/// A `NULL` callback specifies that the default object callback
+/// should substitute, except in the case of `hasProperty`, where it
+/// specifies that `getProperty` should substitute.
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct JSClassDefinition {
+    /// The version number of this structure. The current version is 0.
     pub version: ::std::os::raw::c_int,
+    /// A logically ORed set of `JSClassAttributes` to give to the class.
     pub attributes: JSClassAttributes,
+    /// A null-terminated UTF8 string containing the class's name.
     pub className: *const ::std::os::raw::c_char,
+    /// A `JSClass` to set as the class's parent class. Pass `NULL` use the default object class.
     pub parentClass: JSClassRef,
+    /// A `JSStaticValue` array containing the class's statically declared
+    /// value properties. Pass `NULL` to specify no statically declared
+    /// value properties. The array must be terminated by a `JSStaticValue`
+    /// whose name field is NULL.
     pub staticValues: *const JSStaticValue,
+    /// A `JSStaticFunction` array containing the class's statically
+    /// declared function properties. Pass `NULL` to specify no
+    /// statically declared function properties. The array must be
+    /// terminated by a `JSStaticFunction` whose name field is `NULL`.
     pub staticFunctions: *const JSStaticFunction,
+    /// The callback invoked when an object is first created. Use this callback
+    /// to initialize the object.
     pub initialize: JSObjectInitializeCallback,
+    /// The callback invoked when an object is finalized (prepared for garbage
+    /// collection). Use this callback to release resources allocated for the
+    /// object, and perform other cleanup.
     pub finalize: JSObjectFinalizeCallback,
+    /// The callback invoked when determining whether an object has a property.
+    ///
+    /// If this field is `NULL`, `getProperty` is called instead. The
+    /// `hasProperty` callback enables optimization in cases where
+    /// only a property's existence needs to be known, not its value,
+    /// and computing its value is expensive.
     pub hasProperty: JSObjectHasPropertyCallback,
+    /// The callback invoked when getting a property's value.
     pub getProperty: JSObjectGetPropertyCallback,
+    /// The callback invoked when setting a property's value.
     pub setProperty: JSObjectSetPropertyCallback,
+    /// The callback invoked when deleting a property.
     pub deleteProperty: JSObjectDeletePropertyCallback,
+    /// The callback invoked when collecting the names of an object's properties.
     pub getPropertyNames: JSObjectGetPropertyNamesCallback,
+    /// The callback invoked when an object is called as a function.
     pub callAsFunction: JSObjectCallAsFunctionCallback,
+    /// The callback invoked when an object is used as a constructor in a `new` expression.
     pub callAsConstructor: JSObjectCallAsConstructorCallback,
+    /// The callback invoked when an object is used as the target of an `instanceof` expression.
     pub hasInstance: JSObjectHasInstanceCallback,
+    /// The callback invoked when converting an object to a particular JavaScript type.
     pub convertToType: JSObjectConvertToTypeCallback,
 }
 #[test]
