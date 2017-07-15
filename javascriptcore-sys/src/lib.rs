@@ -204,17 +204,17 @@ extern "C" {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum JSType {
     /// The unique `undefined` value.
-    kJSTypeUndefined = 0,
+    Undefined = 0,
     /// The unique `null` value.
-    kJSTypeNull = 1,
+    Null = 1,
     /// A primitive boolean value, one of `true` or `false`.
-    kJSTypeBoolean = 2,
+    Boolean = 2,
     /// A primitive number value.
-    kJSTypeNumber = 3,
+    Number = 3,
     /// A primitive string value.
-    kJSTypeString = 4,
+    String = 4,
     /// An object value (meaning that this `JSValueRef` is a `JSObjectRef`).
-    kJSTypeObject = 5,
+    Object = 5,
 }
 
 /// A constant identifying the Typed Array type of a `JSObjectRef`.
@@ -222,27 +222,27 @@ pub enum JSType {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum JSTypedArrayType {
     /// `Int8Array`
-    kJSTypedArrayTypeInt8Array = 0,
+    Int8Array = 0,
     /// `Int16Array`
-    kJSTypedArrayTypeInt16Array = 1,
+    Int16Array = 1,
     /// `Int32Array`
-    kJSTypedArrayTypeInt32Array = 2,
+    Int32Array = 2,
     /// `Uint8Array`
-    kJSTypedArrayTypeUint8Array = 3,
+    Uint8Array = 3,
     /// `Uint8ClampedArray`
-    kJSTypedArrayTypeUint8ClampedArray = 4,
+    Uint8ClampedArray = 4,
     /// `Uint16Array`
-    kJSTypedArrayTypeUint16Array = 5,
+    Uint16Array = 5,
     /// `Uint32Array`
-    kJSTypedArrayTypeUint32Array = 6,
+    Uint32Array = 6,
     /// `Float32Array`
-    kJSTypedArrayTypeFloat32Array = 7,
+    Float32Array = 7,
     /// `Float64Array`
-    kJSTypedArrayTypeFloat64Array = 8,
+    Float64Array = 8,
     /// `ArrayBuffer`
-    kJSTypedArrayTypeArrayBuffer = 9,
+    ArrayBuffer = 9,
     /// Not a Typed Array
-    kJSTypedArrayTypeNone = 10,
+    None = 10,
 }
 
 extern "C" {
@@ -341,7 +341,7 @@ extern "C" {
     ///   store an exception.
     ///
     /// Returns a value of type `JSTypedArrayType` that identifies
-    /// value's Typed Array type, or `kJSTypedArrayTypeNone` if the
+    /// value's Typed Array type, or `JSTypedArrayType::None` if the
     /// value is not a Typed Array object.
     pub fn JSValueGetTypedArrayType(
         ctx: JSContextRef,

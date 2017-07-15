@@ -265,7 +265,7 @@ mod tests {
         let vu = JSValue::new_undefined(&ctx);
         assert_eq!(vu.is_undefined(), true);
         assert_eq!(vu.is_null(), false);
-        assert_eq!(vu.get_type(), JSType::kJSTypeUndefined);
+        assert_eq!(vu.get_type(), JSType::Undefined);
         assert_eq!(vu.as_boolean(), false);
         assert_eq!(vu.as_string().unwrap(), "undefined".into());
     }
@@ -276,7 +276,7 @@ mod tests {
         let vn = JSValue::new_null(&ctx);
         assert_eq!(vn.is_null(), true);
         assert_eq!(vn.is_undefined(), false);
-        assert_eq!(vn.get_type(), JSType::kJSTypeNull);
+        assert_eq!(vn.get_type(), JSType::Null);
         assert_eq!(vn.as_boolean(), false);
         assert_eq!(vn.as_string().unwrap(), "null".into());
     }
@@ -287,7 +287,7 @@ mod tests {
         let vt = JSValue::new_boolean(&ctx, true);
         assert_eq!(vt.is_boolean(), true);
         assert_eq!(vt.is_null(), false);
-        assert_eq!(vt.get_type(), JSType::kJSTypeBoolean);
+        assert_eq!(vt.get_type(), JSType::Boolean);
         assert_eq!(vt.as_boolean(), true);
         assert_eq!(vt.as_number().unwrap(), 1.0);
         assert_eq!(vt.as_string().unwrap(), "true".into());
@@ -295,7 +295,7 @@ mod tests {
         let vf = JSValue::new_boolean(&ctx, false);
         assert_eq!(vf.is_boolean(), true);
         assert_eq!(vf.is_null(), false);
-        assert_eq!(vf.get_type(), JSType::kJSTypeBoolean);
+        assert_eq!(vf.get_type(), JSType::Boolean);
         assert_eq!(vf.as_boolean(), false);
         assert_eq!(vf.as_number().unwrap(), 0.0);
         assert_eq!(vf.as_string().unwrap(), "false".into());
@@ -307,7 +307,7 @@ mod tests {
         let vn = JSValue::new_number(&ctx, 30.4);
         assert_eq!(vn.is_number(), true);
         assert_eq!(vn.is_null(), false);
-        assert_eq!(vn.get_type(), JSType::kJSTypeNumber);
+        assert_eq!(vn.get_type(), JSType::Number);
         assert_eq!(vn.as_boolean(), true);
         assert_eq!(vn.as_number().unwrap(), 30.4);
         assert_eq!(vn.as_string().unwrap(), "30.4".into());
@@ -319,7 +319,7 @@ mod tests {
         let vs = JSValue::new_string(&ctx, "abc");
         assert_eq!(vs.is_string(), true);
         assert_eq!(vs.is_null(), false);
-        assert_eq!(vs.get_type(), JSType::kJSTypeString);
+        assert_eq!(vs.get_type(), JSType::String);
         assert_eq!(vs.as_boolean(), true);
         assert!(vs.as_number().is_err());
         assert_eq!(vs.as_string().unwrap(), "abc".into());
