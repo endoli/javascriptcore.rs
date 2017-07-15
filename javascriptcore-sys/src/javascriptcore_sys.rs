@@ -2,6 +2,7 @@
 
 /// A group that associates JavaScript contexts with one another.
 /// Contexts in the same group may share and exchange JavaScript objects.
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OpaqueJSContextGroup([u8; 0]);
@@ -12,6 +13,7 @@ pub type JSContextGroupRef = *const OpaqueJSContextGroup;
 
 /// A JavaScript execution context. Holds the global object and
 /// other execution state.
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OpaqueJSContext([u8; 0]);
@@ -26,6 +28,7 @@ pub type JSGlobalContextRef = *mut OpaqueJSContext;
 
 /// A UTF16 character buffer. The fundamental string representation
 /// in JavaScript.
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OpaqueJSString([u8; 0]);
@@ -36,6 +39,7 @@ pub type JSStringRef = *mut OpaqueJSString;
 
 /// A JavaScript class.
 /// Used with `JSObjectMake` to construct objects with custom behavior.
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OpaqueJSClass([u8; 0]);
@@ -45,6 +49,7 @@ pub struct OpaqueJSClass([u8; 0]);
 pub type JSClassRef = *mut OpaqueJSClass;
 
 /// An array of JavaScript property names.
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OpaqueJSPropertyNameArray([u8; 0]);
@@ -54,6 +59,7 @@ pub type JSPropertyNameArrayRef = *mut OpaqueJSPropertyNameArray;
 
 /// An ordered set used to collect the names of
 /// a JavaScript object's properties.
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OpaqueJSPropertyNameAccumulator([u8; 0]);
@@ -75,6 +81,7 @@ pub type JSTypedArrayBytesDeallocator =
 
 /// A JavaScript value.
 /// The base type for all JavaScript values, and polymorphic functions on them.
+#[doc(hidden)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct OpaqueJSValue([u8; 0]);
