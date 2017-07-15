@@ -14,6 +14,7 @@ impl Drop for JSString {
         unsafe { sys::JSStringRelease(self.raw) }
     }
 }
+
 impl PartialEq for JSString {
     fn eq(&self, other: &JSString) -> bool {
         unsafe { sys::JSStringIsEqual(self.raw, other.raw) }
