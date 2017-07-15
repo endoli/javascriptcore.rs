@@ -77,13 +77,20 @@ impl JSValue {
     /// Creates a JavaScript value from a JSON formatted string.
     ///
     /// * `ctx`: The execution context to use.
-    /// * `string`: The `JSString` containing the JSON string to be parsed.
+    /// * `string`: A value that can be converted into a `JSString` containing
+    ///   the JSON string to be parsed.
     ///
-    /// Returns a `JSValue` containing the parsed value, or `NULL` if the input is invalid.
-    pub fn new_from_json<S: Into<JSString>>(ctx: &JSContext, string: S) -> Self {
-        JSValue {
-            raw: unsafe { sys::JSValueMakeFromJSONString(ctx.raw, string.into().raw) },
-            ctx: ctx.raw,
+    /// Returns a `Result` with the `JSValue` containing the parsed value, or an error
+    /// if the input is invalid.
+    pub fn new_from_json<S: Into<JSString>>(ctx: &JSContext, string: S) -> Result<Self, ()> {
+        let v = unsafe { sys::JSValueMakeFromJSONString(ctx.raw, string.into().raw) };
+        if v.is_null() {
+            Err(())
+        } else {
+            Ok(JSValue {
+                raw: v,
+                ctx: ctx.raw,
+            })
         }
     }
 
@@ -322,7 +329,7 @@ mod tests {
     fn json_boolean_true() {
         let ctx = JSContext::default();
 
-        let v = JSValue::new_from_json(&ctx, "true");
+        let v = JSValue::new_from_json(&ctx, "true").expect("value");
         assert_eq!(v.is_boolean(), true);
         assert_eq!(v.as_boolean(), true);
         assert_eq!(v.as_number().unwrap(), 1.0);
@@ -334,7 +341,7 @@ mod tests {
     fn json_boolean_false() {
         let ctx = JSContext::default();
 
-        let v = JSValue::new_from_json(&ctx, "false");
+        let v = JSValue::new_from_json(&ctx, "false").expect("value");
         assert_eq!(v.is_boolean(), true);
         assert_eq!(v.as_boolean(), false);
         assert_eq!(v.as_number().unwrap(), 0.0);
@@ -345,7 +352,7 @@ mod tests {
     #[test]
     fn json_number_0() {
         let ctx = JSContext::default();
-        let v = JSValue::new_from_json(&ctx, "0");
+        let v = JSValue::new_from_json(&ctx, "0").expect("value");
         assert_eq!(v.is_number(), true);
         assert_eq!(v.as_boolean(), false);
         assert_eq!(v.as_number().unwrap(), 0.0);
@@ -357,7 +364,7 @@ mod tests {
     fn json_number_3() {
         let ctx = JSContext::default();
 
-        let v = JSValue::new_from_json(&ctx, "3");
+        let v = JSValue::new_from_json(&ctx, "3").expect("value");
         assert_eq!(v.is_number(), true);
         assert_eq!(v.as_boolean(), true);
         assert_eq!(v.as_number().unwrap(), 3.0);
@@ -369,7 +376,7 @@ mod tests {
     fn json_string() {
         let ctx = JSContext::default();
 
-        let v = JSValue::new_from_json(&ctx, "\"abc\"");
+        let v = JSValue::new_from_json(&ctx, "\"abc\"").expect("value");
         assert_eq!(v.is_string(), true);
         assert_eq!(v.as_boolean(), true);
         assert!(v.as_number().is_err());
@@ -381,11 +388,19 @@ mod tests {
     fn json_string_number() {
         let ctx = JSContext::default();
 
-        let v = JSValue::new_from_json(&ctx, "\"3\"");
+        let v = JSValue::new_from_json(&ctx, "\"3\"").expect("value");
         assert_eq!(v.is_string(), true);
         assert_eq!(v.as_boolean(), true);
         assert_eq!(v.as_number().unwrap(), 3.0);
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "\"3\"".into());
+    }
+
+    #[test]
+    fn json_failure() {
+        let ctx = JSContext::default();
+
+        let v = JSValue::new_from_json(&ctx, "3 +");
+        assert!(v.is_err());
     }
 }
