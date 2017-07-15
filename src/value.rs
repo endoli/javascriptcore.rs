@@ -255,9 +255,30 @@ impl JSValue {
     }
 }
 
+impl PartialEq for JSValue {
+    fn eq(&self, other: &JSValue) -> bool {
+        unsafe { sys::JSValueIsStrictEqual(self.ctx, self.raw, other.raw) }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{JSContext, JSType, JSValue};
+
+    #[test]
+    fn strict_equality() {
+        let ctx = JSContext::default();
+
+        let m = JSValue::new_number(&ctx, 30.4);
+        let n = JSValue::new_number(&ctx, 30.4);
+        assert_eq!(m, n);
+
+        let t = JSValue::new_boolean(&ctx, true);
+        let f = JSValue::new_boolean(&ctx, false);
+        let g = JSValue::new_boolean(&ctx, false);
+        assert_eq!(f, g);
+        assert_ne!(t, f);
+    }
 
     #[test]
     fn undefined() {
