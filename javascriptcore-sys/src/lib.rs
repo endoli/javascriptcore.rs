@@ -906,64 +906,13 @@ pub struct JSStaticValue {
     /// A logically ORed set of `JSPropertyAttributes` to give to the property.
     pub attributes: JSPropertyAttributes,
 }
-#[test]
-fn bindgen_test_layout_JSStaticValue() {
-    assert_eq!(
-        ::std::mem::size_of::<JSStaticValue>(),
-        32usize,
-        concat!("Size of: ", stringify!(JSStaticValue))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<JSStaticValue>(),
-        8usize,
-        concat!("Alignment of ", stringify!(JSStaticValue))
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSStaticValue)).name as *const _ as usize },
-        0usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSStaticValue),
-            "::",
-            stringify!(name)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSStaticValue)).getProperty as *const _ as usize },
-        8usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSStaticValue),
-            "::",
-            stringify!(getProperty)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSStaticValue)).setProperty as *const _ as usize },
-        16usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSStaticValue),
-            "::",
-            stringify!(setProperty)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSStaticValue)).attributes as *const _ as usize },
-        24usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSStaticValue),
-            "::",
-            stringify!(attributes)
-        )
-    );
-}
+
 impl Clone for JSStaticValue {
     fn clone(&self) -> Self {
         *self
     }
 }
+
 /// A statically declared function property.
 #[repr(C)]
 #[derive(Debug, Copy)]
@@ -976,49 +925,7 @@ pub struct JSStaticFunction {
     /// A logically ORed set of `JSPropertyAttributes` to give to the property.
     pub attributes: JSPropertyAttributes,
 }
-#[test]
-fn bindgen_test_layout_JSStaticFunction() {
-    assert_eq!(
-        ::std::mem::size_of::<JSStaticFunction>(),
-        24usize,
-        concat!("Size of: ", stringify!(JSStaticFunction))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<JSStaticFunction>(),
-        8usize,
-        concat!("Alignment of ", stringify!(JSStaticFunction))
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSStaticFunction)).name as *const _ as usize },
-        0usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSStaticFunction),
-            "::",
-            stringify!(name)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSStaticFunction)).callAsFunction as *const _ as usize },
-        8usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSStaticFunction),
-            "::",
-            stringify!(callAsFunction)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSStaticFunction)).attributes as *const _ as usize },
-        16usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSStaticFunction),
-            "::",
-            stringify!(attributes)
-        )
-    );
-}
+
 impl Clone for JSStaticFunction {
     fn clone(&self) -> Self {
         *self
@@ -1111,194 +1018,13 @@ pub struct JSClassDefinition {
     /// The callback invoked when converting an object to a particular JavaScript type.
     pub convertToType: JSObjectConvertToTypeCallback,
 }
-#[test]
-fn bindgen_test_layout_JSClassDefinition() {
-    assert_eq!(
-        ::std::mem::size_of::<JSClassDefinition>(),
-        128usize,
-        concat!("Size of: ", stringify!(JSClassDefinition))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<JSClassDefinition>(),
-        8usize,
-        concat!("Alignment of ", stringify!(JSClassDefinition))
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).version as *const _ as usize },
-        0usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(version)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).attributes as *const _ as usize },
-        4usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(attributes)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).className as *const _ as usize },
-        8usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(className)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).parentClass as *const _ as usize },
-        16usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(parentClass)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).staticValues as *const _ as usize },
-        24usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(staticValues)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).staticFunctions as *const _ as usize },
-        32usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(staticFunctions)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).initialize as *const _ as usize },
-        40usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(initialize)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).finalize as *const _ as usize },
-        48usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(finalize)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).hasProperty as *const _ as usize },
-        56usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(hasProperty)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).getProperty as *const _ as usize },
-        64usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(getProperty)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).setProperty as *const _ as usize },
-        72usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(setProperty)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).deleteProperty as *const _ as usize },
-        80usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(deleteProperty)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).getPropertyNames as *const _ as usize },
-        88usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(getPropertyNames)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).callAsFunction as *const _ as usize },
-        96usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(callAsFunction)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).callAsConstructor as *const _ as usize },
-        104usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(callAsConstructor)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).hasInstance as *const _ as usize },
-        112usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(hasInstance)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(0 as *const JSClassDefinition)).convertToType as *const _ as usize },
-        120usize,
-        concat!(
-            "Alignment of field: ",
-            stringify!(JSClassDefinition),
-            "::",
-            stringify!(convertToType)
-        )
-    );
-}
+
 impl Clone for JSClassDefinition {
     fn clone(&self) -> Self {
         *self
     }
 }
+
 impl Default for JSClassDefinition {
     fn default() -> Self {
         JSClassDefinition {
@@ -1322,6 +1048,7 @@ impl Default for JSClassDefinition {
         }
     }
 }
+
 extern "C" {
     /// Creates a JavaScript class suitable for use with `JSObjectMake`.
     ///
@@ -1825,8 +1552,7 @@ extern "C" {
     ///
     /// * `group`: The `JSContextGroup` to release.
     pub fn JSContextGroupRelease(group: JSContextGroupRef);
-}
-extern "C" {
+
     /// Creates a global JavaScript execution context.
     ///
     /// `JSGlobalContextCreate` allocates a global object and populates
