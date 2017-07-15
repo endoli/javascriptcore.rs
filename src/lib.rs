@@ -85,4 +85,5 @@ pub struct JSString {
 pub struct JSValue {
     #[allow(dead_code)]
     raw: sys::JSValueRef,
+    ctx: sys::JSContextRef,
 }

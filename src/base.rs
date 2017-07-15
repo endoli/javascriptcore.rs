@@ -44,11 +44,19 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
             &mut e,
         );
         if e.is_null() {
-            Err(JSException { value: JSValue { raw: e } })
+            Err(JSException {
+                value: JSValue {
+                    raw: e,
+                    ctx: ctx.raw,
+                },
+            })
         } else if r.is_null() {
             Ok(None)
         } else {
-            Ok(Some(JSValue { raw: r }))
+            Ok(Some(JSValue {
+                raw: r,
+                ctx: ctx.raw,
+            }))
         }
     }
 }
@@ -88,7 +96,12 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
         if r {
             Ok(())
         } else {
-            Err(JSException { value: JSValue { raw: e } })
+            Err(JSException {
+                value: JSValue {
+                    raw: e,
+                    ctx: ctx.raw,
+                },
+            })
         }
     }
 }
