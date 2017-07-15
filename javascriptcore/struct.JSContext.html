@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc struct">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='index.html'>javascriptcore</a></p><script>window.sidebarCurrent = {name: 'JSContext', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct JSContext</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>javascriptcore</a></p><script>window.sidebarCurrent = {name: 'JSContext', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -43,8 +43,8 @@
         </form>
     </nav>
 
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>javascriptcore</a>::<wbr><a class='struct' href=''>JSContext</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>javascriptcore</a>::<wbr><a class="struct" href=''>JSContext</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
@@ -52,8 +52,8 @@
 <pre class='rust struct'>pub struct JSContext { /* fields omitted */ }</pre><div class='docblock'><p>A JavaScript execution context.</p>
 
 <p>Holds the global object and other execution state.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../javascriptcore/struct.JSContext.html' title='javascriptcore::JSContext'>JSContext</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/context.rs.html#11-40' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; Self</code></span></h4>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/context.rs.html#11-40' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a global JavaScript execution context and populates it
 with all the built-in JavaScript objects, such as <code>Object</code>,
 <code>Function</code>, <code>String</code>, and <code>Array</code>.</p>
@@ -63,7 +63,7 @@ unique context group. Therefore, scripts may execute in it
 concurrently with scripts executing in other contexts.
 However, you may not use values created in the context in other
 contexts.</p>
-</div><h4 id='method.new_with_class' class='method'><span id='new_with_class.v' class='invisible'><code>fn <a href='#method.new_with_class' class='fnname'>new_with_class</a>(global_object_class: &amp;<a class='struct' href='../javascriptcore/struct.JSClass.html' title='javascriptcore::JSClass'>JSClass</a>) -&gt; Self</code></span></h4>
+</div><h4 id='method.new_with_class' class="method"><span id='new_with_class.v' class='invisible'><code>fn <a href='#method.new_with_class' class='fnname'>new_with_class</a>(global_object_class: &amp;<a class="struct" href="../javascriptcore/struct.JSClass.html" title="struct javascriptcore::JSClass">JSClass</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a global JavaScript execution context and populates it
 with all the built-in JavaScript objects, such as <code>Object</code>,
 <code>Function</code>, <code>String</code>, and <code>Array</code>.</p>
@@ -78,8 +78,8 @@ contexts.</p>
 <li><code>global_object_class</code>: The class to use when creating the global
 object.</li>
 </ul>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a> for <a class='struct' href='../javascriptcore/struct.JSContext.html' title='javascriptcore::JSContext'>JSContext</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/context.rs.html#42-55' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.default' class='method'><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; Self</code></span></h4>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html" title="trait core::default::Default">Default</a> for <a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/context.rs.html#42-55' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.default' class="method"><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a global JavaScript execution context and populates it
 with all the built-in JavaScript objects, such as <code>Object</code>,
 <code>Function</code>, <code>String</code>, and <code>Array</code>.</p>
@@ -89,8 +89,8 @@ unique context group. Therefore, scripts may execute in it
 concurrently with scripts executing in other contexts.
 However, you may not use values created in the context in other
 contexts.</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html' title='core::ops::Drop'>Drop</a> for <a class='struct' href='../javascriptcore/struct.JSContext.html' title='javascriptcore::JSContext'>JSContext</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/context.rs.html#57-61' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.drop' class='method'><span id='drop.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop' class='fnname'>drop</a>(&amp;mut self)</code></span></h4>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html" title="trait core::ops::Drop">Drop</a> for <a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/context.rs.html#57-61' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.drop' class="method"><span id='drop.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop' class='fnname'>drop</a>(&amp;mut self)</code></span></h4>
 <div class='docblock'><p>A method called when the value goes out of scope. <a href="https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop">Read more</a></p>
 </div></div></section>
     <section id='search' class="content hidden"></section>

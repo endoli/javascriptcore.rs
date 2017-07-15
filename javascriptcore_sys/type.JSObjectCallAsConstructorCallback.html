@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc type">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -43,13 +43,38 @@
         </form>
     </nav>
 
-    <section id='main' class="content type">
-<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>javascriptcore_sys</a>::<wbr><a class='type' href=''>JSObjectCallAsConstructorCallback</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>javascriptcore_sys</a>::<wbr><a class="type" href=''>JSObjectCallAsConstructorCallback</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#565-571' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSObjectCallAsConstructorCallback = <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;unsafe extern fn(_: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>, _: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>, _: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, _: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*const </a><a class='type' href='../javascriptcore_sys/type.JSValueRef.html' title='javascriptcore_sys::JSValueRef'>JSValueRef</a>, _: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut </a><a class='type' href='../javascriptcore_sys/type.JSValueRef.html' title='javascriptcore_sys::JSValueRef'>JSValueRef</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut </a><a class='struct' href='../javascriptcore_sys/struct.OpaqueJSValue.html' title='javascriptcore_sys::OpaqueJSValue'>OpaqueJSValue</a>&gt;;</pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#769-777' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type JSObjectCallAsConstructorCallback = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern fn(_: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, _: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>, _: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>, _: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="struct" href="../javascriptcore_sys/struct.OpaqueJSValue.html" title="struct javascriptcore_sys::OpaqueJSValue">OpaqueJSValue</a>&gt;;</pre><div class='docblock'><p>The callback invoked when an object is used as a constructor in a <code>new</code> expression.</p>
+
+<ul>
+<li><code>ctx</code>: The execution context to use.</li>
+<li><code>constructor</code>: A <code>JSObject</code> that is the constructor being called.</li>
+<li><code>argumentCount</code>: An integer count of the number of arguments in <code>arguments</code>.</li>
+<li><code>arguments</code>: A <code>JSValue</code> array of the arguments passed to the function.</li>
+<li><code>exception</code>: A pointer to a <code>JSValueRef</code> in which to return an exception, if any.</li>
+</ul>
+
+<p>Returns a <code>JSObject</code> that is the constructor&#39;s return value.</p>
+
+<p>If you named your function <code>CallAsConstructor</code>, you would declare it like this:</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">JSObjectRef</span>
+<span class="ident">CallAsConstructor</span>(<span class="ident">JSContextRef</span> <span class="ident">ctx</span>, <span class="ident">JSObjectRef</span> <span class="ident">constructor</span>,
+                  <span class="ident">size_t</span> <span class="ident">argumentCount</span>, <span class="kw">const</span> <span class="ident">JSValueRef</span> <span class="ident">arguments</span>[],
+                  <span class="ident">JSValueRef</span><span class="op">*</span> <span class="ident">exception</span>);</pre>
+
+<p>If your callback were invoked by the JavaScript expression
+<code>new myConstructor()</code>, constructor would be set to <code>myConstructor</code>.</p>
+
+<p>If this callback is <code>NULL</code>, using your object as a constructor in a
+<code>new</code> expression will throw an exception.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

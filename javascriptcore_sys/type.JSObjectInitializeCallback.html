@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc type">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -43,18 +43,24 @@
         </form>
     </nav>
 
-    <section id='main' class="content type">
-<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>javascriptcore_sys</a>::<wbr><a class='type' href=''>JSObjectInitializeCallback</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>javascriptcore_sys</a>::<wbr><a class="type" href=''>JSObjectInitializeCallback</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#511-512' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSObjectInitializeCallback = <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;unsafe extern fn(_: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>, _: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>)&gt;;</pre><div class='docblock'><p>The callback invoked when an object is first created.</p>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#527-528' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type JSObjectInitializeCallback = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern fn(_: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>)&gt;;</pre><div class='docblock'><p>The callback invoked when an object is first created.</p>
 
 <ul>
 <li><code>ctx</code>: The execution context to use.</li>
 <li><code>object</code>: The <code>JSObject</code> being created.</li>
 </ul>
+
+<p>If you named your function <code>Initialize</code>, you would declare it like this:</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">void</span>
+<span class="ident">Initialize</span>(<span class="ident">JSContextRef</span> <span class="ident">ctx</span>, <span class="ident">JSObjectRef</span> <span class="ident">object</span>);</pre>
 
 <p>Unlike the other object callbacks, the initialize callback is
 called on the least derived class (the parent class) first,

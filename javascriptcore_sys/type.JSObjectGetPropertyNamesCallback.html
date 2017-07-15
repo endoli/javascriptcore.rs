@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc type">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -43,13 +43,39 @@
         </form>
     </nav>
 
-    <section id='main' class="content type">
-<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>javascriptcore_sys</a>::<wbr><a class='type' href=''>JSObjectGetPropertyNamesCallback</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>javascriptcore_sys</a>::<wbr><a class="type" href=''>JSObjectGetPropertyNamesCallback</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#553-556' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSObjectGetPropertyNamesCallback = <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;unsafe extern fn(_: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>, _: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>, _: <a class='type' href='../javascriptcore_sys/type.JSPropertyNameAccumulatorRef.html' title='javascriptcore_sys::JSPropertyNameAccumulatorRef'>JSPropertyNameAccumulatorRef</a>)&gt;;</pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#700-705' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type JSObjectGetPropertyNamesCallback = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern fn(_: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSPropertyNameAccumulatorRef.html" title="type javascriptcore_sys::JSPropertyNameAccumulatorRef">JSPropertyNameAccumulatorRef</a>)&gt;;</pre><div class='docblock'><p>The callback invoked when collecting the names of an object&#39;s properties.</p>
+
+<ul>
+<li><code>ctx</code>: The execution context to use.</li>
+<li><code>object</code>: The <code>JSObject</code> whose property names are being collected.</li>
+<li><code>propertyNames</code>: A JavaScript property name accumulator in which to
+accumulate the names of object&#39;s properties.</li>
+</ul>
+
+<p>If you named your function <code>GetPropertyNames</code>, you would declare it like this:</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">void</span>
+<span class="ident">GetPropertyNames</span>(<span class="ident">JSContextRef</span> <span class="ident">ctx</span>, <span class="ident">JSObjectRef</span> <span class="ident">object</span>,
+                 <span class="ident">JSPropertyNameAccumulatorRef</span> <span class="ident">propertyNames</span>);</pre>
+
+<p>Property name accumulators are used by <code>JSObjectCopyPropertyNames</code>
+and JavaScript <code>for...in</code> loops.</p>
+
+<p>Use <code>JSPropertyNameAccumulatorAddName</code> to add property names to
+accumulator. A class&#39;s <code>getPropertyNames</code> callback only needs to
+provide the names of properties that the class vends through a
+custom <code>getProperty</code> or <code>setProperty</code> callback. Other properties,
+including statically declared properties, properties vended by
+other classes, and properties belonging to object&#39;s prototype,
+are added independently.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

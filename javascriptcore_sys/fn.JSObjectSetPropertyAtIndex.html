@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc fn">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -43,13 +43,29 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>javascriptcore_sys</a>::<wbr><a class='fn' href=''>JSObjectSetPropertyAtIndex</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>javascriptcore_sys</a>::<wbr><a class="fn" href=''>JSObjectSetPropertyAtIndex</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#946-950' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSObjectSetPropertyAtIndex(ctx: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; propertyIndex: <a class='type' href='https://doc.rust-lang.org/nightly/std/os/raw/type.c_uint.html' title='std::os::raw::c_uint'>c_uint</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value: <a class='type' href='../javascriptcore_sys/type.JSValueRef.html' title='javascriptcore_sys::JSValueRef'>JSValueRef</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exception: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut </a><a class='type' href='../javascriptcore_sys/type.JSValueRef.html' title='javascriptcore_sys::JSValueRef'>JSValueRef</a>)</pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#1524-1530' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub unsafe extern fn JSObjectSetPropertyAtIndex(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;object: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;propertyIndex: <a class="type" href="https://doc.rust-lang.org/nightly/std/os/raw/type.c_uint.html" title="type std::os::raw::c_uint">c_uint</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;value: <a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;exception: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a><br>)</pre><div class='docblock'><p>Sets a property on an object by numeric index.</p>
+
+<ul>
+<li><code>ctx</code>: The execution context to use.</li>
+<li><code>object</code>: The <code>JSObject</code> whose property you want to set.</li>
+<li><code>propertyIndex</code>: The property&#39;s name as a number.</li>
+<li><code>value</code>: A <code>JSValue</code> to use as the property&#39;s value.</li>
+<li><code>exception</code>: A pointer to a <code>JSValueRef</code> in which to store
+an exception, if any. Pass <code>NULL</code> if you do not care to
+store an exception.</li>
+</ul>
+
+<p>Calling <code>JSObjectSetPropertyAtIndex</code> is equivalent to calling
+<code>JSObjectSetProperty</code> with a string containing <code>propertyIndex</code>,
+but <code>JSObjectSetPropertyAtIndex</code> provides optimized access to
+numeric properties.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

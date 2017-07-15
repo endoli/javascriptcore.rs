@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc source">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -43,7 +43,7 @@
         </form>
     </nav>
 
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+    <section id='main' class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -424,386 +424,406 @@
 <span id="379">379</span>
 <span id="380">380</span>
 <span id="381">381</span>
-</pre><pre class='rust '>
-<span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
-<span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
-<span class='comment'>// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your</span>
-<span class='comment'>// option. This file may not be copied, modified, or distributed</span>
-<span class='comment'>// except according to those terms.</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+</pre><pre class="rust ">
+<span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
+<span class="comment">// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
+<span class="comment">// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your</span>
+<span class="comment">// option. This file may not be copied, modified, or distributed</span>
+<span class="comment">// except according to those terms.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>ptr</span>;
-<span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>JSClass</span>, <span class='ident'>JSContext</span>, <span class='ident'>JSException</span>, <span class='ident'>JSObject</span>, <span class='ident'>JSString</span>, <span class='ident'>JSType</span>, <span class='ident'>JSValue</span>};
-<span class='kw'>use</span> <span class='ident'>sys</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ptr</span>;
+<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">JSClass</span>, <span class="ident">JSContext</span>, <span class="ident">JSException</span>, <span class="ident">JSObject</span>, <span class="ident">JSString</span>, <span class="ident">JSType</span>, <span class="ident">JSValue</span>};
+<span class="kw">use</span> <span class="ident">sys</span>;
 
-<span class='kw'>impl</span> <span class='ident'>JSValue</span> {
-    <span class='doccomment'>/// Creates a JavaScript value of the `undefined` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns the unique `undefined` value.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_undefined</span>(<span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueMakeUndefined</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>) } }
-    }
-
-    <span class='doccomment'>/// Creates a JavaScript value of the `null` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns the unique `null` value.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_null</span>(<span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueMakeNull</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>) } }
-    }
-
-    <span class='doccomment'>/// Creates a JavaScript value of the `boolean` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>/// * `boolean`: The `bool` to assign to the newly created `JSValue`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns a `JSValue` of the `boolean` type, representing the value of `boolean`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_boolean</span>(<span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>, <span class='ident'>boolean</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueMakeBoolean</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='ident'>boolean</span>) } }
-    }
-
-    <span class='doccomment'>/// Creates a JavaScript value of the `number` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>/// * `number`: The `f64` to assign to the newly created `JSValue`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns a `JSValue` of the `number` type, representing the value of `number`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_number</span>(<span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>, <span class='ident'>number</span>: <span class='ident'>f64</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueMakeNumber</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='ident'>number</span>) } }
-    }
-
-    <span class='doccomment'>/// Creates a JavaScript value of the string type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>/// * `string`: The `JSString` to assign to the newly created</span>
-    <span class='doccomment'>///   JSValue`. The newly created `JSValue` retains string, and</span>
-    <span class='doccomment'>///   releases it upon garbage collection.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns a `JSValue` of the `string` type, representing the value of `string`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_string</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>Into</span><span class='op'>&lt;</span><span class='ident'>JSString</span><span class='op'>&gt;&gt;</span>(<span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>, <span class='ident'>string</span>: <span class='ident'>S</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueMakeString</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='ident'>string</span>.<span class='ident'>into</span>().<span class='ident'>raw</span>) } }
-    }
-
-    <span class='doccomment'>/// Creates a JavaScript value from a JSON formatted string.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>/// * `string`: The `JSString` containing the JSON string to be parsed.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns a `JSValue` containing the parsed value, or `NULL` if the input is invalid.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_from_json</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>Into</span><span class='op'>&lt;</span><span class='ident'>JSString</span><span class='op'>&gt;&gt;</span>(<span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>, <span class='ident'>string</span>: <span class='ident'>S</span>) <span class='op'>-&gt;</span> <span class='self'>Self</span> {
-        <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueMakeFromJSONString</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='ident'>string</span>.<span class='ident'>into</span>().<span class='ident'>raw</span>) } }
-    }
-
-    <span class='doccomment'>/// Creates a JavaScript string containing the JSON serialized representation of a JS value.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>/// * `indent`: The number of spaces to indent when nesting.</span>
-    <span class='doccomment'>///   If `0`, the resulting JSON will not contains newlines.</span>
-    <span class='doccomment'>///   The size of the indent is clamped to `10` spaces.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns either a `JSString` with the result of serialization, or an</span>
-    <span class='doccomment'>/// exception if one was thrown.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>to_json_string</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>, <span class='ident'>indent</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>JSString</span>, <span class='ident'>JSException</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>e</span>: <span class='ident'>sys</span>::<span class='ident'>JSValueRef</span> <span class='op'>=</span> <span class='ident'>ptr</span>::<span class='ident'>null_mut</span>();
-        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueCreateJSONString</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>, <span class='ident'>indent</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>e</span>) };
-        <span class='kw'>if</span> <span class='ident'>v</span>.<span class='ident'>is_null</span>() {
-            <span class='prelude-val'>Err</span>(<span class='ident'>JSException</span> { <span class='ident'>value</span>: <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='ident'>e</span> } })
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>JSString</span> { <span class='ident'>raw</span>: <span class='ident'>v</span> })
+<span class="kw">impl</span> <span class="ident">JSValue</span> {
+    <span class="doccomment">/// Creates a JavaScript value of the `undefined` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// * `ctx`: The execution context to use.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns the unique `undefined` value.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_undefined</span>(<span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="ident">JSContext</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">JSValue</span> {
+            <span class="ident">raw</span>: <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueMakeUndefined</span>(<span class="ident">ctx</span>.<span class="ident">raw</span>) },
+            <span class="ident">ctx</span>: <span class="ident">ctx</span>.<span class="ident">raw</span>,
         }
     }
 
-    <span class='doccomment'>/// Returns a JavaScript value&#39;s type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns a value of type `JSType` that identifies `value`&#39;s type.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>JSType</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueGetType</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value&#39;s type is the `undefined` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value`&#39;s type is the `undefined` type, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_undefined</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsUndefined</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value&#39;s type is the `null` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value`&#39;s type is the `null` type, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_null</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsNull</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value&#39;s type is the `boolean` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value`&#39;s type is the `boolean` type, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_boolean</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsBoolean</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value&#39;s type is the `number` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value`&#39;s type is the `number` type, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_number</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsNumber</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value&#39;s type is the `string` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value`&#39;s type is the `string` type, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_string</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsString</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value&#39;s type is the `object` type.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value`&#39;s type is the `object` type, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_object</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsObject</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value is an `object` with a given class in its class chain.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>/// * `js_class`: The `JSClass` to test against.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value` is an `object` and has `jsClass` in its</span>
-    <span class='doccomment'>/// class chain, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_object_of_class</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>, <span class='ident'>js_class</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSClass</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsObjectOfClass</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>, <span class='ident'>js_class</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value is an `array`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value` is an `array`, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_array</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsArray</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Tests whether a JavaScript value is a `date`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns `true` if `value` is a `date`, otherwise `false`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>is_date</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueIsDate</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Converts a JavaScript value to boolean and returns the resulting boolean.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns the boolean result of conversion.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueToBoolean</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>) }
-    }
-
-    <span class='doccomment'>/// Converts a JavaScript value to number and returns the resulting number.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns either the numeric result of conversion, or an exception</span>
-    <span class='doccomment'>/// if one was thrown.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>f64</span>, <span class='ident'>JSException</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>e</span>: <span class='ident'>sys</span>::<span class='ident'>JSValueRef</span> <span class='op'>=</span> <span class='ident'>ptr</span>::<span class='ident'>null_mut</span>();
-        <span class='kw'>let</span> <span class='ident'>f</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueToNumber</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>e</span>) };
-        <span class='kw'>if</span> <span class='ident'>f</span>.<span class='ident'>is_nan</span>() {
-            <span class='prelude-val'>Err</span>(<span class='ident'>JSException</span> { <span class='ident'>value</span>: <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='ident'>e</span> } })
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>f</span>)
+    <span class="doccomment">/// Creates a JavaScript value of the `null` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// * `ctx`: The execution context to use.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns the unique `null` value.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_null</span>(<span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="ident">JSContext</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">JSValue</span> {
+            <span class="ident">raw</span>: <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueMakeNull</span>(<span class="ident">ctx</span>.<span class="ident">raw</span>) },
+            <span class="ident">ctx</span>: <span class="ident">ctx</span>.<span class="ident">raw</span>,
         }
     }
 
-    <span class='doccomment'>/// Converts a JavaScript value to string and copies the result into a JavaScript string.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns either `JSString` with the result of conversion, or an</span>
-    <span class='doccomment'>/// exception if one was thrown.  Ownership follows the Create Rule.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>as_string</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>JSString</span>, <span class='ident'>JSException</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>e</span>: <span class='ident'>sys</span>::<span class='ident'>JSValueRef</span> <span class='op'>=</span> <span class='ident'>ptr</span>::<span class='ident'>null_mut</span>();
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueToStringCopy</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>e</span>) };
-        <span class='kw'>if</span> <span class='ident'>s</span>.<span class='ident'>is_null</span>() {
-            <span class='prelude-val'>Err</span>(<span class='ident'>JSException</span> { <span class='ident'>value</span>: <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='ident'>e</span> } })
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>JSString</span> { <span class='ident'>raw</span>: <span class='ident'>s</span> })
+    <span class="doccomment">/// Creates a JavaScript value of the `boolean` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// * `ctx`: The execution context to use.</span>
+    <span class="doccomment">/// * `boolean`: The `bool` to assign to the newly created `JSValue`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns a `JSValue` of the `boolean` type, representing the value of `boolean`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_boolean</span>(<span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="ident">JSContext</span>, <span class="ident">boolean</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">JSValue</span> {
+            <span class="ident">raw</span>: <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueMakeBoolean</span>(<span class="ident">ctx</span>.<span class="ident">raw</span>, <span class="ident">boolean</span>) },
+            <span class="ident">ctx</span>: <span class="ident">ctx</span>.<span class="ident">raw</span>,
         }
     }
 
-    <span class='doccomment'>/// Converts a JavaScript value to object and returns the resulting object.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// * `ctx`: The execution context to use.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Returns either the `JSObject` result of conversion, or an exception</span>
-    <span class='doccomment'>/// if one was thrown.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>as_object</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>ctx</span>: <span class='kw-2'>&amp;</span><span class='ident'>JSContext</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>JSObject</span>, <span class='ident'>JSException</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>e</span>: <span class='ident'>sys</span>::<span class='ident'>JSValueRef</span> <span class='op'>=</span> <span class='ident'>ptr</span>::<span class='ident'>null_mut</span>();
-        <span class='kw'>let</span> <span class='ident'>o</span> <span class='op'>=</span> <span class='kw'>unsafe</span> { <span class='ident'>sys</span>::<span class='ident'>JSValueToObject</span>(<span class='ident'>ctx</span>.<span class='ident'>raw</span>, <span class='self'>self</span>.<span class='ident'>raw</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>e</span>) };
-        <span class='kw'>if</span> <span class='ident'>o</span>.<span class='ident'>is_null</span>() {
-            <span class='prelude-val'>Err</span>(<span class='ident'>JSException</span> { <span class='ident'>value</span>: <span class='ident'>JSValue</span> { <span class='ident'>raw</span>: <span class='ident'>e</span> } })
-        } <span class='kw'>else</span> {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>JSObject</span> { <span class='ident'>raw</span>: <span class='ident'>o</span> })
+    <span class="doccomment">/// Creates a JavaScript value of the `number` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// * `ctx`: The execution context to use.</span>
+    <span class="doccomment">/// * `number`: The `f64` to assign to the newly created `JSValue`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns a `JSValue` of the `number` type, representing the value of `number`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_number</span>(<span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="ident">JSContext</span>, <span class="ident">number</span>: <span class="ident">f64</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">JSValue</span> {
+            <span class="ident">raw</span>: <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueMakeNumber</span>(<span class="ident">ctx</span>.<span class="ident">raw</span>, <span class="ident">number</span>) },
+            <span class="ident">ctx</span>: <span class="ident">ctx</span>.<span class="ident">raw</span>,
+        }
+    }
+
+    <span class="doccomment">/// Creates a JavaScript value of the string type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// * `ctx`: The execution context to use.</span>
+    <span class="doccomment">/// * `string`: The `JSString` to assign to the newly created</span>
+    <span class="doccomment">///   JSValue`. The newly created `JSValue` retains string, and</span>
+    <span class="doccomment">///   releases it upon garbage collection.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns a `JSValue` of the `string` type, representing the value of `string`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_string</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">JSString</span><span class="op">&gt;&gt;</span>(<span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="ident">JSContext</span>, <span class="ident">string</span>: <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">JSValue</span> {
+            <span class="ident">raw</span>: <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueMakeString</span>(<span class="ident">ctx</span>.<span class="ident">raw</span>, <span class="ident">string</span>.<span class="ident">into</span>().<span class="ident">raw</span>) },
+            <span class="ident">ctx</span>: <span class="ident">ctx</span>.<span class="ident">raw</span>,
+        }
+    }
+
+    <span class="doccomment">/// Creates a JavaScript value from a JSON formatted string.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// * `ctx`: The execution context to use.</span>
+    <span class="doccomment">/// * `string`: The `JSString` containing the JSON string to be parsed.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns a `JSValue` containing the parsed value, or `NULL` if the input is invalid.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_from_json</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">JSString</span><span class="op">&gt;&gt;</span>(<span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="ident">JSContext</span>, <span class="ident">string</span>: <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">JSValue</span> {
+            <span class="ident">raw</span>: <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueMakeFromJSONString</span>(<span class="ident">ctx</span>.<span class="ident">raw</span>, <span class="ident">string</span>.<span class="ident">into</span>().<span class="ident">raw</span>) },
+            <span class="ident">ctx</span>: <span class="ident">ctx</span>.<span class="ident">raw</span>,
+        }
+    }
+
+    <span class="doccomment">/// Creates a JavaScript string containing the JSON serialized representation of a JS value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// * `indent`: The number of spaces to indent when nesting.</span>
+    <span class="doccomment">///   If `0`, the resulting JSON will not contains newlines.</span>
+    <span class="doccomment">///   The size of the indent is clamped to `10` spaces.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns either a `JSString` with the result of serialization, or an</span>
+    <span class="doccomment">/// exception if one was thrown.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_json_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">indent</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">JSString</span>, <span class="ident">JSException</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span>: <span class="ident">sys</span>::<span class="ident">JSValueRef</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null_mut</span>();
+        <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueCreateJSONString</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>, <span class="ident">indent</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">e</span>) };
+        <span class="kw">if</span> <span class="ident">v</span>.<span class="ident">is_null</span>() {
+            <span class="prelude-val">Err</span>(<span class="ident">JSException</span> {
+                <span class="ident">value</span>: <span class="ident">JSValue</span> {
+                    <span class="ident">raw</span>: <span class="ident">e</span>,
+                    <span class="ident">ctx</span>: <span class="self">self</span>.<span class="ident">ctx</span>,
+                },
+            })
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">JSString</span> { <span class="ident">raw</span>: <span class="ident">v</span> })
+        }
+    }
+
+    <span class="doccomment">/// Returns a JavaScript value&#39;s type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns a value of type `JSType` that identifies `value`&#39;s type.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_type</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">JSType</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueGetType</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value&#39;s type is the `undefined` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value`&#39;s type is the `undefined` type, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_undefined</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsUndefined</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value&#39;s type is the `null` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value`&#39;s type is the `null` type, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_null</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsNull</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value&#39;s type is the `boolean` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value`&#39;s type is the `boolean` type, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_boolean</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsBoolean</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value&#39;s type is the `number` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value`&#39;s type is the `number` type, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsNumber</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value&#39;s type is the `string` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value`&#39;s type is the `string` type, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsString</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value&#39;s type is the `object` type.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value`&#39;s type is the `object` type, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsObject</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value is an `object` with a given class in its class chain.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// * `js_class`: The `JSClass` to test against.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value` is an `object` and has `jsClass` in its</span>
+    <span class="doccomment">/// class chain, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_object_of_class</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">js_class</span>: <span class="kw-2">&amp;</span><span class="ident">JSClass</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsObjectOfClass</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>, <span class="ident">js_class</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value is an `array`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value` is an `array`, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_array</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsArray</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Tests whether a JavaScript value is a `date`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns `true` if `value` is a `date`, otherwise `false`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_date</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueIsDate</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Converts a JavaScript value to boolean and returns the resulting boolean.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns the boolean result of conversion.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_boolean</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueToBoolean</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>) }
+    }
+
+    <span class="doccomment">/// Converts a JavaScript value to number and returns the resulting number.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns either the numeric result of conversion, or an exception</span>
+    <span class="doccomment">/// if one was thrown.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_number</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">f64</span>, <span class="ident">JSException</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span>: <span class="ident">sys</span>::<span class="ident">JSValueRef</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null_mut</span>();
+        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueToNumber</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">e</span>) };
+        <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">is_nan</span>() {
+            <span class="prelude-val">Err</span>(<span class="ident">JSException</span> {
+                <span class="ident">value</span>: <span class="ident">JSValue</span> {
+                    <span class="ident">raw</span>: <span class="ident">e</span>,
+                    <span class="ident">ctx</span>: <span class="self">self</span>.<span class="ident">ctx</span>,
+                },
+            })
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">f</span>)
+        }
+    }
+
+    <span class="doccomment">/// Converts a JavaScript value to string and copies the result into a JavaScript string.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns either `JSString` with the result of conversion, or an</span>
+    <span class="doccomment">/// exception if one was thrown.  Ownership follows the Create Rule.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">JSString</span>, <span class="ident">JSException</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span>: <span class="ident">sys</span>::<span class="ident">JSValueRef</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null_mut</span>();
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueToStringCopy</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">e</span>) };
+        <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">is_null</span>() {
+            <span class="prelude-val">Err</span>(<span class="ident">JSException</span> {
+                <span class="ident">value</span>: <span class="ident">JSValue</span> {
+                    <span class="ident">raw</span>: <span class="ident">e</span>,
+                    <span class="ident">ctx</span>: <span class="self">self</span>.<span class="ident">ctx</span>,
+                },
+            })
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">JSString</span> { <span class="ident">raw</span>: <span class="ident">s</span> })
+        }
+    }
+
+    <span class="doccomment">/// Converts a JavaScript value to object and returns the resulting object.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Returns either the `JSObject` result of conversion, or an exception</span>
+    <span class="doccomment">/// if one was thrown.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">JSObject</span>, <span class="ident">JSException</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span>: <span class="ident">sys</span>::<span class="ident">JSValueRef</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null_mut</span>();
+        <span class="kw">let</span> <span class="ident">o</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSValueToObject</span>(<span class="self">self</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">e</span>) };
+        <span class="kw">if</span> <span class="ident">o</span>.<span class="ident">is_null</span>() {
+            <span class="prelude-val">Err</span>(<span class="ident">JSException</span> {
+                <span class="ident">value</span>: <span class="ident">JSValue</span> {
+                    <span class="ident">raw</span>: <span class="ident">e</span>,
+                    <span class="ident">ctx</span>: <span class="self">self</span>.<span class="ident">ctx</span>,
+                },
+            })
+        } <span class="kw">else</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">JSObject</span> { <span class="ident">raw</span>: <span class="ident">o</span> })
         }
     }
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='kw'>super</span>::{<span class='ident'>JSContext</span>, <span class='ident'>JSType</span>, <span class='ident'>JSValue</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">JSContext</span>, <span class="ident">JSType</span>, <span class="ident">JSValue</span>};
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>undefined</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>vu</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_undefined</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vu</span>.<span class='ident'>is_undefined</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vu</span>.<span class='ident'>is_null</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vu</span>.<span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='ident'>JSType</span>::<span class='ident'>kJSTypeUndefined</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vu</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vu</span>.<span class='ident'>as_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='string'>&quot;undefined&quot;</span>.<span class='ident'>into</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">undefined</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">vu</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_undefined</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vu</span>.<span class="ident">is_undefined</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vu</span>.<span class="ident">is_null</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vu</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">kJSTypeUndefined</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vu</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vu</span>.<span class="ident">as_string</span>().<span class="ident">unwrap</span>(), <span class="string">&quot;undefined&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>null</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>vn</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_null</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>is_null</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>is_undefined</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='ident'>JSType</span>::<span class='ident'>kJSTypeNull</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>as_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='string'>&quot;null&quot;</span>.<span class='ident'>into</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">null</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">vn</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_null</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">is_null</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">is_undefined</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">kJSTypeNull</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">as_string</span>().<span class="ident">unwrap</span>(), <span class="string">&quot;null&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>boolean</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>vt</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vt</span>.<span class='ident'>is_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vt</span>.<span class='ident'>is_null</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vt</span>.<span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='ident'>JSType</span>::<span class='ident'>kJSTypeBoolean</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vt</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vt</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='number'>1.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vt</span>.<span class='ident'>as_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='string'>&quot;true&quot;</span>.<span class='ident'>into</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">boolean</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">vt</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_boolean</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vt</span>.<span class="ident">is_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vt</span>.<span class="ident">is_null</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vt</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">kJSTypeBoolean</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vt</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vt</span>.<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">1.0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vt</span>.<span class="ident">as_string</span>().<span class="ident">unwrap</span>(), <span class="string">&quot;true&quot;</span>.<span class="ident">into</span>());
 
-        <span class='kw'>let</span> <span class='ident'>vf</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vf</span>.<span class='ident'>is_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vf</span>.<span class='ident'>is_null</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vf</span>.<span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='ident'>JSType</span>::<span class='ident'>kJSTypeBoolean</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vf</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vf</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='number'>0.0</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vf</span>.<span class='ident'>as_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='string'>&quot;false&quot;</span>.<span class='ident'>into</span>());
+        <span class="kw">let</span> <span class="ident">vf</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_boolean</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vf</span>.<span class="ident">is_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vf</span>.<span class="ident">is_null</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vf</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">kJSTypeBoolean</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vf</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vf</span>.<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">0.0</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vf</span>.<span class="ident">as_string</span>().<span class="ident">unwrap</span>(), <span class="string">&quot;false&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>number</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>vn</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='number'>30.4</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>is_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>is_null</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='ident'>JSType</span>::<span class='ident'>kJSTypeNumber</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='number'>30.4</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vn</span>.<span class='ident'>as_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='string'>&quot;30.4&quot;</span>.<span class='ident'>into</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">number</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">vn</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_number</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="number">30.4</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">is_number</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">is_null</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">kJSTypeNumber</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">30.4</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vn</span>.<span class="ident">as_string</span>().<span class="ident">unwrap</span>(), <span class="string">&quot;30.4&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>string</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>vs</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='string'>&quot;abc&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vs</span>.<span class='ident'>is_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vs</span>.<span class='ident'>is_null</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vs</span>.<span class='ident'>get_type</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='ident'>JSType</span>::<span class='ident'>kJSTypeString</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vs</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>vs</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>is_err</span>());
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>vs</span>.<span class='ident'>as_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='string'>&quot;abc&quot;</span>.<span class='ident'>into</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">string</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">vs</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_string</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;abc&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vs</span>.<span class="ident">is_string</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vs</span>.<span class="ident">is_null</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vs</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">kJSTypeString</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vs</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">vs</span>.<span class="ident">as_number</span>().<span class="ident">is_err</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">vs</span>.<span class="ident">as_string</span>().<span class="ident">unwrap</span>(), <span class="string">&quot;abc&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>json_boolean_true</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">json_boolean_true</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
 
-        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_from_json</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='string'>&quot;true&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='number'>1.0</span>);
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>to_json_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>, <span class='string'>&quot;true&quot;</span>.<span class='ident'>into</span>());
+        <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;true&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">1.0</span>);
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_json_string</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>, <span class="string">&quot;true&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>json_boolean_false</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">json_boolean_false</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
 
-        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_from_json</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='string'>&quot;false&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='number'>0.0</span>);
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>to_json_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>, <span class='string'>&quot;false&quot;</span>.<span class='ident'>into</span>());
+        <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;false&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">0.0</span>);
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_json_string</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>, <span class="string">&quot;false&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>json_number_0</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
-        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_from_json</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='string'>&quot;0&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>false</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='number'>0.0</span>);
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>to_json_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>, <span class='string'>&quot;0&quot;</span>.<span class='ident'>into</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">json_number_0</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+        <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;0&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_number</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">false</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">0.0</span>);
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_json_string</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>, <span class="string">&quot;0&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>json_number_3</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">json_number_3</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
 
-        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_from_json</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='string'>&quot;3&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='number'>3.0</span>);
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>to_json_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>, <span class='string'>&quot;3&quot;</span>.<span class='ident'>into</span>());
+        <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;3&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_number</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">3.0</span>);
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_json_string</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>, <span class="string">&quot;3&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>json_string</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">json_string</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
 
-        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_from_json</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='string'>&quot;\&quot;abc\&quot;&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>is_err</span>());
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>to_json_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>, <span class='string'>&quot;\&quot;abc\&quot;&quot;</span>.<span class='ident'>into</span>());
+        <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;\&quot;abc\&quot;&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_string</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_number</span>().<span class="ident">is_err</span>());
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_json_string</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>, <span class="string">&quot;\&quot;abc\&quot;&quot;</span>.<span class="ident">into</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>json_string_number</span>() {
-        <span class='kw'>let</span> <span class='ident'>ctx</span> <span class='op'>=</span> <span class='ident'>JSContext</span>::<span class='ident'>default</span>();
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">json_string_number</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
 
-        <span class='kw'>let</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>JSValue</span>::<span class='ident'>new_from_json</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='string'>&quot;\&quot;3\&quot;&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>is_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_boolean</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>), <span class='bool-val'>true</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>as_number</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>).<span class='ident'>unwrap</span>(), <span class='number'>3.0</span>);
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>v</span>.<span class='ident'>to_json_string</span>(<span class='kw-2'>&amp;</span><span class='ident'>ctx</span>, <span class='number'>0</span>).<span class='ident'>unwrap</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>s</span>, <span class='string'>&quot;\&quot;3\&quot;&quot;</span>.<span class='ident'>into</span>());
+        <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;\&quot;3\&quot;&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_string</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">true</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">3.0</span>);
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_json_string</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>, <span class="string">&quot;\&quot;3\&quot;&quot;</span>.<span class="ident">into</span>());
     }
 }
 </pre>

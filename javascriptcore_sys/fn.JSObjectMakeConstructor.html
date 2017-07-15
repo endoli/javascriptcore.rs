@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc fn">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -43,13 +43,32 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>javascriptcore_sys</a>::<wbr><a class='fn' href=''>JSObjectMakeConstructor</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>javascriptcore_sys</a>::<wbr><a class="fn" href=''>JSObjectMakeConstructor</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#860-863' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSObjectMakeConstructor(ctx: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jsClass: <a class='type' href='../javascriptcore_sys/type.JSClassRef.html' title='javascriptcore_sys::JSClassRef'>JSClassRef</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; callAsConstructor: <a class='type' href='../javascriptcore_sys/type.JSObjectCallAsConstructorCallback.html' title='javascriptcore_sys::JSObjectCallAsConstructorCallback'>JSObjectCallAsConstructorCallback</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a></pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#1273-1277' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub unsafe extern fn JSObjectMakeConstructor(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;jsClass: <a class="type" href="../javascriptcore_sys/type.JSClassRef.html" title="type javascriptcore_sys::JSClassRef">JSClassRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;callAsConstructor: <a class="type" href="../javascriptcore_sys/type.JSObjectCallAsConstructorCallback.html" title="type javascriptcore_sys::JSObjectCallAsConstructorCallback">JSObjectCallAsConstructorCallback</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a></pre><div class='docblock'><p>Convenience method for creating a JavaScript constructor.</p>
+
+<ul>
+<li><code>ctx</code>: The execution context to use.</li>
+<li><code>jsClass</code>: A <code>JSClass</code> that is the class your constructor
+will assign to the objects its constructs. <code>jsClass</code> will
+be used to set the constructor&#39;s <code>.prototype</code> property, and
+to evaluate <code>instanceof</code> expressions. Pass <code>NULL</code> to use
+the default object class.</li>
+<li><code>callAsConstructor</code> A <code>JSObjectCallAsConstructorCallback</code> to
+invoke when your constructor is used in a <code>new</code> expression.
+Pass <code>NULL</code> to use the default object constructor.</li>
+</ul>
+
+<p>Returns a <code>JSObject</code> that is a constructor. The object&#39;s
+prototype will be the default object prototype.</p>
+
+<p>The default object constructor takes no arguments and constructs
+an object of class <code>jsClass</code> with no private data.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

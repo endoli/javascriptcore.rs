@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc type">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -43,13 +43,36 @@
         </form>
     </nav>
 
-    <section id='main' class="content type">
-<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>javascriptcore_sys</a>::<wbr><a class='type' href=''>JSObjectSetPropertyCallback</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Type Definition <a href='index.html'>javascriptcore_sys</a>::<wbr><a class="type" href=''>JSObjectSetPropertyCallback</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#540-546' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSObjectSetPropertyCallback = <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;unsafe extern fn(_: <a class='type' href='../javascriptcore_sys/type.JSContextRef.html' title='javascriptcore_sys::JSContextRef'>JSContextRef</a>, _: <a class='type' href='../javascriptcore_sys/type.JSObjectRef.html' title='javascriptcore_sys::JSObjectRef'>JSObjectRef</a>, _: <a class='type' href='../javascriptcore_sys/type.JSStringRef.html' title='javascriptcore_sys::JSStringRef'>JSStringRef</a>, _: <a class='type' href='../javascriptcore_sys/type.JSValueRef.html' title='javascriptcore_sys::JSValueRef'>JSValueRef</a>, _: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut </a><a class='type' href='../javascriptcore_sys/type.JSValueRef.html' title='javascriptcore_sys::JSValueRef'>JSValueRef</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>&gt;;</pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#636-644' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type JSObjectSetPropertyCallback = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern fn(_: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>, _: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>&gt;;</pre><div class='docblock'><p>The callback invoked when setting a property&#39;s value.</p>
+
+<ul>
+<li><code>ctx</code>: The execution context to use.</li>
+<li><code>object</code>: The <code>JSObject</code> on which to set the property&#39;s value.</li>
+<li><code>propertyName</code>: A <code>JSString</code> containing the name of the property to set.</li>
+<li><code>value</code>: A <code>JSValue</code> to use as the property&#39;s value.</li>
+<li><code>exception</code>: A pointer to a <code>JSValueRef</code> in which to return an exception, if any.</li>
+</ul>
+
+<p>Returns <code>true</code> if the property was set, otherwise <code>false</code>.</p>
+
+<p>If you named your function <code>SetProperty</code>, you would declare it like this:</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">bool</span>
+<span class="ident">SetProperty</span>(<span class="ident">JSContextRef</span> <span class="ident">ctx</span>, <span class="ident">JSObjectRef</span> <span class="ident">object</span>,
+            <span class="ident">JSStringRef</span> <span class="ident">propertyName</span>, <span class="ident">JSValueRef</span> <span class="ident">value</span>,
+            <span class="ident">JSValueRef</span><span class="op">*</span> <span class="ident">exception</span>);</pre>
+
+<p>If this function returns <code>false</code>, the set request forwards to
+<code>object</code>&#39;s statically declared properties, then its parent class
+chain (which includes the default object class).</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

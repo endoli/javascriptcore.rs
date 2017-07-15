@@ -17,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc fn">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -43,13 +43,21 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>javascriptcore_sys</a>::<wbr><a class='fn' href=''>JSPropertyNameArrayGetNameAtIndex</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>javascriptcore_sys</a>::<wbr><a class="fn" href=''>JSPropertyNameArrayGetNameAtIndex</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#996-998' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSPropertyNameArrayGetNameAtIndex(array: <a class='type' href='../javascriptcore_sys/type.JSPropertyNameArrayRef.html' title='javascriptcore_sys::JSPropertyNameArrayRef'>JSPropertyNameArrayRef</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; index: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='type' href='../javascriptcore_sys/type.JSStringRef.html' title='javascriptcore_sys::JSStringRef'>JSStringRef</a></pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#1648-1651' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub unsafe extern fn JSPropertyNameArrayGetNameAtIndex(<br>&nbsp;&nbsp;&nbsp;&nbsp;array: <a class="type" href="../javascriptcore_sys/type.JSPropertyNameArrayRef.html" title="type javascriptcore_sys::JSPropertyNameArrayRef">JSPropertyNameArrayRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;index: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a></pre><div class='docblock'><p>Gets a property name at a given index in a JavaScript property name array.</p>
+
+<ul>
+<li><code>array</code>: The array from which to retrieve the property name.</li>
+<li><code>index</code>: The index of the property name to retrieve.</li>
+</ul>
+
+<p>Returns a <code>JSStringRef</code> containing the property name.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
