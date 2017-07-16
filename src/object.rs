@@ -5,6 +5,7 @@
 // except according to those terms.
 
 use std::ops::Deref;
+use std::ptr;
 use super::{JSObject, JSString, JSValue};
 use sys;
 
@@ -21,6 +22,46 @@ impl JSObject {
         JSObjectPropertyNameIter {
             raw: unsafe { sys::JSObjectCopyPropertyNames(self.value.ctx, self.raw) },
             idx: 0,
+        }
+    }
+
+    /// Gets a property from an object.
+    ///
+    /// * `name`: A value that can be converted to a `JSString` containing
+    ///   the property's name.
+    ///
+    /// Returns the property's value if object has the property, otherwise
+    /// the undefined value.
+    pub fn get_property<S>(&self, name: S) -> JSValue
+    where
+        S: Into<JSString>,
+    {
+        let mut e: sys::JSValueRef = ptr::null_mut();
+        let v =
+            unsafe { sys::JSObjectGetProperty(self.value.ctx, self.raw, name.into().raw, &mut e) };
+        JSValue {
+            raw: v,
+            ctx: self.value.ctx,
+        }
+    }
+
+    /// Gets a property from an object by numeric index.
+    ///
+    /// * `index`: An integer value that is the property's name.
+    ///
+    /// Returns the property's value if object has the property,
+    /// otherwise the undefined value.
+    ///
+    /// Calling `get_property_at_index` is equivalent to calling
+    /// `get_property` with a string containing `index`,
+    /// but `get_property_at_index` provides optimized access to
+    /// numeric properties.
+    pub fn get_property_at_index(&self, index: u32) -> JSValue {
+        let mut e: sys::JSValueRef = ptr::null_mut();
+        let v = unsafe { sys::JSObjectGetPropertyAtIndex(self.value.ctx, self.raw, index, &mut e) };
+        JSValue {
+            raw: v,
+            ctx: self.value.ctx,
         }
     }
 }
@@ -60,6 +101,26 @@ impl Iterator for JSObjectPropertyNameIter {
 #[cfg(test)]
 mod tests {
     use super::super::{JSContext, JSValue};
+
+    #[test]
+    fn can_get_property() {
+        let ctx = JSContext::default();
+        let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("value");
+        let o = v.as_object().expect("object");
+        assert!(o.get_property("id").is_number());
+        assert!(o.get_property("no-such-value").is_undefined());
+    }
+
+    #[test]
+    fn can_get_property_at_index() {
+        let ctx = JSContext::default();
+        let v = JSValue::new_from_json(&ctx, "[3, true, \"abc\"]").expect("value");
+        let o = v.as_object().expect("object");
+        assert!(o.get_property_at_index(0).is_number());
+        assert!(o.get_property_at_index(1).is_boolean());
+        assert!(o.get_property_at_index(2).is_string());
+        assert!(o.get_property_at_index(5).is_undefined());
+    }
 
     #[test]
     fn can_get_property_names() {
