@@ -250,7 +250,10 @@ impl JSValue {
                 },
             })
         } else {
-            Ok(JSObject { raw: o })
+            Ok(JSObject {
+                raw: o,
+                ctx: self.ctx,
+            })
         }
     }
 }

@@ -64,6 +64,7 @@ pub struct JSException {
 /// An `JSObject` is a `JSValue`.
 pub struct JSObject {
     raw: sys::JSObjectRef,
+    ctx: sys::JSContextRef,
 }
 
 /// A UTF16 character buffer.
