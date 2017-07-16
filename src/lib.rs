@@ -72,7 +72,35 @@ pub struct JSObject {
 
 /// A UTF16 character buffer.
 ///
-/// The fundamental string representation in JavaScript.
+/// The fundamental string representation in JavaScript. Since
+/// this is using a UTF16 encoding and Rust strings are using
+/// UTF8 encoding, converting between string representations
+/// is not cheap.
+///
+/// In this crate, implementations of the conversion traits
+/// `Into` and `From` are provided for `JSString`. This allows
+/// conversion from `&str` and `String` into `JSString`:
+///
+/// ```
+/// # use javascriptcore::JSString;
+/// let j: JSString = "abc".into();
+/// ```
+///
+/// Similarly, a `JSString` can be converted to a `String`
+/// via a conversion trait or directly:
+///
+/// ```
+/// # use javascriptcore::JSString;
+/// let j: JSString = "abc".into();
+/// let s: String = (&j).into(); // Requires a reference.
+/// let s: String = j.to_string();
+/// ```
+///
+/// In this crate, functions that need a `JSString` use
+/// generics so that they can take anything that can be
+/// converted to a `JSString` instead. This allows the
+/// caller to pass an `&str` or `String`, or to cache a
+/// previously converted `JSString` and pass that directly.
 #[derive(Debug, Eq)]
 pub struct JSString {
     raw: sys::JSStringRef,
