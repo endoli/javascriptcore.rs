@@ -8,6 +8,22 @@ use std::ffi::CString;
 use super::JSString;
 use sys;
 
+impl JSString {
+    /// Convert this `JSString` to a `String`.
+    pub fn to_string(&self) -> String {
+        unsafe {
+            let max_size = sys::JSStringGetMaximumUTF8CStringSize(self.raw);
+            let mut buffer: Vec<u8> = Vec::with_capacity(max_size);
+            let actual_size = sys::JSStringGetUTF8CString(
+                self.raw,
+                buffer.as_mut_ptr() as *mut ::std::os::raw::c_char,
+                max_size,
+            );
+            buffer.set_len(actual_size - 1);
+            String::from_utf8(buffer).unwrap()
+        }
+    }
+}
 
 impl Drop for JSString {
     fn drop(&mut self) {
@@ -37,22 +53,7 @@ impl From<String> for JSString {
 
 impl<'s> From<&'s JSString> for String {
     fn from(s: &'s JSString) -> Self {
-        let result = unsafe {
-            let max_size = sys::JSStringGetMaximumUTF8CStringSize(s.raw);
-            let mut buffer: Vec<u8> = Vec::with_capacity(max_size);
-            let actual_size = sys::JSStringGetUTF8CString(
-                s.raw,
-                buffer.as_mut_ptr() as *mut ::std::os::raw::c_char,
-                max_size,
-            );
-            buffer.set_len(actual_size - 1);
-            String::from_utf8(buffer)
-        };
-
-        match result {
-            Ok(value) => value,
-            Err(_) => String::from("UTF8 conversion failed"),
-        }
+        s.to_string()
     }
 }
 
