@@ -1278,6 +1278,7 @@ extern "C" {
     ///
     /// * `object`: The `JSObject` to test.
     /// * `propertyName`: A `JSString` containing the property's name.
+    ///
     /// Returns `true` if the object has a property whose name matches
     /// `propertyName`, otherwise `false`.
     pub fn JSObjectHasProperty(
