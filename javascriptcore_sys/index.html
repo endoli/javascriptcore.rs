@@ -48,14 +48,17 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#7-11' title='goto source code'>[src]</a></span></h1>
-<h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+               </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#7-2003' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>This crate provides raw bindings for the JavaScriptCore public
+API. It is a pretty direct mapping of the underlying C API
+provided by JavaScriptCore.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class="struct" href="struct.JSClassDefinition.html"
                                   title='struct javascriptcore_sys::JSClassDefinition'>JSClassDefinition</a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Contains properties and callbacks that define a type of object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -70,61 +73,6 @@
                                   title='struct javascriptcore_sys::JSStaticValue'>JSStaticValue</a></td>
                            <td class='docblock-short'>
                                 <p>A statically declared value property.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.OpaqueJSClass.html"
-                                  title='struct javascriptcore_sys::OpaqueJSClass'>OpaqueJSClass</a></td>
-                           <td class='docblock-short'>
-                                <p>A JavaScript class.
-Used with <code>JSObjectMake</code> to construct objects with custom behavior.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.OpaqueJSContext.html"
-                                  title='struct javascriptcore_sys::OpaqueJSContext'>OpaqueJSContext</a></td>
-                           <td class='docblock-short'>
-                                <p>A JavaScript execution context. Holds the global object and
-other execution state.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.OpaqueJSContextGroup.html"
-                                  title='struct javascriptcore_sys::OpaqueJSContextGroup'>OpaqueJSContextGroup</a></td>
-                           <td class='docblock-short'>
-                                <p>A group that associates JavaScript contexts with one another.
-Contexts in the same group may share and exchange JavaScript objects.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.OpaqueJSPropertyNameAccumulator.html"
-                                  title='struct javascriptcore_sys::OpaqueJSPropertyNameAccumulator'>OpaqueJSPropertyNameAccumulator</a></td>
-                           <td class='docblock-short'>
-                                <p>An ordered set used to collect the names of
-a JavaScript object&#39;s properties.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.OpaqueJSPropertyNameArray.html"
-                                  title='struct javascriptcore_sys::OpaqueJSPropertyNameArray'>OpaqueJSPropertyNameArray</a></td>
-                           <td class='docblock-short'>
-                                <p>An array of JavaScript property names.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.OpaqueJSString.html"
-                                  title='struct javascriptcore_sys::OpaqueJSString'>OpaqueJSString</a></td>
-                           <td class='docblock-short'>
-                                <p>A UTF16 character buffer. The fundamental string representation
-in JavaScript.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.OpaqueJSValue.html"
-                                  title='struct javascriptcore_sys::OpaqueJSValue'>OpaqueJSValue</a></td>
-                           <td class='docblock-short'>
-                                <p>A JavaScript value.
-The base type for all JavaScript values, and polymorphic functions on them.</p>
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
@@ -302,14 +250,15 @@ group provided.</p>
                            <td><a class="fn" href="fn.JSObjectGetArrayBufferByteLength.html"
                                   title='fn javascriptcore_sys::JSObjectGetArrayBufferByteLength'>JSObjectGetArrayBufferByteLength</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Returns the number of bytes in a JavaScript data object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.JSObjectGetArrayBufferBytesPtr.html"
                                   title='fn javascriptcore_sys::JSObjectGetArrayBufferBytesPtr'>JSObjectGetArrayBufferBytesPtr</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Returns a pointer to the data buffer that serves as the backing
+store for a JavaScript Typed Array object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -344,35 +293,37 @@ group provided.</p>
                            <td><a class="fn" href="fn.JSObjectGetTypedArrayBuffer.html"
                                   title='fn javascriptcore_sys::JSObjectGetTypedArrayBuffer'>JSObjectGetTypedArrayBuffer</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Returns the JavaScript Array Buffer object that is used as the
+backing of a JavaScript Typed Array object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.JSObjectGetTypedArrayByteLength.html"
                                   title='fn javascriptcore_sys::JSObjectGetTypedArrayByteLength'>JSObjectGetTypedArrayByteLength</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Returns the byte length of a JavaScript Typed Array object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.JSObjectGetTypedArrayByteOffset.html"
                                   title='fn javascriptcore_sys::JSObjectGetTypedArrayByteOffset'>JSObjectGetTypedArrayByteOffset</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Returns the byte offset of a JavaScript Typed Array object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.JSObjectGetTypedArrayBytesPtr.html"
                                   title='fn javascriptcore_sys::JSObjectGetTypedArrayBytesPtr'>JSObjectGetTypedArrayBytesPtr</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Returns a temporary pointer to the backing store of a
+JavaScript Typed Array object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.JSObjectGetTypedArrayLength.html"
                                   title='fn javascriptcore_sys::JSObjectGetTypedArrayLength'>JSObjectGetTypedArrayLength</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Returns the length of a JavaScript Typed Array object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -414,7 +365,7 @@ group provided.</p>
                            <td><a class="fn" href="fn.JSObjectMakeArrayBufferWithBytesNoCopy.html"
                                   title='fn javascriptcore_sys::JSObjectMakeArrayBufferWithBytesNoCopy'>JSObjectMakeArrayBufferWithBytesNoCopy</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Creates a JavaScript Array Buffer object from an existing pointer.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -467,28 +418,31 @@ built-in <code>RegExp</code> constructor.</p>
                            <td><a class="fn" href="fn.JSObjectMakeTypedArray.html"
                                   title='fn javascriptcore_sys::JSObjectMakeTypedArray'>JSObjectMakeTypedArray</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Creates a JavaScript Typed Array object with the given number of elements.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.JSObjectMakeTypedArrayWithArrayBuffer.html"
                                   title='fn javascriptcore_sys::JSObjectMakeTypedArrayWithArrayBuffer'>JSObjectMakeTypedArrayWithArrayBuffer</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Creates a JavaScript Typed Array object from an existing
+JavaScript Array Buffer object.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.JSObjectMakeTypedArrayWithArrayBufferAndOffset.html"
                                   title='fn javascriptcore_sys::JSObjectMakeTypedArrayWithArrayBufferAndOffset'>JSObjectMakeTypedArrayWithArrayBufferAndOffset</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Creates a JavaScript Typed Array object from an existing
+JavaScript Array Buffer object with the given offset and
+length.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.JSObjectMakeTypedArrayWithBytesNoCopy.html"
                                   title='fn javascriptcore_sys::JSObjectMakeTypedArrayWithBytesNoCopy'>JSObjectMakeTypedArrayWithBytesNoCopy</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                
+                                <p>Creates a JavaScript Typed Array object from an existing pointer.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -943,7 +897,7 @@ of an <code>instanceof</code> expression.</p>
                            <td><a class="type" href="type.JSObjectRef.html"
                                   title='type javascriptcore_sys::JSObjectRef'>JSObjectRef</a></td>
                            <td class='docblock-short'>
-                                <p>A JavaScript object. A JSObject is a JSValue.</p>
+                                <p>A JavaScript object. A <code>JSObjectRef</code> is a <code>JSValueRef</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>

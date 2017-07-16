@@ -48,9 +48,12 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#63' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSPropertyNameAccumulatorRef = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="struct" href="../javascriptcore_sys/struct.OpaqueJSPropertyNameAccumulator.html" title="struct javascriptcore_sys::OpaqueJSPropertyNameAccumulator">OpaqueJSPropertyNameAccumulator</a>;</pre><div class='docblock'><p>An ordered set used to collect the names of
+               </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#102' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type JSPropertyNameAccumulatorRef = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a>OpaqueJSPropertyNameAccumulator;</pre><div class='docblock'><p>An ordered set used to collect the names of
 a JavaScript object&#39;s properties.</p>
+
+<p>Values of this type are passed to the <a href="type.JSObjectGetPropertyNamesCallback.html">getPropertyNames callback</a>.
+Names are added to the accumulator using <a href="fn.JSPropertyNameAccumulatorAddName.html"><code>JSPropertyNameAccumulatorAddName</code></a>.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 

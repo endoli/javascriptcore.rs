@@ -193,6 +193,12 @@
 <span id="148">148</span>
 <span id="149">149</span>
 <span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
 </pre><pre class="rust ">
 <span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class="comment">// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -220,7 +226,7 @@
 <span class="doccomment">///   so the first line is line `1` and invalid values are clamped</span>
 <span class="doccomment">///   to `1`.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Returns either the `Option&lt;JSValue&gt;` that results from evaluating the script or</span>
+<span class="doccomment">/// Returns either the `JSValue` that results from evaluating the script or</span>
 <span class="doccomment">/// the exception that occurred.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">evaluate_script</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">JSString</span><span class="op">&gt;</span>, <span class="ident">U</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">JSString</span><span class="op">&gt;&gt;</span>(
     <span class="ident">ctx</span>: <span class="kw-2">&amp;</span><span class="ident">JSContext</span>,
@@ -228,7 +234,7 @@
     <span class="ident">this_object</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">JSObject</span><span class="op">&gt;</span>,
     <span class="ident">source_url</span>: <span class="ident">U</span>,
     <span class="ident">starting_line_number</span>: <span class="ident">i32</span>,
-) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">JSValue</span><span class="op">&gt;</span>, <span class="ident">JSException</span><span class="op">&gt;</span> {
+) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">JSValue</span>, <span class="ident">JSException</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span>: <span class="ident">sys</span>::<span class="ident">JSValueRef</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null_mut</span>();
         <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">sys</span>::<span class="ident">JSEvaluateScript</span>(
@@ -239,20 +245,18 @@
             <span class="ident">starting_line_number</span>,
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">e</span>,
         );
-        <span class="kw">if</span> <span class="ident">e</span>.<span class="ident">is_null</span>() {
+        <span class="kw">if</span> <span class="ident">r</span>.<span class="ident">is_null</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">JSException</span> {
                 <span class="ident">value</span>: <span class="ident">JSValue</span> {
                     <span class="ident">raw</span>: <span class="ident">e</span>,
                     <span class="ident">ctx</span>: <span class="ident">ctx</span>.<span class="ident">raw</span>,
                 },
             })
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">r</span>.<span class="ident">is_null</span>() {
-            <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
         } <span class="kw">else</span> {
-            <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(<span class="ident">JSValue</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">JSValue</span> {
                 <span class="ident">raw</span>: <span class="ident">r</span>,
                 <span class="ident">ctx</span>: <span class="ident">ctx</span>.<span class="ident">raw</span>,
-            }))
+            })
         }
     }
 }
@@ -325,7 +329,7 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">tests</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">JSContext</span>, <span class="ident">check_script_syntax</span>, <span class="ident">garbage_collect</span>};
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">JSContext</span>, <span class="ident">check_script_syntax</span>, <span class="ident">evaluate_script</span>, <span class="ident">garbage_collect</span>};
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">can_check_script_syntax</span>() {
@@ -336,6 +340,14 @@
 
         <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">check_script_syntax</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;alert(&#39;abc&quot;</span>, <span class="string">&quot;test.js&quot;</span>, <span class="number">1</span>);
         <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">f</span>.<span class="ident">is_err</span>());
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">can_evaluate_script</span>() {
+        <span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">evaluate_script</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;2 + 2&quot;</span>, <span class="prelude-val">None</span>, <span class="string">&quot;test.js&quot;</span>, <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">r</span>.<span class="ident">unwrap</span>().<span class="ident">as_number</span>().<span class="ident">unwrap</span>(), <span class="number">4.0</span>);
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>

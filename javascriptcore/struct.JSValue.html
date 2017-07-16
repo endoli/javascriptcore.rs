@@ -48,12 +48,12 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore/lib.rs.html#85-89' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/javascriptcore/lib.rs.html#114-117' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct JSValue { /* fields omitted */ }</pre><div class='docblock'><p>A JavaScript value.</p>
 
 <p>The base type for all JavaScript values, and polymorphic functions
 on them.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/value.rs.html#11-249' title='goto source code'>[src]</a></span></h3>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/value.rs.html#11-262' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new_undefined' class="method"><span id='new_undefined.v' class='invisible'><code>fn <a href='#method.new_undefined' class='fnname'>new_undefined</a>(ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript value of the <code>undefined</code> type.</p>
 
@@ -99,15 +99,17 @@ releases it upon garbage collection.</li>
 </ul>
 
 <p>Returns a <code>JSValue</code> of the <code>string</code> type, representing the value of <code>string</code>.</p>
-</div><h4 id='method.new_from_json' class="method"><span id='new_from_json.v' class='invisible'><code>fn <a href='#method.new_from_json' class='fnname'>new_from_json</a>&lt;S:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>&gt;&gt;(ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>, string: S) -&gt; Self</code></span></h4>
+</div><h4 id='method.new_from_json' class="method"><span id='new_from_json.v' class='invisible'><code>fn <a href='#method.new_from_json' class='fnname'>new_from_json</a>&lt;S:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>&gt;&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;string: S<br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript value from a JSON formatted string.</p>
 
 <ul>
 <li><code>ctx</code>: The execution context to use.</li>
-<li><code>string</code>: The <code>JSString</code> containing the JSON string to be parsed.</li>
+<li><code>string</code>: A value that can be converted into a <code>JSString</code> containing
+the JSON string to be parsed.</li>
 </ul>
 
-<p>Returns a <code>JSValue</code> containing the parsed value, or <code>NULL</code> if the input is invalid.</p>
+<p>Returns a <code>Result</code> with the <code>JSValue</code> containing the parsed value, or an error
+if the input is invalid.</p>
 </div><h4 id='method.to_json_string' class="method"><span id='to_json_string.v' class='invisible'><code>fn <a href='#method.to_json_string' class='fnname'>to_json_string</a>(&amp;self, indent: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript string containing the JSON serialized representation of a JS value.</p>
 
@@ -183,7 +185,12 @@ exception if one was thrown.  Ownership follows the Create Rule.</p>
 
 <p>Returns either the <code>JSObject</code> result of conversion, or an exception
 if one was thrown.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/lib.rs.html#84' title='goto source code'>[src]</a></span></h3>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> for <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/value.rs.html#264-268' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.eq' class="method"><span id='eq.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, other: &amp;<a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+</div><h4 id='method.ne' class="method"><span id='ne.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: &amp;Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
+<div class='docblock'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/lib.rs.html#113' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
 </div></div></section>

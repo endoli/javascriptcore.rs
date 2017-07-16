@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'>Struct JSObject</p><p class='location'><a href='index.html'>javascriptcore</a></p><script>window.sidebarCurrent = {name: 'JSObject', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct JSObject</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#deref-methods">Methods from Deref&lt;Target=JSValue&gt;</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>javascriptcore</a></p><script>window.sidebarCurrent = {name: 'JSObject', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -48,11 +48,138 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore/lib.rs.html#66-69' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/javascriptcore/lib.rs.html#68-71' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct JSObject { /* fields omitted */ }</pre><div class='docblock'><p>A JavaScript object.</p>
 
-<p>An <code>JSObject</code> is a <code>JSValue</code>.</p>
-</div></section>
+<p>An <code>JSObject</code> is a <code>JSValue</code>. This is implemented by having
+<code>JSObject</code> implement the <code>Deref</code> trait so that anything that
+expects a <code>JSValue</code> can receive a <code>JSObject</code> as well.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../javascriptcore/struct.JSObject.html" title="struct javascriptcore::JSObject">JSObject</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/object.rs.html#12-90' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.property_names' class="method"><span id='property_names.v' class='invisible'><code>fn <a href='#method.property_names' class='fnname'>property_names</a>(&amp;self) -&gt; JSObjectPropertyNameIter</code></span></h4>
+<div class='docblock'><p>Gets an iterator over the names of an object&#39;s enumerable properties.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">names</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">JSString</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">obj</span>.<span class="ident">property_names</span>().<span class="ident">collect</span>();</pre>
+</div><h4 id='method.has_property' class="method"><span id='has_property.v' class='invisible'><code>fn <a href='#method.has_property' class='fnname'>has_property</a>&lt;S&gt;(&amp;self, name: S) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>&gt;,&nbsp;</span></code></span></h4>
+<div class='docblock'><p>Tests whether an object has a given property.</p>
+
+<ul>
+<li><code>name</code>: A value that can be converted to a <code>JSString</code> containing
+the property&#39;s name.</li>
+</ul>
+
+<p>Returns <code>true</code> if the object has a property whose name matches
+<code>name</code>, otherwise <code>false</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">if</span> <span class="ident">obj</span>.<span class="ident">has_property</span>(<span class="string">&quot;id&quot;</span>) {
+    <span class="comment">// ...</span>
+}</pre>
+</div><h4 id='method.get_property' class="method"><span id='get_property.v' class='invisible'><code>fn <a href='#method.get_property' class='fnname'>get_property</a>&lt;S&gt;(&amp;self, name: S) -&gt; <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>&gt;,&nbsp;</span></code></span></h4>
+<div class='docblock'><p>Gets a property from an object.</p>
+
+<ul>
+<li><code>name</code>: A value that can be converted to a <code>JSString</code> containing
+the property&#39;s name.</li>
+</ul>
+
+<p>Returns the property&#39;s value if object has the property, otherwise
+the undefined value.</p>
+</div><h4 id='method.get_property_at_index' class="method"><span id='get_property_at_index.v' class='invisible'><code>fn <a href='#method.get_property_at_index' class='fnname'>get_property_at_index</a>(&amp;self, index: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span></h4>
+<div class='docblock'><p>Gets a property from an object by numeric index.</p>
+
+<ul>
+<li><code>index</code>: An integer value that is the property&#39;s name.</li>
+</ul>
+
+<p>Returns the property&#39;s value if object has the property,
+otherwise the undefined value.</p>
+
+<p>Calling <code>get_property_at_index</code> is equivalent to calling
+<code>get_property</code> with a string containing <code>index</code>,
+but <code>get_property_at_index</code> provides optimized access to
+numeric properties.</p>
+</div></div><h2 id='deref-methods'>Methods from <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html" title="trait core::ops::Deref">Deref</a>&lt;Target = <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a>&gt;</h2><div class='impl-items'><h4 id='method.to_json_string' class="method"><span id='to_json_string.v' class='invisible'><code>fn <a href='#method.to_json_string' class='fnname'>to_json_string</a>(&amp;self, indent: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
+<div class='docblock'><p>Creates a JavaScript string containing the JSON serialized representation of a JS value.</p>
+
+<ul>
+<li><code>indent</code>: The number of spaces to indent when nesting.
+If <code>0</code>, the resulting JSON will not contains newlines.
+The size of the indent is clamped to <code>10</code> spaces.</li>
+</ul>
+
+<p>Returns either a <code>JSString</code> with the result of serialization, or an
+exception if one was thrown.</p>
+</div><h4 id='method.get_type' class="method"><span id='get_type.v' class='invisible'><code>fn <a href='#method.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class="enum" href="../javascriptcore/enum.JSType.html" title="enum javascriptcore::JSType">JSType</a></code></span></h4>
+<div class='docblock'><p>Returns a JavaScript value&#39;s type.</p>
+
+<p>Returns a value of type <code>JSType</code> that identifies <code>value</code>&#39;s type.</p>
+</div><h4 id='method.is_undefined' class="method"><span id='is_undefined.v' class='invisible'><code>fn <a href='#method.is_undefined' class='fnname'>is_undefined</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>undefined</code> type.</p>
+
+<p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>undefined</code> type, otherwise <code>false</code>.</p>
+</div><h4 id='method.is_null' class="method"><span id='is_null.v' class='invisible'><code>fn <a href='#method.is_null' class='fnname'>is_null</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>null</code> type.</p>
+
+<p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>null</code> type, otherwise <code>false</code>.</p>
+</div><h4 id='method.is_boolean' class="method"><span id='is_boolean.v' class='invisible'><code>fn <a href='#method.is_boolean' class='fnname'>is_boolean</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>boolean</code> type.</p>
+
+<p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>boolean</code> type, otherwise <code>false</code>.</p>
+</div><h4 id='method.is_number' class="method"><span id='is_number.v' class='invisible'><code>fn <a href='#method.is_number' class='fnname'>is_number</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>number</code> type.</p>
+
+<p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>number</code> type, otherwise <code>false</code>.</p>
+</div><h4 id='method.is_string' class="method"><span id='is_string.v' class='invisible'><code>fn <a href='#method.is_string' class='fnname'>is_string</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>string</code> type.</p>
+
+<p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>string</code> type, otherwise <code>false</code>.</p>
+</div><h4 id='method.is_object' class="method"><span id='is_object.v' class='invisible'><code>fn <a href='#method.is_object' class='fnname'>is_object</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>object</code> type.</p>
+
+<p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>object</code> type, otherwise <code>false</code>.</p>
+</div><h4 id='method.is_object_of_class' class="method"><span id='is_object_of_class.v' class='invisible'><code>fn <a href='#method.is_object_of_class' class='fnname'>is_object_of_class</a>(&amp;self, js_class: &amp;<a class="struct" href="../javascriptcore/struct.JSClass.html" title="struct javascriptcore::JSClass">JSClass</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value is an <code>object</code> with a given class in its class chain.</p>
+
+<ul>
+<li><code>js_class</code>: The <code>JSClass</code> to test against.</li>
+</ul>
+
+<p>Returns <code>true</code> if <code>value</code> is an <code>object</code> and has <code>jsClass</code> in its
+class chain, otherwise <code>false</code>.</p>
+</div><h4 id='method.is_array' class="method"><span id='is_array.v' class='invisible'><code>fn <a href='#method.is_array' class='fnname'>is_array</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value is an <code>array</code>.</p>
+
+<p>Returns <code>true</code> if <code>value</code> is an <code>array</code>, otherwise <code>false</code>.</p>
+</div><h4 id='method.is_date' class="method"><span id='is_date.v' class='invisible'><code>fn <a href='#method.is_date' class='fnname'>is_date</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Tests whether a JavaScript value is a <code>date</code>.</p>
+
+<p>Returns <code>true</code> if <code>value</code> is a <code>date</code>, otherwise <code>false</code>.</p>
+</div><h4 id='method.as_boolean' class="method"><span id='as_boolean.v' class='invisible'><code>fn <a href='#method.as_boolean' class='fnname'>as_boolean</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+<div class='docblock'><p>Converts a JavaScript value to boolean and returns the resulting boolean.</p>
+
+<p>Returns the boolean result of conversion.</p>
+</div><h4 id='method.as_number' class="method"><span id='as_number.v' class='invisible'><code>fn <a href='#method.as_number' class='fnname'>as_number</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
+<div class='docblock'><p>Converts a JavaScript value to number and returns the resulting number.</p>
+
+<p>Returns either the numeric result of conversion, or an exception
+if one was thrown.</p>
+</div><h4 id='method.as_string' class="method"><span id='as_string.v' class='invisible'><code>fn <a href='#method.as_string' class='fnname'>as_string</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
+<div class='docblock'><p>Converts a JavaScript value to string and copies the result into a JavaScript string.</p>
+
+<p>Returns either <code>JSString</code> with the result of conversion, or an
+exception if one was thrown.  Ownership follows the Create Rule.</p>
+</div><h4 id='method.as_object' class="method"><span id='as_object.v' class='invisible'><code>fn <a href='#method.as_object' class='fnname'>as_object</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../javascriptcore/struct.JSObject.html" title="struct javascriptcore::JSObject">JSObject</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
+<div class='docblock'><p>Converts a JavaScript value to object and returns the resulting object.</p>
+
+<p>Returns either the <code>JSObject</code> result of conversion, or an exception
+if one was thrown.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html" title="trait core::ops::Deref">Deref</a> for <a class="struct" href="../javascriptcore/struct.JSObject.html" title="struct javascriptcore::JSObject">JSObject</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/object.rs.html#92-98' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='associatedtype.Target' class="type"><span id='Target.t' class='invisible'><code>type <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html#associatedtype.Target' class="type">Target</a> = <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span></h4>
+<div class='docblock'><p>The resulting type after dereferencing</p>
+</div><h4 id='method.deref' class="method"><span id='deref.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Deref.html#tymethod.deref' class='fnname'>deref</a>(&amp;self) -&gt; &amp;<a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span></h4>
+<div class='docblock'><p>The method called to dereference a value</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

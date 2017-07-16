@@ -48,8 +48,20 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#1932-1936' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSObjectGetTypedArrayByteLength(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;object: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;exception: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a><br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></pre></section>
+               </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1898-1902' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub unsafe extern fn JSObjectGetTypedArrayByteLength(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;object: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;exception: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a><br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></pre><div class='docblock'><p>Returns the byte length of a JavaScript Typed Array object.</p>
+
+<ul>
+<li><code>ctx</code>: The execution context to use.</li>
+<li><code>object</code>: The Typed Array object whose byte length to return.</li>
+<li><code>exception</code>: A pointer to a <code>JSValueRef</code> in which to store
+an exception, if any. Pass <code>NULL</code> if you do not care to
+store an exception.</li>
+</ul>
+
+<p>Returns the byte length of the Typed Array object or <code>0</code> if the
+object is not a Typed Array object.</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

@@ -122,6 +122,8 @@
 <span id="77">77</span>
 <span id="78">78</span>
 <span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
 </pre><pre class="rust ">
 <span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class="comment">// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -133,12 +135,29 @@
 <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">JSString</span>;
 <span class="kw">use</span> <span class="ident">sys</span>;
 
+<span class="kw">impl</span> <span class="ident">JSString</span> {
+    <span class="doccomment">/// Convert this `JSString` to a `String`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+        <span class="kw">unsafe</span> {
+            <span class="kw">let</span> <span class="ident">max_size</span> <span class="op">=</span> <span class="ident">sys</span>::<span class="ident">JSStringGetMaximumUTF8CStringSize</span>(<span class="self">self</span>.<span class="ident">raw</span>);
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="ident">max_size</span>);
+            <span class="kw">let</span> <span class="ident">actual_size</span> <span class="op">=</span> <span class="ident">sys</span>::<span class="ident">JSStringGetUTF8CString</span>(
+                <span class="self">self</span>.<span class="ident">raw</span>,
+                <span class="ident">buffer</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> ::<span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>::<span class="ident">c_char</span>,
+                <span class="ident">max_size</span>,
+            );
+            <span class="ident">buffer</span>.<span class="ident">set_len</span>(<span class="ident">actual_size</span> <span class="op">-</span> <span class="number">1</span>);
+            <span class="ident">String</span>::<span class="ident">from_utf8</span>(<span class="ident">buffer</span>).<span class="ident">unwrap</span>()
+        }
+    }
+}
 
 <span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">JSString</span> {
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSStringRelease</span>(<span class="self">self</span>.<span class="ident">raw</span>) }
     }
 }
+
 <span class="kw">impl</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">JSString</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="ident">JSString</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
         <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSStringIsEqual</span>(<span class="self">self</span>.<span class="ident">raw</span>, <span class="ident">other</span>.<span class="ident">raw</span>) }
@@ -161,22 +180,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="ident">JSString</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">String</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="ident">JSString</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="kw">let</span> <span class="ident">max_size</span> <span class="op">=</span> <span class="ident">sys</span>::<span class="ident">JSStringGetMaximumUTF8CStringSize</span>(<span class="ident">s</span>.<span class="ident">raw</span>);
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="ident">max_size</span>);
-            <span class="kw">let</span> <span class="ident">actual_size</span> <span class="op">=</span> <span class="ident">sys</span>::<span class="ident">JSStringGetUTF8CString</span>(
-                <span class="ident">s</span>.<span class="ident">raw</span>,
-                <span class="ident">buffer</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> ::<span class="ident">std</span>::<span class="ident">os</span>::<span class="ident">raw</span>::<span class="ident">c_char</span>,
-                <span class="ident">max_size</span>,
-            );
-            <span class="ident">buffer</span>.<span class="ident">set_len</span>(<span class="ident">actual_size</span> <span class="op">-</span> <span class="number">1</span>);
-            <span class="ident">String</span>::<span class="ident">from_utf8</span>(<span class="ident">buffer</span>)
-        };
-
-        <span class="kw">match</span> <span class="ident">result</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">value</span>) <span class="op">=&gt;</span> <span class="ident">value</span>,
-            <span class="prelude-val">Err</span>(_) <span class="op">=&gt;</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;UTF8 conversion failed&quot;</span>),
-        }
+        <span class="ident">s</span>.<span class="ident">to_string</span>()
     }
 }
 

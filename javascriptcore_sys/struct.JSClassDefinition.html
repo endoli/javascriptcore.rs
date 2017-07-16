@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#987-1005' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#971-1020' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'><div class="docblock attributes">#[repr(C)]
 </div>pub struct JSClassDefinition {
     pub version: <a class="type" href="https://doc.rust-lang.org/nightly/std/os/raw/type.c_int.html" title="type std::os::raw::c_int">c_int</a>,
@@ -68,66 +68,133 @@
     pub callAsConstructor: <a class="type" href="../javascriptcore_sys/type.JSObjectCallAsConstructorCallback.html" title="type javascriptcore_sys::JSObjectCallAsConstructorCallback">JSObjectCallAsConstructorCallback</a>,
     pub hasInstance: <a class="type" href="../javascriptcore_sys/type.JSObjectHasInstanceCallback.html" title="type javascriptcore_sys::JSObjectHasInstanceCallback">JSObjectHasInstanceCallback</a>,
     pub convertToType: <a class="type" href="../javascriptcore_sys/type.JSObjectConvertToTypeCallback.html" title="type javascriptcore_sys::JSObjectConvertToTypeCallback">JSObjectConvertToTypeCallback</a>,
-}</pre><h2 id='fields' class='fields'>Fields</h2><span id='structfield.version' class="structfield">
+}</pre><div class='docblock'><p>Contains properties and callbacks that define a type of object.</p>
+
+<p>All fields other than the version field are optional. Any pointer may be <code>NULL</code>.</p>
+
+<p>The <code>staticValues</code> and <code>staticFunctions</code> arrays are the simplest and most
+efficient means for vending custom properties. Statically declared
+properties automatically service requests like <code>getProperty</code>,
+<code>setProperty</code>, and <code>getPropertyNames</code>. Property access callbacks
+are required only to implement unusual properties, like array
+indexes, whose names are not known at compile-time.</p>
+
+<p>If you named your getter function <code>GetX</code> and your setter function
+<code>SetX</code>, you would declare a <code>JSStaticValue</code> array containing <code>&quot;X&quot;</code> like this:</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">JSStaticValue</span> <span class="ident">StaticValueArray</span>[] <span class="op">=</span> {
+    { <span class="string">&quot;X&quot;</span>, <span class="ident">GetX</span>, <span class="ident">SetX</span>, <span class="ident">kJSPropertyAttributeNone</span> },
+    { <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> }
+};</pre>
+
+<p>Standard JavaScript practice calls for storing function objects in
+prototypes, so they can be shared. The default <code>JSClass</code> created by
+<code>JSClassCreate</code> follows this idiom, instantiating objects with a
+shared, automatically generating prototype containing the class&#39;s
+function objects. The <code>kJSClassAttributeNoAutomaticPrototype</code>
+attribute specifies that a <code>JSClass</code> should not automatically
+generate such a prototype. The resulting <code>JSClass</code> instantiates
+objects with the default object prototype, and gives each instance
+object its own copy of the class&#39;s function objects.</p>
+
+<p>A <code>NULL</code> callback specifies that the default object callback
+should substitute, except in the case of <code>hasProperty</code>, where it
+specifies that <code>getProperty</code> should substitute.</p>
+</div><h2 id='fields' class='fields'>Fields</h2><span id='structfield.version' class="structfield">
                            <span id='version.v' class='invisible'>
                            <code>version: <a class="type" href="https://doc.rust-lang.org/nightly/std/os/raw/type.c_int.html" title="type std::os::raw::c_int">c_int</a></code>
-                           </span></span><span id='structfield.attributes' class="structfield">
+                           </span></span><div class='docblock'><p>The version number of this structure. The current version is 0.</p>
+</div><span id='structfield.attributes' class="structfield">
                            <span id='attributes.v' class='invisible'>
                            <code>attributes: <a class="type" href="../javascriptcore_sys/type.JSClassAttributes.html" title="type javascriptcore_sys::JSClassAttributes">JSClassAttributes</a></code>
-                           </span></span><span id='structfield.className' class="structfield">
+                           </span></span><div class='docblock'><p>A logically ORed set of <code>JSClassAttributes</code> to give to the class.</p>
+</div><span id='structfield.className' class="structfield">
                            <span id='className.v' class='invisible'>
                            <code>className: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="type" href="https://doc.rust-lang.org/nightly/std/os/raw/type.c_char.html" title="type std::os::raw::c_char">c_char</a></code>
-                           </span></span><span id='structfield.parentClass' class="structfield">
+                           </span></span><div class='docblock'><p>A null-terminated UTF8 string containing the class&#39;s name.</p>
+</div><span id='structfield.parentClass' class="structfield">
                            <span id='parentClass.v' class='invisible'>
                            <code>parentClass: <a class="type" href="../javascriptcore_sys/type.JSClassRef.html" title="type javascriptcore_sys::JSClassRef">JSClassRef</a></code>
-                           </span></span><span id='structfield.staticValues' class="structfield">
+                           </span></span><div class='docblock'><p>A <code>JSClass</code> to set as the class&#39;s parent class. Pass <code>NULL</code> use the default object class.</p>
+</div><span id='structfield.staticValues' class="structfield">
                            <span id='staticValues.v' class='invisible'>
                            <code>staticValues: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="struct" href="../javascriptcore_sys/struct.JSStaticValue.html" title="struct javascriptcore_sys::JSStaticValue">JSStaticValue</a></code>
-                           </span></span><span id='structfield.staticFunctions' class="structfield">
+                           </span></span><div class='docblock'><p>A <code>JSStaticValue</code> array containing the class&#39;s statically declared
+value properties. Pass <code>NULL</code> to specify no statically declared
+value properties. The array must be terminated by a <code>JSStaticValue</code>
+whose name field is NULL.</p>
+</div><span id='structfield.staticFunctions' class="structfield">
                            <span id='staticFunctions.v' class='invisible'>
                            <code>staticFunctions: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="struct" href="../javascriptcore_sys/struct.JSStaticFunction.html" title="struct javascriptcore_sys::JSStaticFunction">JSStaticFunction</a></code>
-                           </span></span><span id='structfield.initialize' class="structfield">
+                           </span></span><div class='docblock'><p>A <code>JSStaticFunction</code> array containing the class&#39;s statically
+declared function properties. Pass <code>NULL</code> to specify no
+statically declared function properties. The array must be
+terminated by a <code>JSStaticFunction</code> whose name field is <code>NULL</code>.</p>
+</div><span id='structfield.initialize' class="structfield">
                            <span id='initialize.v' class='invisible'>
                            <code>initialize: <a class="type" href="../javascriptcore_sys/type.JSObjectInitializeCallback.html" title="type javascriptcore_sys::JSObjectInitializeCallback">JSObjectInitializeCallback</a></code>
-                           </span></span><span id='structfield.finalize' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when an object is first created. Use this callback
+to initialize the object.</p>
+</div><span id='structfield.finalize' class="structfield">
                            <span id='finalize.v' class='invisible'>
                            <code>finalize: <a class="type" href="../javascriptcore_sys/type.JSObjectFinalizeCallback.html" title="type javascriptcore_sys::JSObjectFinalizeCallback">JSObjectFinalizeCallback</a></code>
-                           </span></span><span id='structfield.hasProperty' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when an object is finalized (prepared for garbage
+collection). Use this callback to release resources allocated for the
+object, and perform other cleanup.</p>
+</div><span id='structfield.hasProperty' class="structfield">
                            <span id='hasProperty.v' class='invisible'>
                            <code>hasProperty: <a class="type" href="../javascriptcore_sys/type.JSObjectHasPropertyCallback.html" title="type javascriptcore_sys::JSObjectHasPropertyCallback">JSObjectHasPropertyCallback</a></code>
-                           </span></span><span id='structfield.getProperty' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when determining whether an object has a property.</p>
+
+<p>If this field is <code>NULL</code>, <code>getProperty</code> is called instead. The
+<code>hasProperty</code> callback enables optimization in cases where
+only a property&#39;s existence needs to be known, not its value,
+and computing its value is expensive.</p>
+</div><span id='structfield.getProperty' class="structfield">
                            <span id='getProperty.v' class='invisible'>
                            <code>getProperty: <a class="type" href="../javascriptcore_sys/type.JSObjectGetPropertyCallback.html" title="type javascriptcore_sys::JSObjectGetPropertyCallback">JSObjectGetPropertyCallback</a></code>
-                           </span></span><span id='structfield.setProperty' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when getting a property&#39;s value.</p>
+</div><span id='structfield.setProperty' class="structfield">
                            <span id='setProperty.v' class='invisible'>
                            <code>setProperty: <a class="type" href="../javascriptcore_sys/type.JSObjectSetPropertyCallback.html" title="type javascriptcore_sys::JSObjectSetPropertyCallback">JSObjectSetPropertyCallback</a></code>
-                           </span></span><span id='structfield.deleteProperty' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when setting a property&#39;s value.</p>
+</div><span id='structfield.deleteProperty' class="structfield">
                            <span id='deleteProperty.v' class='invisible'>
                            <code>deleteProperty: <a class="type" href="../javascriptcore_sys/type.JSObjectDeletePropertyCallback.html" title="type javascriptcore_sys::JSObjectDeletePropertyCallback">JSObjectDeletePropertyCallback</a></code>
-                           </span></span><span id='structfield.getPropertyNames' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when deleting a property.</p>
+</div><span id='structfield.getPropertyNames' class="structfield">
                            <span id='getPropertyNames.v' class='invisible'>
                            <code>getPropertyNames: <a class="type" href="../javascriptcore_sys/type.JSObjectGetPropertyNamesCallback.html" title="type javascriptcore_sys::JSObjectGetPropertyNamesCallback">JSObjectGetPropertyNamesCallback</a></code>
-                           </span></span><span id='structfield.callAsFunction' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when collecting the names of an object&#39;s properties.</p>
+</div><span id='structfield.callAsFunction' class="structfield">
                            <span id='callAsFunction.v' class='invisible'>
                            <code>callAsFunction: <a class="type" href="../javascriptcore_sys/type.JSObjectCallAsFunctionCallback.html" title="type javascriptcore_sys::JSObjectCallAsFunctionCallback">JSObjectCallAsFunctionCallback</a></code>
-                           </span></span><span id='structfield.callAsConstructor' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when an object is called as a function.</p>
+</div><span id='structfield.callAsConstructor' class="structfield">
                            <span id='callAsConstructor.v' class='invisible'>
                            <code>callAsConstructor: <a class="type" href="../javascriptcore_sys/type.JSObjectCallAsConstructorCallback.html" title="type javascriptcore_sys::JSObjectCallAsConstructorCallback">JSObjectCallAsConstructorCallback</a></code>
-                           </span></span><span id='structfield.hasInstance' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when an object is used as a constructor in a <code>new</code> expression.</p>
+</div><span id='structfield.hasInstance' class="structfield">
                            <span id='hasInstance.v' class='invisible'>
                            <code>hasInstance: <a class="type" href="../javascriptcore_sys/type.JSObjectHasInstanceCallback.html" title="type javascriptcore_sys::JSObjectHasInstanceCallback">JSObjectHasInstanceCallback</a></code>
-                           </span></span><span id='structfield.convertToType' class="structfield">
+                           </span></span><div class='docblock'><p>The callback invoked when an object is used as the target of an <code>instanceof</code> expression.</p>
+</div><span id='structfield.convertToType' class="structfield">
                            <span id='convertToType.v' class='invisible'>
                            <code>convertToType: <a class="type" href="../javascriptcore_sys/type.JSObjectConvertToTypeCallback.html" title="type javascriptcore_sys::JSObjectConvertToTypeCallback">JSObjectConvertToTypeCallback</a></code>
-                           </span></span><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#986' title='goto source code'>[src]</a></span></h3>
+                           </span></span><div class='docblock'><p>The callback invoked when converting an object to a particular JavaScript type.</p>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#970' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#986' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#1189-1193' title='goto source code'>[src]</a></span></h3>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> for <a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#970' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1022-1026' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.clone' class="method"><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
 </div><h4 id='method.clone_from' class="method"><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
 <div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html" title="trait core::default::Default">Default</a> for <a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1028-1050' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.default' class="method"><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; Self</code></span></h4>
+<div class='docblock'><p>Returns the &quot;default value&quot; for a type. <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default">Read more</a></p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
 

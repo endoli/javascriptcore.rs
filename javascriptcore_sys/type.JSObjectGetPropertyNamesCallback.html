@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#700-705' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#742-747' title='goto source code'>[src]</a></span></h1>
 <pre class='rust typedef'>type JSObjectGetPropertyNamesCallback = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern fn(_: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, _: <a class="type" href="../javascriptcore_sys/type.JSPropertyNameAccumulatorRef.html" title="type javascriptcore_sys::JSPropertyNameAccumulatorRef">JSPropertyNameAccumulatorRef</a>)&gt;;</pre><div class='docblock'><p>The callback invoked when collecting the names of an object&#39;s properties.</p>
 
 <ul>
@@ -68,7 +68,7 @@ accumulate the names of object&#39;s properties.</li>
 <p>Property name accumulators are used by <code>JSObjectCopyPropertyNames</code>
 and JavaScript <code>for...in</code> loops.</p>
 
-<p>Use <code>JSPropertyNameAccumulatorAddName</code> to add property names to
+<p>Use <a href="fn.JSPropertyNameAccumulatorAddName.html"><code>JSPropertyNameAccumulatorAddName</code></a> to add property names to
 accumulator. A class&#39;s <code>getPropertyNames</code> callback only needs to
 provide the names of properties that the class vends through a
 custom <code>getProperty</code> or <code>setProperty</code> callback. Other properties,

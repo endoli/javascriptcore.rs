@@ -48,8 +48,19 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore_sys/javascriptcore_sys.rs.html#53' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSPropertyNameArrayRef = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="struct" href="../javascriptcore_sys/struct.OpaqueJSPropertyNameArray.html" title="struct javascriptcore_sys::OpaqueJSPropertyNameArray">OpaqueJSPropertyNameArray</a>;</pre><div class='docblock'><p>An array of JavaScript property names.</p>
+               </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#85' title='goto source code'>[src]</a></span></h1>
+<pre class='rust typedef'>type JSPropertyNameArrayRef = <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a>OpaqueJSPropertyNameArray;</pre><div class='docblock'><p>An array of JavaScript property names.</p>
+
+<p>Values of this type are obtained via <a href="fn.JSObjectCopyPropertyNames.html"><code>JSObjectCopyPropertyNames</code></a>.</p>
+
+<p>Operations:</p>
+
+<ul>
+<li><a href="fn.JSPropertyNameArrayGetCount.html"><code>JSPropertyNameArrayGetCount</code></a></li>
+<li><a href="fn.JSPropertyNameArrayGetNameAtIndex.html"><code>JSPropertyNameArrayGetNameAtIndex</code></a></li>
+<li><a href="fn.JSPropertyNameArrayRelease.html"><code>JSPropertyNameArrayRelease</code></a></li>
+<li><a href="fn.JSPropertyNameArrayRetain.html"><code>JSPropertyNameArrayRetain</code></a></li>
+</ul>
 </div></section>
     <section id='search' class="content hidden"></section>
 
