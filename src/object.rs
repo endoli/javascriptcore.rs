@@ -25,6 +25,29 @@ impl JSObject {
         }
     }
 
+    /// Tests whether an object has a given property.
+    ///
+    /// * `name`: A value that can be converted to a `JSString` containing
+    ///   the property's name.
+    ///
+    /// Returns `true` if the object has a property whose name matches
+    /// `name`, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::JSObject;
+    /// # fn has_property(obj: JSObject) {
+    /// if obj.has_property("id") {
+    ///     // ...
+    /// }
+    /// # }
+    /// ```
+    pub fn has_property<S>(&self, name: S) -> bool
+    where
+        S: Into<JSString>,
+    {
+        unsafe { sys::JSObjectHasProperty(self.value.ctx, self.raw, name.into().raw) }
+    }
+
     /// Gets a property from an object.
     ///
     /// * `name`: A value that can be converted to a `JSString` containing
@@ -101,6 +124,15 @@ impl Iterator for JSObjectPropertyNameIter {
 #[cfg(test)]
 mod tests {
     use super::super::{JSContext, JSValue};
+
+    #[test]
+    fn can_has_property() {
+        let ctx = JSContext::default();
+        let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("value");
+        let o = v.as_object().expect("object");
+        assert!(o.has_property("id"));
+        assert!(o.has_property("no-such-value") == false);
+    }
 
     #[test]
     fn can_get_property() {
