@@ -19,6 +19,7 @@ mod base;
 mod context;
 mod contextgroup;
 mod exception;
+mod object;
 mod string;
 mod value;
 
@@ -61,10 +62,12 @@ pub struct JSException {
 
 /// A JavaScript object.
 ///
-/// An `JSObject` is a `JSValue`.
+/// An `JSObject` is a `JSValue`. This is implemented by having
+/// `JSObject` implement the `Deref` trait so that anything that
+/// expects a `JSValue` can receive a `JSObject` as well.
 pub struct JSObject {
     raw: sys::JSObjectRef,
-    ctx: sys::JSContextRef,
+    value: JSValue,
 }
 
 /// A UTF16 character buffer.
