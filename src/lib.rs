@@ -32,7 +32,6 @@ pub use sys::{JSType, JSTypedArrayType};
 ///
 /// TODO: Fix `JSObjectMake` reference once it has been wrapped.
 pub struct JSClass {
-    #[allow(dead_code)]
     raw: sys::JSClassRef,
 }
 
@@ -64,7 +63,6 @@ pub struct JSException {
 ///
 /// An `JSObject` is a `JSValue`.
 pub struct JSObject {
-    #[allow(dead_code)]
     raw: sys::JSObjectRef,
 }
 
@@ -73,7 +71,6 @@ pub struct JSObject {
 /// The fundamental string representation in JavaScript.
 #[derive(Debug, Eq)]
 pub struct JSString {
-    #[allow(dead_code)]
     raw: sys::JSStringRef,
 }
 
@@ -83,7 +80,6 @@ pub struct JSString {
 /// on them.
 #[derive(Debug)]
 pub struct JSValue {
-    #[allow(dead_code)]
     raw: sys::JSValueRef,
     ctx: sys::JSContextRef,
 }
