@@ -218,6 +218,42 @@
 <span id="173">173</span>
 <span id="174">174</span>
 <span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
 </pre><pre class="rust ">
 <span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class="comment">// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -234,10 +270,15 @@
     <span class="doccomment">/// Gets an iterator over the names of an object&#39;s enumerable properties.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use javascriptcore::{JSObject, JSString};</span>
-    <span class="doccomment">/// # fn get_property_names(obj: JSObject) {</span>
-    <span class="doccomment">/// let names: Vec&lt;JSString&gt; = obj.property_names().collect();</span>
-    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};</span>
+    <span class="doccomment">/// let ctx = JSContext::default();</span>
+    <span class="doccomment">/// let v = JSValue::new_from_json(&amp;ctx, &quot;{\&quot;id\&quot;: 123}&quot;).expect(&quot;valid object&quot;);</span>
+    <span class="doccomment">/// let o = v.as_object().expect(&quot;object&quot;);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let names: Vec&lt;String&gt; = o.property_names()</span>
+    <span class="doccomment">///                           .map(|s| s.to_string())</span>
+    <span class="doccomment">///                           .collect();</span>
+    <span class="doccomment">/// assert_eq!(names, vec![&quot;id&quot;]);</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">property_names</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">JSObjectPropertyNameIter</span> {
         <span class="ident">JSObjectPropertyNameIter</span> {
@@ -255,12 +296,12 @@
     <span class="doccomment">/// `name`, otherwise `false`.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// ```</span>
-    <span class="doccomment">/// # use javascriptcore::JSObject;</span>
-    <span class="doccomment">/// # fn has_property(obj: JSObject) {</span>
-    <span class="doccomment">/// if obj.has_property(&quot;id&quot;) {</span>
-    <span class="doccomment">///     // ...</span>
-    <span class="doccomment">/// }</span>
-    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};</span>
+    <span class="doccomment">/// let ctx = JSContext::default();</span>
+    <span class="doccomment">/// let v = JSValue::new_from_json(&amp;ctx, &quot;{\&quot;id\&quot;: 123}&quot;).expect(&quot;valid object&quot;);</span>
+    <span class="doccomment">/// let o = v.as_object().expect(&quot;object&quot;);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert!(o.has_property(&quot;id&quot;));</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_property</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>
     <span class="kw">where</span>
@@ -276,6 +317,18 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Returns the property&#39;s value if object has the property, otherwise</span>
     <span class="doccomment">/// the undefined value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};</span>
+    <span class="doccomment">/// let ctx = JSContext::default();</span>
+    <span class="doccomment">/// let v = JSValue::new_from_json(&amp;ctx, &quot;{\&quot;id\&quot;: 123}&quot;).expect(&quot;valid object&quot;);</span>
+    <span class="doccomment">/// let o = v.as_object().expect(&quot;object&quot;);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let n = o.get_property(&quot;id&quot;);</span>
+    <span class="doccomment">/// assert!(n.is_number());</span>
+    <span class="doccomment">/// // Remember that this will be an f64 now!</span>
+    <span class="doccomment">/// assert_eq!(n.as_number().expect(&quot;number&quot;), 123.0);</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_property</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="ident">JSValue</span>
     <span class="kw">where</span>
         <span class="ident">S</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">JSString</span><span class="op">&gt;</span>,
@@ -300,6 +353,21 @@
     <span class="doccomment">/// `get_property` with a string containing `index`,</span>
     <span class="doccomment">/// but `get_property_at_index` provides optimized access to</span>
     <span class="doccomment">/// numeric properties.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};</span>
+    <span class="doccomment">/// let ctx = JSContext::default();</span>
+    <span class="doccomment">/// let v = JSValue::new_from_json(&amp;ctx, &quot;[3, true, \&quot;abc\&quot;]&quot;).expect(&quot;valid array&quot;);</span>
+    <span class="doccomment">/// let o = v.as_object().expect(&quot;object&quot;);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// let n = o.get_property_at_index(0).as_number().expect(&quot;number&quot;);</span>
+    <span class="doccomment">/// let b = o.get_property_at_index(1).as_boolean();</span>
+    <span class="doccomment">/// let s = o.get_property_at_index(2).as_string().expect(&quot;string&quot;);</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// assert_eq!(n, 3.0);</span>
+    <span class="doccomment">/// assert_eq!(b, true);</span>
+    <span class="doccomment">/// assert_eq!(s, &quot;abc&quot;.into());</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_property_at_index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">u32</span>) <span class="op">-&gt;</span> <span class="ident">JSValue</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">e</span>: <span class="ident">sys</span>::<span class="ident">JSValueRef</span> <span class="op">=</span> <span class="ident">ptr</span>::<span class="ident">null_mut</span>();
         <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">sys</span>::<span class="ident">JSObjectGetPropertyAtIndex</span>(<span class="self">self</span>.<span class="ident">value</span>.<span class="ident">ctx</span>, <span class="self">self</span>.<span class="ident">raw</span>, <span class="ident">index</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">e</span>) };
@@ -310,6 +378,10 @@
     }
 }
 
+<span class="doccomment">/// A `JSObject` can be dereferenced to return the underlying `JSValue`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This lets a `JSObject` instance be used where a `JSValue` instance is</span>
+<span class="doccomment">/// expected.</span>
 <span class="kw">impl</span> <span class="ident">Deref</span> <span class="kw">for</span> <span class="ident">JSObject</span> {
     <span class="kw">type</span> <span class="ident">Target</span> <span class="op">=</span> <span class="ident">JSValue</span>;
 
@@ -452,7 +524,6 @@
         window.rootPath = "../../";
         window.currentCrate = "javascriptcore";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

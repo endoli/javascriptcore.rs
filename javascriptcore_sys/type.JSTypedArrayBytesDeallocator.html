@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#109-113' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSTypedArrayBytesDeallocator = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern fn(_: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="enum" href="https://doc.rust-lang.org/nightly/std/os/raw/enum.c_void.html" title="enum std::os::raw::c_void">c_void</a>, _: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="enum" href="https://doc.rust-lang.org/nightly/std/os/raw/enum.c_void.html" title="enum std::os::raw::c_void">c_void</a>)&gt;;</pre><div class='docblock'><p>A function used to deallocate bytes passed to a Typed Array constructor.
+<pre class='rust typedef'>type JSTypedArrayBytesDeallocator = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern &quot;C&quot; fn(_: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="enum" href="https://doc.rust-lang.org/nightly/std/os/raw/enum.c_void.html" title="enum std::os::raw::c_void">c_void</a>, _: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="enum" href="https://doc.rust-lang.org/nightly/std/os/raw/enum.c_void.html" title="enum std::os::raw::c_void">c_void</a>)&gt;;</pre><div class='docblock'><p>A function used to deallocate bytes passed to a Typed Array constructor.
 The function should take two arguments. The first is a pointer to
 the bytes that were originally passed to the Typed Array constructor.
 The second is a pointer to additional information desired at the time
@@ -111,7 +111,6 @@ the bytes are to be freed.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1383-1389' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSObjectSetPropertyAtIndex(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;object: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;propertyIndex: <a class="type" href="https://doc.rust-lang.org/nightly/std/os/raw/type.c_uint.html" title="type std::os::raw::c_uint">c_uint</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;value: <a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;exception: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a><br>)</pre><div class='docblock'><p>Sets a property on an object by numeric index.</p>
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSObjectSetPropertyAtIndex(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;object: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;propertyIndex: <a class="type" href="https://doc.rust-lang.org/nightly/std/os/raw/type.c_uint.html" title="type std::os::raw::c_uint">c_uint</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;value: <a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;exception: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a><br>)</pre><div class='docblock'><p>Sets a property on an object by numeric index.</p>
 
 <ul>
 <li><code>ctx</code>: The execution context to use.</li>
@@ -122,7 +122,6 @@ numeric properties.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1727-1731' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSStringGetUTF8CString(<br>&nbsp;&nbsp;&nbsp;&nbsp;string: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;buffer: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="https://doc.rust-lang.org/nightly/std/os/raw/type.c_char.html" title="type std::os::raw::c_char">c_char</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;bufferSize: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></pre><div class='docblock'><p>Converts a JavaScript string into a null-terminated UTF8 string,
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSStringGetUTF8CString(<br>&nbsp;&nbsp;&nbsp;&nbsp;string: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;buffer: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="https://doc.rust-lang.org/nightly/std/os/raw/type.c_char.html" title="type std::os::raw::c_char">c_char</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;bufferSize: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></pre><div class='docblock'><p>Converts a JavaScript string into a null-terminated UTF8 string,
 and copies the result into an external byte buffer.</p>
 
 <ul>
@@ -121,7 +121,6 @@ bytes in size, behavior is undefined.</li>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

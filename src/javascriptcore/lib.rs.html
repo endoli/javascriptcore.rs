@@ -160,6 +160,48 @@
 <span id="115">115</span>
 <span id="116">116</span>
 <span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
+<span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
 </pre><pre class="rust ">
 <span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class="comment">// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -264,6 +306,12 @@
 <span class="doccomment">/// converted to a `JSString` instead. This allows the</span>
 <span class="doccomment">/// caller to pass an `&amp;str` or `String`, or to cache a</span>
 <span class="doccomment">/// previously converted `JSString` and pass that directly.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// A `JSString` is not a `JSValue` and so it can not be</span>
+<span class="doccomment">/// passed where a `JSValue` is expected. Instead, it must</span>
+<span class="doccomment">/// be boxed using [`JSValue::new_string`].</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [`JSValue::new_string`]: struct.JSValue.html#method.new_string</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">JSString</span> {
     <span class="ident">raw</span>: <span class="ident">sys</span>::<span class="ident">JSStringRef</span>,
@@ -273,6 +321,42 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// The base type for all JavaScript values, and polymorphic functions</span>
 <span class="doccomment">/// on them.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// All values passed between Rust and JavaScriptCore will be boxed with</span>
+<span class="doccomment">/// a `JSValue`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Creating JS values</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// * [`JSValue::new_undefined`]</span>
+<span class="doccomment">/// * [`JSValue::new_null`]</span>
+<span class="doccomment">/// * [`JSValue::new_boolean`]</span>
+<span class="doccomment">/// * [`JSValue::new_number`]</span>
+<span class="doccomment">/// * [`JSValue::new_string`]</span>
+<span class="doccomment">/// * [`JSValue::new_from_json`]</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # JSON</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// * [`JSValue::new_from_json`]</span>
+<span class="doccomment">/// * [`JSValue::to_json_string`]</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Retrieving Rust values</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// * [`JSValue::as_boolean`]</span>
+<span class="doccomment">/// * [`JSValue::as_number`]</span>
+<span class="doccomment">/// * [`JSValue::as_object`]</span>
+<span class="doccomment">/// * [`JSValue::as_string`]</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// [`JSValue::new_undefined`]: #method.new_undefined</span>
+<span class="doccomment">/// [`JSValue::new_null`]: #method.new_null</span>
+<span class="doccomment">/// [`JSValue::new_boolean`]: #method.new_boolean</span>
+<span class="doccomment">/// [`JSValue::new_number`]: #method.new_number</span>
+<span class="doccomment">/// [`JSValue::new_string`]: #method.new_string</span>
+<span class="doccomment">/// [`JSValue::new_from_json`]: #method.new_from_json</span>
+<span class="doccomment">/// [`JSValue::to_json_string`]: #method.to_json_string</span>
+<span class="doccomment">/// [`JSValue::as_boolean`]: #method.as_boolean</span>
+<span class="doccomment">/// [`JSValue::as_number`]: #method.as_number</span>
+<span class="doccomment">/// [`JSValue::as_object`]: #method.as_object</span>
+<span class="doccomment">/// [`JSValue::as_string`]: #method.as_string</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">JSValue</span> {
     <span class="ident">raw</span>: <span class="ident">sys</span>::<span class="ident">JSValueRef</span>,
@@ -336,7 +420,6 @@
         window.rootPath = "../../";
         window.currentCrate = "javascriptcore";
     </script>
-    <script src="../../jquery.js"></script>
     <script src="../../main.js"></script>
     <script defer src="../../search-index.js"></script>
 </body>

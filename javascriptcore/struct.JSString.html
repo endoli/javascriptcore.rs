@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore/lib.rs.html#105-107' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/javascriptcore/lib.rs.html#111-113' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct JSString { /* fields omitted */ }</pre><div class='docblock'><p>A UTF16 character buffer.</p>
 
 <p>The fundamental string representation in JavaScript. Since
@@ -76,6 +76,10 @@ generics so that they can take anything that can be
 converted to a <code>JSString</code> instead. This allows the
 caller to pass an <code>&amp;str</code> or <code>String</code>, or to cache a
 previously converted <code>JSString</code> and pass that directly.</p>
+
+<p>A <code>JSString</code> is not a <code>JSValue</code> and so it can not be
+passed where a <code>JSValue</code> is expected. Instead, it must
+be boxed using <a href="struct.JSValue.html#method.new_string"><code>JSValue::new_string</code></a>.</p>
 </div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/string.rs.html#11-26' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.to_string' class="method"><span id='to_string.v' class='invisible'><code>fn <a href='#method.to_string' class='fnname'>to_string</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/collections/string/struct.String.html" title="struct collections::string::String">String</a></code></span></h4>
 <div class='docblock'><p>Convert this <code>JSString</code> to a <code>String</code>.</p>
@@ -93,10 +97,10 @@ previously converted <code>JSString</code> and pass that directly.</p>
 </div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/collections/string/struct.String.html" title="struct collections::string::String">String</a>&gt; for <a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/string.rs.html#47-52' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.from-1' class="method"><span id='from.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(s: <a class="struct" href="https://doc.rust-lang.org/nightly/collections/string/struct.String.html" title="struct collections::string::String">String</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Performs the conversion.</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/lib.rs.html#104' title='goto source code'>[src]</a></span></h3>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/lib.rs.html#110' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> for <a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/lib.rs.html#104' title='goto source code'>[src]</a></span></h3>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html" title="trait core::cmp::Eq">Eq</a> for <a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/lib.rs.html#110' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'></div></section>
     <section id='search' class="content hidden"></section>
 
@@ -154,7 +158,6 @@ previously converted <code>JSString</code> and pass that directly.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

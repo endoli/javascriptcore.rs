@@ -48,12 +48,39 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/javascriptcore/lib.rs.html#114-117' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/javascriptcore/lib.rs.html#156-159' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct JSValue { /* fields omitted */ }</pre><div class='docblock'><p>A JavaScript value.</p>
 
 <p>The base type for all JavaScript values, and polymorphic functions
 on them.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/value.rs.html#11-262' title='goto source code'>[src]</a></span></h3>
+
+<p>All values passed between Rust and JavaScriptCore will be boxed with
+a <code>JSValue</code>.</p>
+
+<h1 id='creating-js-values' class='section-header'><a href='#creating-js-values'>Creating JS values</a></h1>
+<ul>
+<li><a href="#method.new_undefined"><code>JSValue::new_undefined</code></a></li>
+<li><a href="#method.new_null"><code>JSValue::new_null</code></a></li>
+<li><a href="#method.new_boolean"><code>JSValue::new_boolean</code></a></li>
+<li><a href="#method.new_number"><code>JSValue::new_number</code></a></li>
+<li><a href="#method.new_string"><code>JSValue::new_string</code></a></li>
+<li><a href="#method.new_from_json"><code>JSValue::new_from_json</code></a></li>
+</ul>
+
+<h1 id='json' class='section-header'><a href='#json'>JSON</a></h1>
+<ul>
+<li><a href="#method.new_from_json"><code>JSValue::new_from_json</code></a></li>
+<li><a href="#method.to_json_string"><code>JSValue::to_json_string</code></a></li>
+</ul>
+
+<h1 id='retrieving-rust-values' class='section-header'><a href='#retrieving-rust-values'>Retrieving Rust values</a></h1>
+<ul>
+<li><a href="#method.as_boolean"><code>JSValue::as_boolean</code></a></li>
+<li><a href="#method.as_number"><code>JSValue::as_number</code></a></li>
+<li><a href="#method.as_object"><code>JSValue::as_object</code></a></li>
+<li><a href="#method.as_string"><code>JSValue::as_string</code></a></li>
+</ul>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/value.rs.html#11-423' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.new_undefined' class="method"><span id='new_undefined.v' class='invisible'><code>fn <a href='#method.new_undefined' class='fnname'>new_undefined</a>(ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript value of the <code>undefined</code> type.</p>
 
@@ -62,6 +89,12 @@ on them.</p>
 </ul>
 
 <p>Returns the unique <code>undefined</code> value.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_undefined</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_undefined</span>());</pre>
 </div><h4 id='method.new_null' class="method"><span id='new_null.v' class='invisible'><code>fn <a href='#method.new_null' class='fnname'>new_null</a>(ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript value of the <code>null</code> type.</p>
 
@@ -70,6 +103,12 @@ on them.</p>
 </ul>
 
 <p>Returns the unique <code>null</code> value.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_null</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_null</span>());</pre>
 </div><h4 id='method.new_boolean' class="method"><span id='new_boolean.v' class='invisible'><code>fn <a href='#method.new_boolean' class='fnname'>new_boolean</a>(ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>, boolean: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript value of the <code>boolean</code> type.</p>
 
@@ -79,6 +118,12 @@ on them.</p>
 </ul>
 
 <p>Returns a <code>JSValue</code> of the <code>boolean</code> type, representing the value of <code>boolean</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_boolean</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="bool-val">true</span> <span class="comment">/* or false */</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_boolean</span>());</pre>
 </div><h4 id='method.new_number' class="method"><span id='new_number.v' class='invisible'><code>fn <a href='#method.new_number' class='fnname'>new_number</a>(ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>, number: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript value of the <code>number</code> type.</p>
 
@@ -88,17 +133,35 @@ on them.</p>
 </ul>
 
 <p>Returns a <code>JSValue</code> of the <code>number</code> type, representing the value of <code>number</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_number</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="number">3.0f64</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_number</span>());
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_number</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="number">3.0f32</span> <span class="kw">as</span> <span class="ident">f64</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_number</span>());
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_number</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="number">3</span> <span class="kw">as</span> <span class="ident">f64</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_number</span>());</pre>
 </div><h4 id='method.new_string' class="method"><span id='new_string.v' class='invisible'><code>fn <a href='#method.new_string' class='fnname'>new_string</a>&lt;S:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>&gt;&gt;(ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>, string: S) -&gt; Self</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript value of the string type.</p>
 
 <ul>
 <li><code>ctx</code>: The execution context to use.</li>
 <li><code>string</code>: The <code>JSString</code> to assign to the newly created
-JSValue<code>. The newly created</code>JSValue` retains string, and
+<code>JSValue</code>. The newly created <code>JSValue</code> retains string, and
 releases it upon garbage collection.</li>
 </ul>
 
 <p>Returns a <code>JSValue</code> of the <code>string</code> type, representing the value of <code>string</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_string</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;abc&quot;</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_string</span>());</pre>
 </div><h4 id='method.new_from_json' class="method"><span id='new_from_json.v' class='invisible'><code>fn <a href='#method.new_from_json' class='fnname'>new_from_json</a>&lt;S:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.Into.html" title="trait core::convert::Into">Into</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>&gt;&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: &amp;<a class="struct" href="../javascriptcore/struct.JSContext.html" title="struct javascriptcore::JSContext">JSContext</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;string: S<br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;Self, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript value from a JSON formatted string.</p>
 
@@ -110,6 +173,12 @@ the JSON string to be parsed.</li>
 
 <p>Returns a <code>Result</code> with the <code>JSValue</code> containing the parsed value, or an error
 if the input is invalid.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;true&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_boolean</span>());</pre>
 </div><h4 id='method.to_json_string' class="method"><span id='to_json_string.v' class='invisible'><code>fn <a href='#method.to_json_string' class='fnname'>to_json_string</a>(&amp;self, indent: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
 <div class='docblock'><p>Creates a JavaScript string containing the JSON serialized representation of a JS value.</p>
 
@@ -121,34 +190,90 @@ The size of the indent is clamped to <code>10</code> spaces.</li>
 
 <p>Returns either a <code>JSString</code> with the result of serialization, or an
 exception if one was thrown.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_boolean</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="bool-val">false</span>);
+<span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">to_json_string</span>(<span class="number">0</span>).<span class="ident">unwrap</span>();
+<span class="comment">// The result is a `JSString`, so we jump through a hoop here.</span>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>, <span class="string">&quot;false&quot;</span>.<span class="ident">into</span>());</pre>
 </div><h4 id='method.get_type' class="method"><span id='get_type.v' class='invisible'><code>fn <a href='#method.get_type' class='fnname'>get_type</a>(&amp;self) -&gt; <a class="enum" href="../javascriptcore/enum.JSType.html" title="enum javascriptcore::JSType">JSType</a></code></span></h4>
 <div class='docblock'><p>Returns a JavaScript value&#39;s type.</p>
 
 <p>Returns a value of type <code>JSType</code> that identifies <code>value</code>&#39;s type.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;true&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">Boolean</span>);
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;5.0&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">Number</span>);
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;null&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">get_type</span>(), <span class="ident">JSType</span>::<span class="ident">Null</span>);</pre>
 </div><h4 id='method.is_undefined' class="method"><span id='is_undefined.v' class='invisible'><code>fn <a href='#method.is_undefined' class='fnname'>is_undefined</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
 <div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>undefined</code> type.</p>
 
 <p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>undefined</code> type, otherwise <code>false</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_undefined</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_undefined</span>());</pre>
 </div><h4 id='method.is_null' class="method"><span id='is_null.v' class='invisible'><code>fn <a href='#method.is_null' class='fnname'>is_null</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
 <div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>null</code> type.</p>
 
 <p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>null</code> type, otherwise <code>false</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;null&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_null</span>());</pre>
 </div><h4 id='method.is_boolean' class="method"><span id='is_boolean.v' class='invisible'><code>fn <a href='#method.is_boolean' class='fnname'>is_boolean</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
 <div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>boolean</code> type.</p>
 
 <p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>boolean</code> type, otherwise <code>false</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;false&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_boolean</span>());</pre>
 </div><h4 id='method.is_number' class="method"><span id='is_number.v' class='invisible'><code>fn <a href='#method.is_number' class='fnname'>is_number</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
 <div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>number</code> type.</p>
 
 <p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>number</code> type, otherwise <code>false</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;-23&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_number</span>());</pre>
 </div><h4 id='method.is_string' class="method"><span id='is_string.v' class='invisible'><code>fn <a href='#method.is_string' class='fnname'>is_string</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
 <div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>string</code> type.</p>
 
 <p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>string</code> type, otherwise <code>false</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;\&quot;Pueri et puellae\&quot;&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;value&quot;</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_string</span>());</pre>
 </div><h4 id='method.is_object' class="method"><span id='is_object.v' class='invisible'><code>fn <a href='#method.is_object' class='fnname'>is_object</a>(&amp;self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
 <div class='docblock'><p>Tests whether a JavaScript value&#39;s type is the <code>object</code> type.</p>
 
 <p>Returns <code>true</code> if <code>value</code>&#39;s type is the <code>object</code> type, otherwise <code>false</code>.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;{\&quot;id\&quot;: 123}&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;valid object&quot;</span>);
+<span class="macro">assert</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">is_object</span>());</pre>
 </div><h4 id='method.is_object_of_class' class="method"><span id='is_object_of_class.v' class='invisible'><code>fn <a href='#method.is_object_of_class' class='fnname'>is_object_of_class</a>(&amp;self, js_class: &amp;<a class="struct" href="../javascriptcore/struct.JSClass.html" title="struct javascriptcore::JSClass">JSClass</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
 <div class='docblock'><p>Tests whether a JavaScript value is an <code>object</code> with a given class in its class chain.</p>
 
@@ -170,27 +295,58 @@ class chain, otherwise <code>false</code>.</p>
 <div class='docblock'><p>Converts a JavaScript value to boolean and returns the resulting boolean.</p>
 
 <p>Returns the boolean result of conversion.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_boolean</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="bool-val">false</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">v</span>.<span class="ident">as_boolean</span>(), <span class="bool-val">false</span>);</pre>
 </div><h4 id='method.as_number' class="method"><span id='as_number.v' class='invisible'><code>fn <a href='#method.as_number' class='fnname'>as_number</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
 <div class='docblock'><p>Converts a JavaScript value to number and returns the resulting number.</p>
 
 <p>Returns either the numeric result of conversion, or an exception
 if one was thrown.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_number</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="number">5.0</span>);
+<span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">as_number</span>().<span class="ident">expect</span>(<span class="string">&quot;valid number&quot;</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">n</span>, <span class="number">5.0</span>);</pre>
 </div><h4 id='method.as_string' class="method"><span id='as_string.v' class='invisible'><code>fn <a href='#method.as_string' class='fnname'>as_string</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../javascriptcore/struct.JSString.html" title="struct javascriptcore::JSString">JSString</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
 <div class='docblock'><p>Converts a JavaScript value to string and copies the result into a JavaScript string.</p>
 
 <p>Returns either <code>JSString</code> with the result of conversion, or an
 exception if one was thrown.  Ownership follows the Create Rule.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_string</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;Cave canem.&quot;</span>);
+<span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">as_string</span>().<span class="ident">expect</span>(<span class="string">&quot;valid string&quot;</span>);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">s</span>, <span class="string">&quot;Cave canem.&quot;</span>.<span class="ident">into</span>());</pre>
 </div><h4 id='method.as_object' class="method"><span id='as_object.v' class='invisible'><code>fn <a href='#method.as_object' class='fnname'>as_object</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="../javascriptcore/struct.JSObject.html" title="struct javascriptcore::JSObject">JSObject</a>, <a class="struct" href="../javascriptcore/struct.JSException.html" title="struct javascriptcore::JSException">JSException</a>&gt;</code></span></h4>
 <div class='docblock'><p>Converts a JavaScript value to object and returns the resulting object.</p>
 
 <p>Returns either the <code>JSObject</code> result of conversion, or an exception
 if one was thrown.</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> for <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/value.rs.html#264-268' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.eq' class="method"><span id='eq.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, other: &amp;<a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
+
+<pre class="rust rust-example-rendered">
+<span class="kw">let</span> <span class="ident">ctx</span> <span class="op">=</span> <span class="ident">JSContext</span>::<span class="ident">default</span>();
+
+<span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">JSValue</span>::<span class="ident">new_from_json</span>(<span class="kw-2">&amp;</span><span class="ident">ctx</span>, <span class="string">&quot;{\&quot;id\&quot;: 123}&quot;</span>).<span class="ident">expect</span>(<span class="string">&quot;valid object&quot;</span>);
+<span class="kw">let</span> <span class="ident">o</span> <span class="op">=</span> <span class="ident">v</span>.<span class="ident">as_object</span>().<span class="ident">expect</span>(<span class="string">&quot;object&quot;</span>);
+<span class="comment">// We now have an object that we can inspect.</span></pre>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> for <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/value.rs.html#429-433' title='goto source code'>[src]</a></span></h3>
+<div class='docblock'><p>Implement partial equality checks for <code>JSValue</code>.</p>
+
+<p>These are performed in the same manner as <code>===</code> (strict
+equality) in JavaScript.</p>
+</div><div class='impl-items'><h4 id='method.eq' class="method"><span id='eq.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, other: &amp;<a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code></span></h4>
 <div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
 </div><h4 id='method.ne' class="method"><span id='ne.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: &amp;Rhs) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
 <div class='docblock'><p>This method tests for <code>!=</code>.</p>
-</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/lib.rs.html#113' title='goto source code'>[src]</a></span></h3>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../javascriptcore/struct.JSValue.html" title="struct javascriptcore::JSValue">JSValue</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/javascriptcore/lib.rs.html#155' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
 </div></div></section>
@@ -250,7 +406,6 @@ if one was thrown.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

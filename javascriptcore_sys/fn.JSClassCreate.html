@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1059' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSClassCreate(<br>&nbsp;&nbsp;&nbsp;&nbsp;definition: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSClassRef.html" title="type javascriptcore_sys::JSClassRef">JSClassRef</a></pre><div class='docblock'><p>Creates a JavaScript class suitable for use with <code>JSObjectMake</code>.</p>
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSClassCreate(<br>&nbsp;&nbsp;&nbsp;&nbsp;definition: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="struct" href="../javascriptcore_sys/struct.JSClassDefinition.html" title="struct javascriptcore_sys::JSClassDefinition">JSClassDefinition</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSClassRef.html" title="type javascriptcore_sys::JSClassRef">JSClassRef</a></pre><div class='docblock'><p>Creates a JavaScript class suitable for use with <code>JSObjectMake</code>.</p>
 
 <ul>
 <li><code>definition</code>: A <code>JSClassDefinition</code> that defines the class.</li>
@@ -114,7 +114,6 @@ the Create Rule.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#512-516' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSValueToObject(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;value: <a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;exception: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a></pre><div class='docblock'><p>Converts a JavaScript value to object and returns the resulting object.</p>
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSValueToObject(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;value: <a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;exception: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*mut </a><a class="type" href="../javascriptcore_sys/type.JSValueRef.html" title="type javascriptcore_sys::JSValueRef">JSValueRef</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a></pre><div class='docblock'><p>Converts a JavaScript value to object and returns the resulting object.</p>
 
 <ul>
 <li><code>ctx</code>: The execution context to use.</li>
@@ -118,7 +118,6 @@ an exception is thrown.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

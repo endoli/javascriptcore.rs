@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1739' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSStringIsEqual(a: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>, b: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></pre><div class='docblock'><p>Tests whether two JavaScript strings match.</p>
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSStringIsEqual(a: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>, b: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></pre><div class='docblock'><p>Tests whether two JavaScript strings match.</p>
 
 <ul>
 <li><code>a</code>: The first <code>JSString</code> to test.</li>
@@ -114,7 +114,6 @@
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1108-1112' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSObjectMakeFunctionWithCallback(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;name: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;callAsFunction: <a class="type" href="../javascriptcore_sys/type.JSObjectCallAsFunctionCallback.html" title="type javascriptcore_sys::JSObjectCallAsFunctionCallback">JSObjectCallAsFunctionCallback</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a></pre><div class='docblock'><p>Convenience method for creating a JavaScript function with a given
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSObjectMakeFunctionWithCallback(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSContextRef.html" title="type javascriptcore_sys::JSContextRef">JSContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;name: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;callAsFunction: <a class="type" href="../javascriptcore_sys/type.JSObjectCallAsFunctionCallback.html" title="type javascriptcore_sys::JSObjectCallAsFunctionCallback">JSObjectCallAsFunctionCallback</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a></pre><div class='docblock'><p>Convenience method for creating a JavaScript function with a given
 callback as its implementation.</p>
 
 <ul>
@@ -120,7 +120,6 @@ the default function prototype.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

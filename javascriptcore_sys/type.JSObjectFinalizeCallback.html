@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#589-590' title='goto source code'>[src]</a></span></h1>
-<pre class='rust typedef'>type JSObjectFinalizeCallback = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern fn(_: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>)&gt;;</pre><div class='docblock'><p>The callback invoked when an object is finalized (prepared
+<pre class='rust typedef'>type JSObjectFinalizeCallback = <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;unsafe extern &quot;C&quot; fn(_: <a class="type" href="../javascriptcore_sys/type.JSObjectRef.html" title="type javascriptcore_sys::JSObjectRef">JSObjectRef</a>)&gt;;</pre><div class='docblock'><p>The callback invoked when an object is finalized (prepared
 for garbage collection). An object may be finalized on any thread.</p>
 
 <ul>
@@ -126,7 +126,6 @@ all functions that have a <code>JSContextRef</code> parameter.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

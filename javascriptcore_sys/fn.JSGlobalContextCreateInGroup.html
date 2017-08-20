@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1590-1593' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSGlobalContextCreateInGroup(<br>&nbsp;&nbsp;&nbsp;&nbsp;group: <a class="type" href="../javascriptcore_sys/type.JSContextGroupRef.html" title="type javascriptcore_sys::JSContextGroupRef">JSContextGroupRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;globalObjectClass: <a class="type" href="../javascriptcore_sys/type.JSClassRef.html" title="type javascriptcore_sys::JSClassRef">JSClassRef</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSGlobalContextRef.html" title="type javascriptcore_sys::JSGlobalContextRef">JSGlobalContextRef</a></pre><div class='docblock'><p>Creates a global JavaScript execution context in the context
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSGlobalContextCreateInGroup(<br>&nbsp;&nbsp;&nbsp;&nbsp;group: <a class="type" href="../javascriptcore_sys/type.JSContextGroupRef.html" title="type javascriptcore_sys::JSContextGroupRef">JSContextGroupRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;globalObjectClass: <a class="type" href="../javascriptcore_sys/type.JSClassRef.html" title="type javascriptcore_sys::JSClassRef">JSClassRef</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSGlobalContextRef.html" title="type javascriptcore_sys::JSGlobalContextRef">JSGlobalContextRef</a></pre><div class='docblock'><p>Creates a global JavaScript execution context in the context
 group provided.</p>
 
 <p><code>JSGlobalContextCreateInGroup</code> allocates a global object and
@@ -123,7 +123,6 @@ object. Pass NULL to use the default object class.</li>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

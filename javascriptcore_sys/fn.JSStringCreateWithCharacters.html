@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1661' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSStringCreateWithCharacters(<br>&nbsp;&nbsp;&nbsp;&nbsp;chars: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="type" href="../javascriptcore_sys/type.JSChar.html" title="type javascriptcore_sys::JSChar">JSChar</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;numChars: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a></pre><div class='docblock'><p>Creates a JavaScript string from a buffer of Unicode characters.</p>
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSStringCreateWithCharacters(<br>&nbsp;&nbsp;&nbsp;&nbsp;chars: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="type" href="../javascriptcore_sys/type.JSChar.html" title="type javascriptcore_sys::JSChar">JSChar</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;numChars: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><br>) -&gt; <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a></pre><div class='docblock'><p>Creates a JavaScript string from a buffer of Unicode characters.</p>
 
 <ul>
 <li><code>chars</code>: The buffer of Unicode characters to copy into the
@@ -117,7 +117,6 @@ Create Rule.</p>
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

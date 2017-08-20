@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1643' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSGlobalContextSetName(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSGlobalContextRef.html" title="type javascriptcore_sys::JSGlobalContextRef">JSGlobalContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;name: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a><br>)</pre><div class='docblock'><p>Sets the remote debugging name for a context.</p>
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSGlobalContextSetName(<br>&nbsp;&nbsp;&nbsp;&nbsp;ctx: <a class="type" href="../javascriptcore_sys/type.JSGlobalContextRef.html" title="type javascriptcore_sys::JSGlobalContextRef">JSGlobalContextRef</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;name: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a><br>)</pre><div class='docblock'><p>Sets the remote debugging name for a context.</p>
 
 <ul>
 <li><code>ctx</code>: The <code>JSGlobalContext</code> that you want to name.</li>
@@ -112,7 +112,6 @@
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>

@@ -49,7 +49,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/javascriptcore_sys/lib.rs.html#1700' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe extern fn JSStringGetCharactersPtr(<br>&nbsp;&nbsp;&nbsp;&nbsp;string: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a><br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="type" href="../javascriptcore_sys/type.JSChar.html" title="type javascriptcore_sys::JSChar">JSChar</a></pre><div class='docblock'><p>Returns a pointer to the Unicode character buffer that
+<pre class='rust fn'>pub unsafe extern &quot;C&quot; fn JSStringGetCharactersPtr(<br>&nbsp;&nbsp;&nbsp;&nbsp;string: <a class="type" href="../javascriptcore_sys/type.JSStringRef.html" title="type javascriptcore_sys::JSStringRef">JSStringRef</a><br>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="type" href="../javascriptcore_sys/type.JSChar.html" title="type javascriptcore_sys::JSChar">JSChar</a></pre><div class='docblock'><p>Returns a pointer to the Unicode character buffer that
 serves as the backing store for a JavaScript string.</p>
 
 <ul>
@@ -116,7 +116,6 @@ as <code>string</code>&#39;s backing store, which will be deallocated when
         window.rootPath = "../";
         window.currentCrate = "javascriptcore_sys";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>
