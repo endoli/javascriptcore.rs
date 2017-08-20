@@ -5,7 +5,7 @@
 // except according to those terms.
 
 use std::ptr;
-use super::{JSClass, JSContext};
+use super::{JSClass, JSContext, JSString};
 use sys;
 
 impl JSContext {
@@ -37,6 +37,45 @@ impl JSContext {
     pub fn new_with_class(global_object_class: &JSClass) -> Self {
         JSContext { raw: unsafe { sys::JSGlobalContextCreate(global_object_class.raw) } }
     }
+
+    /// Gets a copy of the name of a context.
+    ///
+    /// A `JSContext`'s name is exposed for remote debugging
+    /// to make it easier to identify the context you would like to
+    /// attach to.
+    ///
+    /// Returns the name for this context, if there is one.
+    ///
+    /// ```
+    /// # use javascriptcore::JSContext;
+    /// let ctx = JSContext::new();
+    ///
+    /// // By default, a context has no name.
+    /// assert!(ctx.name().is_none());
+    /// ```
+    pub fn name(&self) -> Option<JSString> {
+        let r = unsafe { sys::JSGlobalContextCopyName(self.raw) };
+        if r.is_null() {
+            None
+        } else {
+            Some(JSString { raw: r })
+        }
+    }
+
+    /// Sets the remote debugging name for a context.
+    ///
+    /// * `name`: The remote debugging name to set.
+    ///
+    /// ```
+    /// # use javascriptcore::JSContext;
+    /// let ctx = JSContext::new();
+    ///
+    /// ctx.set_name("test thread");
+    /// assert_eq!(ctx.name().unwrap(), "test thread");
+    /// ```
+    pub fn set_name<S: Into<JSString>>(&self, name: S) {
+        unsafe { sys::JSGlobalContextSetName(self.raw, name.into().raw) }
+    }
 }
 
 impl Default for JSContext {
@@ -57,5 +96,19 @@ impl Default for JSContext {
 impl Drop for JSContext {
     fn drop(&mut self) {
         unsafe { sys::JSGlobalContextRelease(self.raw) }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::JSContext;
+
+    #[test]
+    fn context_names() {
+        let ctx = JSContext::new();
+        assert!(ctx.name().is_none());
+
+        ctx.set_name("test thread");
+        assert_eq!(ctx.name().unwrap(), "test thread");
     }
 }
