@@ -5,7 +5,7 @@
 // except according to those terms.
 
 use std::ptr;
-use super::{JSClass, JSContext, JSString};
+use super::{JSClass, JSContext, JSContextGroup, JSString};
 use sys;
 
 impl JSContext {
@@ -36,6 +36,15 @@ impl JSContext {
     ///   object.
     pub fn new_with_class(global_object_class: &JSClass) -> Self {
         JSContext { raw: unsafe { sys::JSGlobalContextCreate(global_object_class.raw) } }
+    }
+
+    /// Gets the context group to which a JavaScript execution context belongs.
+    pub fn group(&self) -> JSContextGroup {
+        let g = unsafe { sys::JSContextGetGroup(self.raw) };
+        unsafe {
+            sys::JSContextGroupRetain(g);
+        };
+        JSContextGroup { raw: g }
     }
 
     /// Gets a copy of the name of a context.
@@ -102,6 +111,13 @@ impl Drop for JSContext {
 #[cfg(test)]
 mod tests {
     use super::JSContext;
+
+    #[test]
+    fn context_group() {
+        let ctx = JSContext::new();
+        let g = ctx.group();
+        // Nothing to do with g now...
+    }
 
     #[test]
     fn context_names() {
