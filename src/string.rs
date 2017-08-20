@@ -37,6 +37,34 @@ impl PartialEq for JSString {
     }
 }
 
+impl<'s> PartialEq<&'s str> for JSString {
+    fn eq(&self, other: &&'s str) -> bool {
+        let utf8 = CString::new(other.as_bytes()).unwrap();
+        unsafe { sys::JSStringIsEqualToUTF8CString(self.raw, utf8.as_ptr()) }
+    }
+}
+
+impl PartialEq<String> for JSString {
+    fn eq(&self, other: &String) -> bool {
+        let utf8 = CString::new(other.as_bytes()).unwrap();
+        unsafe { sys::JSStringIsEqualToUTF8CString(self.raw, utf8.as_ptr()) }
+    }
+}
+
+impl<'s> PartialEq<JSString> for &'s str {
+    fn eq(&self, other: &JSString) -> bool {
+        let utf8 = CString::new(self.as_bytes()).unwrap();
+        unsafe { sys::JSStringIsEqualToUTF8CString(other.raw, utf8.as_ptr()) }
+    }
+}
+
+impl PartialEq<JSString> for String {
+    fn eq(&self, other: &JSString) -> bool {
+        let utf8 = CString::new(self.as_bytes()).unwrap();
+        unsafe { sys::JSStringIsEqualToUTF8CString(other.raw, utf8.as_ptr()) }
+    }
+}
+
 impl<'s> From<&'s str> for JSString {
     fn from(s: &'s str) -> Self {
         let c = CString::new(s.as_bytes()).unwrap();
@@ -77,5 +105,17 @@ mod tests {
 
         let e: String = (&d).into();
         assert_eq!(e, "abcdef");
+    }
+
+    #[test]
+    fn equality() {
+        let a: JSString = "abc".into();
+        let s: String = "abc".to_owned();
+
+        assert_eq!(a, "abc");
+        assert_eq!(a, s);
+
+        assert_eq!("abc", a);
+        assert_eq!(s, a);
     }
 }

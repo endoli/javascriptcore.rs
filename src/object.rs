@@ -109,7 +109,7 @@ impl JSObject {
     ///
     /// assert_eq!(n, 3.0);
     /// assert_eq!(b, true);
-    /// assert_eq!(s, "abc".into());
+    /// assert_eq!(s, "abc");
     /// ```
     pub fn get_property_at_index(&self, index: u32) -> JSValue {
         let mut e: sys::JSValueRef = ptr::null_mut();
@@ -197,7 +197,7 @@ mod tests {
         let o = v.as_object().expect("object");
         let names = o.property_names().collect::<Vec<_>>();
         assert_eq!(names.len(), 1);
-        assert_eq!(names[0], "id".into());
+        assert_eq!(names[0], "id");
     }
 
     #[test]

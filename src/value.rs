@@ -163,8 +163,7 @@ impl JSValue {
     ///
     /// let v = JSValue::new_boolean(&ctx, false);
     /// let s = v.to_json_string(0).unwrap();
-    /// // The result is a `JSString`, so we jump through a hoop here.
-    /// assert_eq!(s, "false".into());
+    /// assert_eq!(s, "false");
     /// ```
     pub fn to_json_string(&self, indent: u32) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
@@ -370,7 +369,7 @@ impl JSValue {
     ///
     /// let v = JSValue::new_string(&ctx, "Cave canem.");
     /// let s = v.as_string().expect("valid string");
-    /// assert_eq!(s, "Cave canem.".into());
+    /// assert_eq!(s, "Cave canem.");
     /// ```
     pub fn as_string(&self) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
@@ -459,7 +458,7 @@ mod tests {
         assert_eq!(vu.is_null(), false);
         assert_eq!(vu.get_type(), JSType::Undefined);
         assert_eq!(vu.as_boolean(), false);
-        assert_eq!(vu.as_string().unwrap(), "undefined".into());
+        assert_eq!(vu.as_string().unwrap(), "undefined");
     }
 
     #[test]
@@ -470,7 +469,7 @@ mod tests {
         assert_eq!(vn.is_undefined(), false);
         assert_eq!(vn.get_type(), JSType::Null);
         assert_eq!(vn.as_boolean(), false);
-        assert_eq!(vn.as_string().unwrap(), "null".into());
+        assert_eq!(vn.as_string().unwrap(), "null");
     }
 
     #[test]
@@ -482,7 +481,7 @@ mod tests {
         assert_eq!(vt.get_type(), JSType::Boolean);
         assert_eq!(vt.as_boolean(), true);
         assert_eq!(vt.as_number().unwrap(), 1.0);
-        assert_eq!(vt.as_string().unwrap(), "true".into());
+        assert_eq!(vt.as_string().unwrap(), "true");
 
         let vf = JSValue::new_boolean(&ctx, false);
         assert_eq!(vf.is_boolean(), true);
@@ -490,7 +489,7 @@ mod tests {
         assert_eq!(vf.get_type(), JSType::Boolean);
         assert_eq!(vf.as_boolean(), false);
         assert_eq!(vf.as_number().unwrap(), 0.0);
-        assert_eq!(vf.as_string().unwrap(), "false".into());
+        assert_eq!(vf.as_string().unwrap(), "false");
     }
 
     #[test]
@@ -502,7 +501,7 @@ mod tests {
         assert_eq!(vn.get_type(), JSType::Number);
         assert_eq!(vn.as_boolean(), true);
         assert_eq!(vn.as_number().unwrap(), 30.4);
-        assert_eq!(vn.as_string().unwrap(), "30.4".into());
+        assert_eq!(vn.as_string().unwrap(), "30.4");
     }
 
     #[test]
@@ -514,7 +513,7 @@ mod tests {
         assert_eq!(vs.get_type(), JSType::String);
         assert_eq!(vs.as_boolean(), true);
         assert!(vs.as_number().is_err());
-        assert_eq!(vs.as_string().unwrap(), "abc".into());
+        assert_eq!(vs.as_string().unwrap(), "abc");
     }
 
     #[test]
@@ -526,7 +525,7 @@ mod tests {
         assert_eq!(v.as_boolean(), true);
         assert_eq!(v.as_number().unwrap(), 1.0);
         let s = v.to_json_string(0).unwrap();
-        assert_eq!(s, "true".into());
+        assert_eq!(s, "true");
     }
 
     #[test]
@@ -538,7 +537,7 @@ mod tests {
         assert_eq!(v.as_boolean(), false);
         assert_eq!(v.as_number().unwrap(), 0.0);
         let s = v.to_json_string(0).unwrap();
-        assert_eq!(s, "false".into());
+        assert_eq!(s, "false");
     }
 
     #[test]
@@ -549,7 +548,7 @@ mod tests {
         assert_eq!(v.as_boolean(), false);
         assert_eq!(v.as_number().unwrap(), 0.0);
         let s = v.to_json_string(0).unwrap();
-        assert_eq!(s, "0".into());
+        assert_eq!(s, "0");
     }
 
     #[test]
@@ -561,7 +560,7 @@ mod tests {
         assert_eq!(v.as_boolean(), true);
         assert_eq!(v.as_number().unwrap(), 3.0);
         let s = v.to_json_string(0).unwrap();
-        assert_eq!(s, "3".into());
+        assert_eq!(s, "3");
     }
 
     #[test]
@@ -573,7 +572,7 @@ mod tests {
         assert_eq!(v.as_boolean(), true);
         assert!(v.as_number().is_err());
         let s = v.to_json_string(0).unwrap();
-        assert_eq!(s, "\"abc\"".into());
+        assert_eq!(s, "\"abc\"");
     }
 
     #[test]
@@ -585,7 +584,7 @@ mod tests {
         assert_eq!(v.as_boolean(), true);
         assert_eq!(v.as_number().unwrap(), 3.0);
         let s = v.to_json_string(0).unwrap();
-        assert_eq!(s, "\"3\"".into());
+        assert_eq!(s, "\"3\"");
     }
 
     #[test]
