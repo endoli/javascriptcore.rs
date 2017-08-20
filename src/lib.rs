@@ -101,6 +101,12 @@ pub struct JSObject {
 /// converted to a `JSString` instead. This allows the
 /// caller to pass an `&str` or `String`, or to cache a
 /// previously converted `JSString` and pass that directly.
+///
+/// A `JSString` is not a `JSValue` and so it can not be
+/// passed where a `JSValue` is expected. Instead, it must
+/// be boxed using [`JSValue::new_string`].
+///
+/// [`JSValue::new_string`]: struct.JSValue.html#method.new_string
 #[derive(Debug, Eq)]
 pub struct JSString {
     raw: sys::JSStringRef,
@@ -110,6 +116,42 @@ pub struct JSString {
 ///
 /// The base type for all JavaScript values, and polymorphic functions
 /// on them.
+///
+/// All values passed between Rust and JavaScriptCore will be boxed with
+/// a `JSValue`.
+///
+/// # Creating JS values
+///
+/// * [`JSValue::new_undefined`]
+/// * [`JSValue::new_null`]
+/// * [`JSValue::new_boolean`]
+/// * [`JSValue::new_number`]
+/// * [`JSValue::new_string`]
+/// * [`JSValue::new_from_json`]
+///
+/// # JSON
+///
+/// * [`JSValue::new_from_json`]
+/// * [`JSValue::to_json_string`]
+///
+/// # Retrieving Rust values
+///
+/// * [`JSValue::as_boolean`]
+/// * [`JSValue::as_number`]
+/// * [`JSValue::as_object`]
+/// * [`JSValue::as_string`]
+///
+/// [`JSValue::new_undefined`]: #method.new_undefined
+/// [`JSValue::new_null`]: #method.new_null
+/// [`JSValue::new_boolean`]: #method.new_boolean
+/// [`JSValue::new_number`]: #method.new_number
+/// [`JSValue::new_string`]: #method.new_string
+/// [`JSValue::new_from_json`]: #method.new_from_json
+/// [`JSValue::to_json_string`]: #method.to_json_string
+/// [`JSValue::as_boolean`]: #method.as_boolean
+/// [`JSValue::as_number`]: #method.as_number
+/// [`JSValue::as_object`]: #method.as_object
+/// [`JSValue::as_string`]: #method.as_string
 #[derive(Debug)]
 pub struct JSValue {
     raw: sys::JSValueRef,

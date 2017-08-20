@@ -13,10 +13,15 @@ impl JSObject {
     /// Gets an iterator over the names of an object's enumerable properties.
     ///
     /// ```
-    /// # use javascriptcore::{JSObject, JSString};
-    /// # fn get_property_names(obj: JSObject) {
-    /// let names: Vec<JSString> = obj.property_names().collect();
-    /// # }
+    /// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};
+    /// let ctx = JSContext::default();
+    /// let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("valid object");
+    /// let o = v.as_object().expect("object");
+    ///
+    /// let names: Vec<String> = o.property_names()
+    ///                           .map(|s| s.to_string())
+    ///                           .collect();
+    /// assert_eq!(names, vec!["id"]);
     /// ```
     pub fn property_names(&self) -> JSObjectPropertyNameIter {
         JSObjectPropertyNameIter {
@@ -34,12 +39,12 @@ impl JSObject {
     /// `name`, otherwise `false`.
     ///
     /// ```
-    /// # use javascriptcore::JSObject;
-    /// # fn has_property(obj: JSObject) {
-    /// if obj.has_property("id") {
-    ///     // ...
-    /// }
-    /// # }
+    /// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};
+    /// let ctx = JSContext::default();
+    /// let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("valid object");
+    /// let o = v.as_object().expect("object");
+    ///
+    /// assert!(o.has_property("id"));
     /// ```
     pub fn has_property<S>(&self, name: S) -> bool
     where
@@ -55,6 +60,18 @@ impl JSObject {
     ///
     /// Returns the property's value if object has the property, otherwise
     /// the undefined value.
+    ///
+    /// ```
+    /// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};
+    /// let ctx = JSContext::default();
+    /// let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("valid object");
+    /// let o = v.as_object().expect("object");
+    ///
+    /// let n = o.get_property("id");
+    /// assert!(n.is_number());
+    /// // Remember that this will be an f64 now!
+    /// assert_eq!(n.as_number().expect("number"), 123.0);
+    /// ```
     pub fn get_property<S>(&self, name: S) -> JSValue
     where
         S: Into<JSString>,
@@ -79,6 +96,21 @@ impl JSObject {
     /// `get_property` with a string containing `index`,
     /// but `get_property_at_index` provides optimized access to
     /// numeric properties.
+    ///
+    /// ```
+    /// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};
+    /// let ctx = JSContext::default();
+    /// let v = JSValue::new_from_json(&ctx, "[3, true, \"abc\"]").expect("valid array");
+    /// let o = v.as_object().expect("object");
+    ///
+    /// let n = o.get_property_at_index(0).as_number().expect("number");
+    /// let b = o.get_property_at_index(1).as_boolean();
+    /// let s = o.get_property_at_index(2).as_string().expect("string");
+    ///
+    /// assert_eq!(n, 3.0);
+    /// assert_eq!(b, true);
+    /// assert_eq!(s, "abc".into());
+    /// ```
     pub fn get_property_at_index(&self, index: u32) -> JSValue {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let v = unsafe { sys::JSObjectGetPropertyAtIndex(self.value.ctx, self.raw, index, &mut e) };
@@ -89,6 +121,10 @@ impl JSObject {
     }
 }
 
+/// A `JSObject` can be dereferenced to return the underlying `JSValue`.
+///
+/// This lets a `JSObject` instance be used where a `JSValue` instance is
+/// expected.
 impl Deref for JSObject {
     type Target = JSValue;
 

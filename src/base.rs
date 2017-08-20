@@ -24,8 +24,18 @@ use sys;
 ///   so the first line is line `1` and invalid values are clamped
 ///   to `1`.
 ///
-/// Returns either the `JSValue` that results from evaluating the script or
+/// Returns either the [`JSValue`] that results from evaluating the script or
 /// the exception that occurred.
+///
+/// ```
+/// use javascriptcore::*;
+///
+/// let ctx = JSContext::default();
+/// let r = evaluate_script(&ctx, "2 + 2", None, "test.js", 1);
+/// assert_eq!(r.unwrap().as_number().unwrap(), 4.0);
+/// ```
+///
+/// [`JSValue`]: struct.JSValue.html
 pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
     ctx: &JSContext,
     script: S,
@@ -76,6 +86,14 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
 ///
 /// Returns `Ok` if the script is syntactically correct, otherwise
 /// returns an exception.
+///
+/// ```
+/// use javascriptcore::*;
+///
+/// let ctx = JSContext::default();
+/// let r = check_script_syntax(&ctx, "alert('abc');", "test.js", 1);
+/// assert!(r.is_ok());
+/// ```
 pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
     ctx: &JSContext,
     script: S,
@@ -119,6 +137,14 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
 /// * `ctx`: The execution context to use.
 ///
 /// TODO: Fix reference to `JSValueProtect` once it has been wrapped.
+///
+/// ```
+/// use javascriptcore::*;
+///
+/// let ctx = JSContext::default();
+/// // ... Do things ...
+/// garbage_collect(&ctx);
+/// ```
 pub fn garbage_collect(ctx: &JSContext) {
     unsafe {
         sys::JSGarbageCollect(ctx.raw);

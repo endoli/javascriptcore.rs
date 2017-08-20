@@ -14,6 +14,14 @@ impl JSValue {
     /// * `ctx`: The execution context to use.
     ///
     /// Returns the unique `undefined` value.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_undefined(&ctx);
+    /// assert!(v.is_undefined());
+    /// ```
     pub fn new_undefined(ctx: &JSContext) -> Self {
         JSValue {
             raw: unsafe { sys::JSValueMakeUndefined(ctx.raw) },
@@ -26,6 +34,14 @@ impl JSValue {
     /// * `ctx`: The execution context to use.
     ///
     /// Returns the unique `null` value.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_null(&ctx);
+    /// assert!(v.is_null());
+    /// ```
     pub fn new_null(ctx: &JSContext) -> Self {
         JSValue {
             raw: unsafe { sys::JSValueMakeNull(ctx.raw) },
@@ -39,6 +55,14 @@ impl JSValue {
     /// * `boolean`: The `bool` to assign to the newly created `JSValue`.
     ///
     /// Returns a `JSValue` of the `boolean` type, representing the value of `boolean`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_boolean(&ctx, true /* or false */);
+    /// assert!(v.is_boolean());
+    /// ```
     pub fn new_boolean(ctx: &JSContext, boolean: bool) -> Self {
         JSValue {
             raw: unsafe { sys::JSValueMakeBoolean(ctx.raw, boolean) },
@@ -52,6 +76,20 @@ impl JSValue {
     /// * `number`: The `f64` to assign to the newly created `JSValue`.
     ///
     /// Returns a `JSValue` of the `number` type, representing the value of `number`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_number(&ctx, 3.0f64);
+    /// assert!(v.is_number());
+    ///
+    /// let v = JSValue::new_number(&ctx, 3.0f32 as f64);
+    /// assert!(v.is_number());
+    ///
+    /// let v = JSValue::new_number(&ctx, 3 as f64);
+    /// assert!(v.is_number());
+    /// ```
     pub fn new_number(ctx: &JSContext, number: f64) -> Self {
         JSValue {
             raw: unsafe { sys::JSValueMakeNumber(ctx.raw, number) },
@@ -63,10 +101,18 @@ impl JSValue {
     ///
     /// * `ctx`: The execution context to use.
     /// * `string`: The `JSString` to assign to the newly created
-    ///   JSValue`. The newly created `JSValue` retains string, and
+    ///   `JSValue`. The newly created `JSValue` retains string, and
     ///   releases it upon garbage collection.
     ///
     /// Returns a `JSValue` of the `string` type, representing the value of `string`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_string(&ctx, "abc");
+    /// assert!(v.is_string());
+    /// ```
     pub fn new_string<S: Into<JSString>>(ctx: &JSContext, string: S) -> Self {
         JSValue {
             raw: unsafe { sys::JSValueMakeString(ctx.raw, string.into().raw) },
@@ -82,6 +128,14 @@ impl JSValue {
     ///
     /// Returns a `Result` with the `JSValue` containing the parsed value, or an error
     /// if the input is invalid.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "true").expect("value");
+    /// assert!(v.is_boolean());
+    /// ```
     pub fn new_from_json<S: Into<JSString>>(ctx: &JSContext, string: S) -> Result<Self, ()> {
         let v = unsafe { sys::JSValueMakeFromJSONString(ctx.raw, string.into().raw) };
         if v.is_null() {
@@ -102,6 +156,16 @@ impl JSValue {
     ///
     /// Returns either a `JSString` with the result of serialization, or an
     /// exception if one was thrown.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_boolean(&ctx, false);
+    /// let s = v.to_json_string(0).unwrap();
+    /// // The result is a `JSString`, so we jump through a hoop here.
+    /// assert_eq!(s, "false".into());
+    /// ```
     pub fn to_json_string(&self, indent: u32) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let v = unsafe { sys::JSValueCreateJSONString(self.ctx, self.raw, indent, &mut e) };
@@ -120,6 +184,20 @@ impl JSValue {
     /// Returns a JavaScript value's type.
     ///
     /// Returns a value of type `JSType` that identifies `value`'s type.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "true").expect("value");
+    /// assert_eq!(v.get_type(), JSType::Boolean);
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "5.0").expect("value");
+    /// assert_eq!(v.get_type(), JSType::Number);
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "null").expect("value");
+    /// assert_eq!(v.get_type(), JSType::Null);
+    /// ```
     pub fn get_type(&self) -> JSType {
         unsafe { sys::JSValueGetType(self.ctx, self.raw) }
     }
@@ -127,6 +205,14 @@ impl JSValue {
     /// Tests whether a JavaScript value's type is the `undefined` type.
     ///
     /// Returns `true` if `value`'s type is the `undefined` type, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_undefined(&ctx);
+    /// assert!(v.is_undefined());
+    /// ```
     pub fn is_undefined(&self) -> bool {
         unsafe { sys::JSValueIsUndefined(self.ctx, self.raw) }
     }
@@ -134,6 +220,14 @@ impl JSValue {
     /// Tests whether a JavaScript value's type is the `null` type.
     ///
     /// Returns `true` if `value`'s type is the `null` type, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "null").expect("value");
+    /// assert!(v.is_null());
+    /// ```
     pub fn is_null(&self) -> bool {
         unsafe { sys::JSValueIsNull(self.ctx, self.raw) }
     }
@@ -141,6 +235,14 @@ impl JSValue {
     /// Tests whether a JavaScript value's type is the `boolean` type.
     ///
     /// Returns `true` if `value`'s type is the `boolean` type, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "false").expect("value");
+    /// assert!(v.is_boolean());
+    /// ```
     pub fn is_boolean(&self) -> bool {
         unsafe { sys::JSValueIsBoolean(self.ctx, self.raw) }
     }
@@ -148,6 +250,14 @@ impl JSValue {
     /// Tests whether a JavaScript value's type is the `number` type.
     ///
     /// Returns `true` if `value`'s type is the `number` type, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "-23").expect("value");
+    /// assert!(v.is_number());
+    /// ```
     pub fn is_number(&self) -> bool {
         unsafe { sys::JSValueIsNumber(self.ctx, self.raw) }
     }
@@ -155,6 +265,14 @@ impl JSValue {
     /// Tests whether a JavaScript value's type is the `string` type.
     ///
     /// Returns `true` if `value`'s type is the `string` type, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "\"Pueri et puellae\"").expect("value");
+    /// assert!(v.is_string());
+    /// ```
     pub fn is_string(&self) -> bool {
         unsafe { sys::JSValueIsString(self.ctx, self.raw) }
     }
@@ -162,6 +280,14 @@ impl JSValue {
     /// Tests whether a JavaScript value's type is the `object` type.
     ///
     /// Returns `true` if `value`'s type is the `object` type, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("valid object");
+    /// assert!(v.is_object());
+    /// ```
     pub fn is_object(&self) -> bool {
         unsafe { sys::JSValueIsObject(self.ctx, self.raw) }
     }
@@ -193,6 +319,14 @@ impl JSValue {
     /// Converts a JavaScript value to boolean and returns the resulting boolean.
     ///
     /// Returns the boolean result of conversion.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_boolean(&ctx, false);
+    /// assert_eq!(v.as_boolean(), false);
+    /// ```
     pub fn as_boolean(&self) -> bool {
         unsafe { sys::JSValueToBoolean(self.ctx, self.raw) }
     }
@@ -201,6 +335,15 @@ impl JSValue {
     ///
     /// Returns either the numeric result of conversion, or an exception
     /// if one was thrown.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_number(&ctx, 5.0);
+    /// let n = v.as_number().expect("valid number");
+    /// assert_eq!(n, 5.0);
+    /// ```
     pub fn as_number(&self) -> Result<f64, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let f = unsafe { sys::JSValueToNumber(self.ctx, self.raw, &mut e) };
@@ -220,6 +363,15 @@ impl JSValue {
     ///
     /// Returns either `JSString` with the result of conversion, or an
     /// exception if one was thrown.  Ownership follows the Create Rule.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_string(&ctx, "Cave canem.");
+    /// let s = v.as_string().expect("valid string");
+    /// assert_eq!(s, "Cave canem.".into());
+    /// ```
     pub fn as_string(&self) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let s = unsafe { sys::JSValueToStringCopy(self.ctx, self.raw, &mut e) };
@@ -239,6 +391,15 @@ impl JSValue {
     ///
     /// Returns either the `JSObject` result of conversion, or an exception
     /// if one was thrown.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("valid object");
+    /// let o = v.as_object().expect("object");
+    /// // We now have an object that we can inspect.
+    /// ```
     pub fn as_object(&self) -> Result<JSObject, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let o = unsafe { sys::JSValueToObject(self.ctx, self.raw, &mut e) };
@@ -261,6 +422,10 @@ impl JSValue {
     }
 }
 
+/// Implement partial equality checks for `JSValue`.
+///
+/// These are performed in the same manner as `===` (strict
+/// equality) in JavaScript.
 impl PartialEq for JSValue {
     fn eq(&self, other: &JSValue) -> bool {
         unsafe { sys::JSValueIsStrictEqual(self.ctx, self.raw, other.raw) }
