@@ -1989,7 +1989,7 @@ extern "C" {
     /// Returns the number of bytes in a JavaScript data object.
     ///
     /// * `ctx`: The execution context to use.
-    /// * `object`: The JS Arary Buffer object whose length in bytes to return.
+    /// * `object`: The JS Array Buffer object whose length in bytes to return.
     /// * `exception`: A pointer to a `JSValueRef` in which to store
     ///   an exception, if any. Pass `NULL` if you do not care to
     ///   store an exception.
