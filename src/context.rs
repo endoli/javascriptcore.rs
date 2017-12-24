@@ -119,7 +119,7 @@ mod tests {
     #[test]
     fn context_group() {
         let ctx = JSContext::new();
-        let g = ctx.group();
+        let _g = ctx.group();
         // Nothing to do with g now...
     }
 
