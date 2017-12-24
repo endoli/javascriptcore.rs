@@ -94,10 +94,10 @@ pub struct OpaqueJSPropertyNameAccumulator([u8; 0]);
 /// An ordered set used to collect the names of
 /// a JavaScript object's properties.
 ///
-/// Values of this type are passed to the [getPropertyNames callback].
+/// Values of this type are passed to the [`getPropertyNames` callback].
 /// Names are added to the accumulator using [`JSPropertyNameAccumulatorAddName`].
 ///
-/// [getPropertyNames callback]: type.JSObjectGetPropertyNamesCallback.html
+/// [`getPropertyNames` callback]: type.JSObjectGetPropertyNamesCallback.html
 /// [`JSPropertyNameAccumulatorAddName`]: fn.JSPropertyNameAccumulatorAddName.html
 pub type JSPropertyNameAccumulatorRef = *mut OpaqueJSPropertyNameAccumulator;
 
