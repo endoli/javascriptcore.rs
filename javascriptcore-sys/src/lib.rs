@@ -894,7 +894,7 @@ pub type JSObjectConvertToTypeCallback =
 
 /// A statically declared value property.
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug, Copy, Clone)]
 pub struct JSStaticValue {
     /// A null-terminated UTF8 string containing the property's name.
     pub name: *const ::std::os::raw::c_char,
@@ -907,15 +907,9 @@ pub struct JSStaticValue {
     pub attributes: JSPropertyAttributes,
 }
 
-impl Clone for JSStaticValue {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
-
 /// A statically declared function property.
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug, Copy, Clone)]
 pub struct JSStaticFunction {
     /// A null-terminated UTF8 string containing the property's name.
     pub name: *const ::std::os::raw::c_char,
@@ -924,12 +918,6 @@ pub struct JSStaticFunction {
     pub callAsFunction: JSObjectCallAsFunctionCallback,
     /// A logically ORed set of `JSPropertyAttributes` to give to the property.
     pub attributes: JSPropertyAttributes,
-}
-
-impl Clone for JSStaticFunction {
-    fn clone(&self) -> Self {
-        *self
-    }
 }
 
 /// Contains properties and callbacks that define a type of object.
@@ -967,7 +955,7 @@ impl Clone for JSStaticFunction {
 /// should substitute, except in the case of `hasProperty`, where it
 /// specifies that `getProperty` should substitute.
 #[repr(C)]
-#[derive(Debug, Copy)]
+#[derive(Debug, Copy, Clone)]
 pub struct JSClassDefinition {
     /// The version number of this structure. The current version is 0.
     pub version: ::std::os::raw::c_int,
@@ -1017,12 +1005,6 @@ pub struct JSClassDefinition {
     pub hasInstance: JSObjectHasInstanceCallback,
     /// The callback invoked when converting an object to a particular JavaScript type.
     pub convertToType: JSObjectConvertToTypeCallback,
-}
-
-impl Clone for JSClassDefinition {
-    fn clone(&self) -> Self {
-        *self
-    }
 }
 
 impl Default for JSClassDefinition {
