@@ -153,7 +153,7 @@ pub fn garbage_collect(ctx: &JSContext) {
 
 #[cfg(test)]
 mod tests {
-    use super::{JSContext, check_script_syntax, evaluate_script, garbage_collect};
+    use super::{check_script_syntax, evaluate_script, garbage_collect, JSContext};
 
     #[test]
     fn can_check_script_syntax() {

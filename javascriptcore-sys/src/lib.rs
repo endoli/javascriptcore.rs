@@ -106,11 +106,12 @@ pub type JSPropertyNameAccumulatorRef = *mut OpaqueJSPropertyNameAccumulator;
 /// the bytes that were originally passed to the Typed Array constructor.
 /// The second is a pointer to additional information desired at the time
 /// the bytes are to be freed.
-pub type JSTypedArrayBytesDeallocator =
-    ::std::option::Option<
-        unsafe extern "C" fn(bytes: *mut ::std::os::raw::c_void,
-                             deallocatorContext: *mut ::std::os::raw::c_void),
-    >;
+pub type JSTypedArrayBytesDeallocator = ::std::option::Option<
+    unsafe extern "C" fn(
+        bytes: *mut ::std::os::raw::c_void,
+        deallocatorContext: *mut ::std::os::raw::c_void,
+    ),
+>;
 
 /// A JavaScript value.
 /// The base type for all JavaScript values, and polymorphic functions on them.
@@ -614,13 +615,9 @@ pub type JSObjectFinalizeCallback =
 /// and computing its value would be expensive.
 ///
 /// If this callback is NULL, the getProperty callback will be used to service hasProperty requests.
-pub type JSObjectHasPropertyCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             object: JSObjectRef,
-                             propertyName: JSStringRef)
-                             -> bool,
-    >;
+pub type JSObjectHasPropertyCallback = ::std::option::Option<
+    unsafe extern "C" fn(ctx: JSContextRef, object: JSObjectRef, propertyName: JSStringRef) -> bool,
+>;
 
 /// The callback invoked when getting a property's value.
 ///
@@ -642,14 +639,14 @@ pub type JSObjectHasPropertyCallback =
 /// If this function returns `NULL`, the get request forwards to `object`'s
 /// statically declared properties, then its parent class chain (which
 /// includes the default object class), then its prototype chain.
-pub type JSObjectGetPropertyCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             object: JSObjectRef,
-                             propertyName: JSStringRef,
-                             exception: *mut JSValueRef)
-                             -> *const OpaqueJSValue,
-    >;
+pub type JSObjectGetPropertyCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyName: JSStringRef,
+        exception: *mut JSValueRef,
+    ) -> *const OpaqueJSValue,
+>;
 
 /// The callback invoked when setting a property's value.
 ///
@@ -673,15 +670,15 @@ pub type JSObjectGetPropertyCallback =
 /// If this function returns `false`, the set request forwards to
 /// `object`'s statically declared properties, then its parent class
 /// chain (which includes the default object class).
-pub type JSObjectSetPropertyCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             object: JSObjectRef,
-                             propertyName: JSStringRef,
-                             value: JSValueRef,
-                             exception: *mut JSValueRef)
-                             -> bool,
-    >;
+pub type JSObjectSetPropertyCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyName: JSStringRef,
+        value: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> bool,
+>;
 
 /// The callback invoked when deleting a property.
 ///
@@ -703,14 +700,14 @@ pub type JSObjectSetPropertyCallback =
 /// If this function returns `false`, the delete request forwards to
 /// `object`'s statically declared properties, then its parent class
 /// chain (which includes the default object class).
-pub type JSObjectDeletePropertyCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             object: JSObjectRef,
-                             propertyName: JSStringRef,
-                             exception: *mut JSValueRef)
-                             -> bool,
-    >;
+pub type JSObjectDeletePropertyCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyName: JSStringRef,
+        exception: *mut JSValueRef,
+    ) -> bool,
+>;
 
 /// The callback invoked when collecting the names of an object's properties.
 ///
@@ -739,12 +736,13 @@ pub type JSObjectDeletePropertyCallback =
 /// are added independently.
 ///
 /// [`JSPropertyNameAccumulatorAddName`]: fn.JSPropertyNameAccumulatorAddName.html
-pub type JSObjectGetPropertyNamesCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             object: JSObjectRef,
-                             propertyNames: JSPropertyNameAccumulatorRef),
-    >;
+pub type JSObjectGetPropertyNamesCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyNames: JSPropertyNameAccumulatorRef,
+    ),
+>;
 
 /// The callback invoked when an object is called as a function.
 ///
@@ -773,16 +771,16 @@ pub type JSObjectGetPropertyNamesCallback =
 ///
 /// If this callback is `NULL`, calling your object as a function
 /// will throw an exception.
-pub type JSObjectCallAsFunctionCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             function: JSObjectRef,
-                             thisObject: JSObjectRef,
-                             argumentCount: usize,
-                             arguments: *const JSValueRef,
-                             exception: *mut JSValueRef)
-                             -> *const OpaqueJSValue,
-    >;
+pub type JSObjectCallAsFunctionCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: JSContextRef,
+        function: JSObjectRef,
+        thisObject: JSObjectRef,
+        argumentCount: usize,
+        arguments: *const JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> *const OpaqueJSValue,
+>;
 
 /// The callback invoked when an object is used as a constructor in a `new` expression.
 ///
@@ -808,15 +806,15 @@ pub type JSObjectCallAsFunctionCallback =
 ///
 /// If this callback is `NULL`, using your object as a constructor in a
 /// `new` expression will throw an exception.
-pub type JSObjectCallAsConstructorCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             constructor: JSObjectRef,
-                             argumentCount: usize,
-                             arguments: *const JSValueRef,
-                             exception: *mut JSValueRef)
-                             -> *mut OpaqueJSValue,
-    >;
+pub type JSObjectCallAsConstructorCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: JSContextRef,
+        constructor: JSObjectRef,
+        argumentCount: usize,
+        arguments: *const JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> *mut OpaqueJSValue,
+>;
 
 /// The callback invoked when an object is used as the target
 /// of an `instanceof` expression.
@@ -849,14 +847,14 @@ pub type JSObjectCallAsConstructorCallback =
 /// Standard JavaScript practice calls for objects that implement
 /// the `callAsConstructor` callback to implement the `hasInstance`
 /// callback as well.
-pub type JSObjectHasInstanceCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             constructor: JSObjectRef,
-                             possibleInstance: JSValueRef,
-                             exception: *mut JSValueRef)
-                             -> bool,
-    >;
+pub type JSObjectHasInstanceCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: JSContextRef,
+        constructor: JSObjectRef,
+        possibleInstance: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> bool,
+>;
 
 /// The callback invoked when converting an object to a particular
 /// JavaScript type.
@@ -883,14 +881,14 @@ pub type JSObjectHasInstanceCallback =
 /// This function is only invoked when converting an object to number
 /// or string. An object converted to boolean is `true`. An object
 /// converted to object is itself.
-pub type JSObjectConvertToTypeCallback =
-    ::std::option::Option<
-        unsafe extern "C" fn(ctx: JSContextRef,
-                             object: JSObjectRef,
-                             type_: JSType,
-                             exception: *mut JSValueRef)
-                             -> *const OpaqueJSValue,
-    >;
+pub type JSObjectConvertToTypeCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        type_: JSType,
+        exception: *mut JSValueRef,
+    ) -> *const OpaqueJSValue,
+>;
 
 /// A statically declared value property.
 #[repr(C)]

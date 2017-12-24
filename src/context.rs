@@ -35,7 +35,9 @@ impl JSContext {
     /// * `global_object_class`: The class to use when creating the global
     ///   object.
     pub fn new_with_class(global_object_class: &JSClass) -> Self {
-        JSContext { raw: unsafe { sys::JSGlobalContextCreate(global_object_class.raw) } }
+        JSContext {
+            raw: unsafe { sys::JSGlobalContextCreate(global_object_class.raw) },
+        }
     }
 
     /// Gets the context group to which a JavaScript execution context belongs.
@@ -98,7 +100,9 @@ impl Default for JSContext {
     /// However, you may not use values created in the context in other
     /// contexts.
     fn default() -> Self {
-        JSContext { raw: unsafe { sys::JSGlobalContextCreate(ptr::null_mut()) } }
+        JSContext {
+            raw: unsafe { sys::JSGlobalContextCreate(ptr::null_mut()) },
+        }
     }
 }
 

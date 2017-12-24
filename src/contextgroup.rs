@@ -23,7 +23,9 @@ impl JSContextGroup {
     ///
     /// The created global context retains this group.
     pub fn new_context(&self) -> JSContext {
-        JSContext { raw: unsafe { sys::JSGlobalContextCreateInGroup(self.raw, ptr::null_mut()) } }
+        JSContext {
+            raw: unsafe { sys::JSGlobalContextCreateInGroup(self.raw, ptr::null_mut()) },
+        }
     }
 
     /// Creates a global JavaScript execution context in this context
@@ -47,7 +49,9 @@ impl JSContextGroup {
 impl Default for JSContextGroup {
     /// Creates a JavaScript context group.
     fn default() -> Self {
-        JSContextGroup { raw: unsafe { sys::JSContextGroupCreate() } }
+        JSContextGroup {
+            raw: unsafe { sys::JSContextGroupCreate() },
+        }
     }
 }
 

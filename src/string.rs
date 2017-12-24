@@ -68,14 +68,18 @@ impl PartialEq<JSString> for String {
 impl<'s> From<&'s str> for JSString {
     fn from(s: &'s str) -> Self {
         let c = CString::new(s.as_bytes()).unwrap();
-        JSString { raw: unsafe { sys::JSStringCreateWithUTF8CString(c.as_ptr()) } }
+        JSString {
+            raw: unsafe { sys::JSStringCreateWithUTF8CString(c.as_ptr()) },
+        }
     }
 }
 
 impl From<String> for JSString {
     fn from(s: String) -> Self {
         let c = CString::new(s.as_bytes()).unwrap();
-        JSString { raw: unsafe { sys::JSStringCreateWithUTF8CString(c.as_ptr()) } }
+        JSString {
+            raw: unsafe { sys::JSStringCreateWithUTF8CString(c.as_ptr()) },
+        }
     }
 }
 
