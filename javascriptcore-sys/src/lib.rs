@@ -724,7 +724,7 @@ pub type JSObjectDeletePropertyCallback = ::std::option::Option<
 ///                  JSPropertyNameAccumulatorRef propertyNames);
 /// ```
 ///
-/// Property name accumulators are used by `JSObjectCopyPropertyNames`
+/// Property name accumulators are used by [`JSObjectCopyPropertyNames`]
 /// and JavaScript `for...in` loops.
 ///
 /// Use [`JSPropertyNameAccumulatorAddName`] to add property names to
@@ -735,6 +735,7 @@ pub type JSObjectDeletePropertyCallback = ::std::option::Option<
 /// other classes, and properties belonging to object's prototype,
 /// are added independently.
 ///
+/// [`JSObjectCopyPropertyNames`]: fn.JSObjectCopyPropertyNames.html
 /// [`JSPropertyNameAccumulatorAddName`]: fn.JSPropertyNameAccumulatorAddName.html
 pub type JSObjectGetPropertyNamesCallback = ::std::option::Option<
     unsafe extern "C" fn(
