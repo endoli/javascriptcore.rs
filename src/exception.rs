@@ -4,6 +4,17 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::JSException;
+use super::{JSException,JSString};
 
-impl JSException {}
+impl JSException {
+
+    /// Converts a JavaScript exception to a JavaScript string.
+    ///
+    /// Returns either `JSString` with the result of conversion, or an
+    /// exception if one was thrown.  Ownership follows the Create Rule.
+    ///
+    pub fn as_string(&self) -> Result<JSString, JSException> {
+        self.value.as_string()
+    }
+
+}
