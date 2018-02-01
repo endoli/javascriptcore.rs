@@ -15,6 +15,7 @@
 extern crate javascriptcore_sys as sys;
 
 mod base;
+mod class;
 mod context;
 mod contextgroup;
 mod exception;
