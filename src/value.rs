@@ -100,9 +100,9 @@ impl JSValue {
     /// Creates a JavaScript value of the string type.
     ///
     /// * `ctx`: The execution context to use.
-    /// * `string`: The `JSString` to assign to the newly created
-    ///   `JSValue`. The newly created `JSValue` retains string, and
-    ///   releases it upon garbage collection.
+    /// * `string`: A value that can be converted into a [`JSString`] to assign
+    ///   to the newly created `JSValue`. The newly created `JSValue` retains
+    ///   `string`, and releases it upon garbage collection.
     ///
     /// Returns a `JSValue` of the `string` type, representing the value of `string`.
     ///
@@ -113,6 +113,8 @@ impl JSValue {
     /// let v = JSValue::new_string(&ctx, "abc");
     /// assert!(v.is_string());
     /// ```
+    ///
+    /// [`JSString`]: struct.JSString.html
     pub fn new_string<S: Into<JSString>>(ctx: &JSContext, string: S) -> Self {
         JSValue {
             raw: unsafe { sys::JSValueMakeString(ctx.raw, string.into().raw) },
@@ -123,7 +125,7 @@ impl JSValue {
     /// Creates a JavaScript value from a JSON formatted string.
     ///
     /// * `ctx`: The execution context to use.
-    /// * `string`: A value that can be converted into a `JSString` containing
+    /// * `string`: A value that can be converted into a [`JSString`] containing
     ///   the JSON string to be parsed.
     ///
     /// Returns a `Result` with the `JSValue` containing the parsed value, or an error
@@ -136,6 +138,8 @@ impl JSValue {
     /// let v = JSValue::new_from_json(&ctx, "true").expect("value");
     /// assert!(v.is_boolean());
     /// ```
+    ///
+    /// [`JSString`]: struct.JSString.html
     pub fn new_from_json<S: Into<JSString>>(ctx: &JSContext, string: S) -> Result<Self, ()> {
         let v = unsafe { sys::JSValueMakeFromJSONString(ctx.raw, string.into().raw) };
         if v.is_null() {
@@ -154,7 +158,7 @@ impl JSValue {
     ///   If `0`, the resulting JSON will not contains newlines.
     ///   The size of the indent is clamped to `10` spaces.
     ///
-    /// Returns either a `JSString` with the result of serialization, or an
+    /// Returns either a [`JSString`] with the result of serialization, or an
     /// exception if one was thrown.
     ///
     /// ```
@@ -165,6 +169,8 @@ impl JSValue {
     /// let s = v.to_json_string(0).unwrap();
     /// assert_eq!(s, "false");
     /// ```
+    ///
+    /// [`JSString`]: struct.JSString.html
     pub fn to_json_string(&self, indent: u32) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let v = unsafe { sys::JSValueCreateJSONString(self.ctx, self.raw, indent, &mut e) };
@@ -372,7 +378,7 @@ impl JSValue {
 
     /// Converts a JavaScript value to string and copies the result into a JavaScript string.
     ///
-    /// Returns either `JSString` with the result of conversion, or an
+    /// Returns either [`JSString`] with the result of conversion, or an
     /// exception if one was thrown.  Ownership follows the Create Rule.
     ///
     /// ```
@@ -383,6 +389,8 @@ impl JSValue {
     /// let s = v.as_string().expect("valid string");
     /// assert_eq!(s, "Cave canem.");
     /// ```
+    ///
+    /// [`JSString`]: struct.JSString.html
     pub fn as_string(&self) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let s = unsafe { sys::JSValueToStringCopy(self.ctx, self.raw, &mut e) };

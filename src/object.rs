@@ -32,7 +32,7 @@ impl JSObject {
 
     /// Tests whether an object has a given property.
     ///
-    /// * `name`: A value that can be converted to a `JSString` containing
+    /// * `name`: A value that can be converted to a [`JSString`] containing
     ///   the property's name.
     ///
     /// Returns `true` if the object has a property whose name matches
@@ -46,6 +46,8 @@ impl JSObject {
     ///
     /// assert!(o.has_property("id"));
     /// ```
+    ///
+    /// [`JSString`]: struct.JSString.html
     pub fn has_property<S>(&self, name: S) -> bool
     where
         S: Into<JSString>,
@@ -55,7 +57,7 @@ impl JSObject {
 
     /// Gets a property from an object.
     ///
-    /// * `name`: A value that can be converted to a `JSString` containing
+    /// * `name`: A value that can be converted to a [`JSString`] containing
     ///   the property's name.
     ///
     /// Returns the property's value if object has the property, otherwise
@@ -72,6 +74,8 @@ impl JSObject {
     /// // Remember that this will be an f64 now!
     /// assert_eq!(n.as_number().expect("number"), 123.0);
     /// ```
+    ///
+    /// [`JSString`]: struct.JSString.html
     pub fn get_property<S>(&self, name: S) -> JSValue
     where
         S: Into<JSString>,
