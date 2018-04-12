@@ -304,6 +304,18 @@ impl JSValue {
     /// Tests whether a JavaScript value is an `array`.
     ///
     /// Returns `true` if `value` is an `array`, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_from_json(&ctx, "[123, 456]").expect("valid array");
+    /// assert!(v.is_array());
+    ///
+    /// // But an object is not an array.
+    /// let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("valid object");
+    /// assert!(!v.is_array());
+    /// ```
     pub fn is_array(&self) -> bool {
         unsafe { sys::JSValueIsArray(self.ctx, self.raw) }
     }
