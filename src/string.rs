@@ -4,9 +4,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use super::JSString;
 use std::ffi::CString;
 use std::fmt;
-use super::JSString;
 use sys;
 
 impl JSString {

@@ -4,9 +4,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use super::{JSObject, JSString, JSValue};
 use std::ops::Deref;
 use std::ptr;
-use super::{JSObject, JSString, JSValue};
 use sys;
 
 impl JSObject {

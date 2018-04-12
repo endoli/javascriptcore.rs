@@ -4,8 +4,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::ptr;
 use super::{JSContext, JSException, JSObject, JSString, JSValue};
+use std::ptr;
 use sys;
 
 /// Evaluates a string of JavaScript.
