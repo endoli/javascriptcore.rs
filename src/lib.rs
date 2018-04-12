@@ -112,7 +112,7 @@ pub struct JSObject {
 ///
 /// [`JSValue`]: struct.JSValue.html
 /// [`JSValue::new_string`]: struct.JSValue.html#method.new_string
-#[derive(Debug, Eq)]
+#[derive(Eq)]
 pub struct JSString {
     raw: sys::JSStringRef,
 }

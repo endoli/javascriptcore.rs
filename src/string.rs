@@ -5,6 +5,7 @@
 // except according to those terms.
 
 use std::ffi::CString;
+use std::fmt;
 use super::JSString;
 use sys;
 
@@ -22,6 +23,12 @@ impl JSString {
             buffer.set_len(actual_size - 1);
             String::from_utf8(buffer).unwrap()
         }
+    }
+}
+
+impl fmt::Debug for JSString {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        write!(fmt, "JSString {{ \"{}\" }}", self.to_string())
     }
 }
 
