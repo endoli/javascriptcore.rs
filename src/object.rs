@@ -115,6 +115,20 @@ impl JSObject {
     /// assert_eq!(b, true);
     /// assert_eq!(s, "abc");
     /// ```
+    ///
+    /// This also works with objects when the keys are strings of numeric indexes:
+    ///
+    /// ```
+    /// # use javascriptcore::{JSContext, JSObject, JSString, JSValue};
+    /// let ctx = JSContext::default();
+    /// let v = JSValue::new_from_json(&ctx, "{\"a\": 3, \"1\": true, \"2\": \"abc\"}").expect("valid object");
+    /// let o = v.as_object().expect("object");
+    ///
+    /// // There is no property "0", so this will be `undefined`:
+    /// assert!(o.get_property_at_index(0).is_undefined());
+    /// assert_eq!(o.get_property_at_index(1).as_boolean(), true);
+    /// assert_eq!(o.get_property_at_index(2).as_string().expect("string"), "abc");
+    /// ```
     pub fn get_property_at_index(&self, index: u32) -> JSValue {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let v = unsafe { sys::JSObjectGetPropertyAtIndex(self.value.ctx, self.raw, index, &mut e) };
