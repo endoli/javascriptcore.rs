@@ -1,6 +1,6 @@
 # javascriptcore
 
-[![](http://meritbadge.herokuapp.com/javascriptcore)](https://crates.io/crates/javascriptcore)
+[![](https://img.shields.io/crates/v/javascriptcore.svg)](https://crates.io/crates/javascriptcore)
 
 This crate provides a safe binding to the public API for
 [JavaScriptCore](https://trac.webkit.org/wiki/JavaScriptCore),
