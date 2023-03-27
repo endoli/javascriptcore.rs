@@ -14,4 +14,4 @@ categories = ["api-bindings"]
 exclude = ["javascript_core/**"]
 
 [dependencies]
-javascriptcore-sys = { path = "javascriptcore-sys", version = "0.0.4" }
+javascriptcore-sys = { path = "javascriptcore-sys", version = "0.0.5" }
