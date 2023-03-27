@@ -216,6 +216,8 @@ pub enum JSType {
     String = 4,
     /// An object value (meaning that this `JSValueRef` is a `JSObjectRef`).
     Object = 5,
+    /// A primitive symbol value.
+    Symbol = 6,
 }
 
 /// A constant identifying the Typed Array type of a `JSObjectRef`.
@@ -294,6 +296,14 @@ extern "C" {
     ///
     /// Returns `true` if `value`'s type is the `string` type, otherwise `false`.
     pub fn JSValueIsString(ctx: JSContextRef, value: JSValueRef) -> bool;
+
+    /// Tests whether a JavaScript value's type is the `symbol` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `value`: The `JSValue` to test.
+    ///
+    /// Returns `true` if `value`'s type is the `symbol` type, otherwise `false`.
+    pub fn JSValueIsSymbol(ctx: JSContextRef, value: JSValueRef) -> bool;
 
     /// Tests whether a JavaScript value's type is the `object` type.
     ///
@@ -436,6 +446,15 @@ extern "C" {
     ///
     /// Returns a `JSValue` of the `string` type, representing the value of `string`.
     pub fn JSValueMakeString(ctx: JSContextRef, string: JSStringRef) -> JSValueRef;
+
+    /// Creates a JavaScript value of the symbol type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `description`: The `JSString` to assign to the newly created
+    ///   `JSValue`.
+    ///
+    /// Returns a `JSValue` of the `symbol` type, whose description matches the one provided.
+    pub fn JSValueMakeSymbol(ctx: JSContextRef, description: JSStringRef) -> JSValueRef;
 
     /// Creates a JavaScript value from a JSON formatted string.
     ///

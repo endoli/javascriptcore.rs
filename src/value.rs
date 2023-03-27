@@ -122,6 +122,30 @@ impl JSValue {
         }
     }
 
+    /// Creates a JavaScript value of the symbol type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `description`: A value that can be converted into a [`JSString`] to
+    ///   assign to the newly created `JSValue`.
+    ///
+    /// Returns a `JSValue` of the `symbol` type, whose description matches the one provided.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_symbol(&ctx, "abc");
+    /// assert!(v.is_symbol());
+    /// ```
+    ///
+    /// [`JSString`]: struct.JSString.html
+    pub fn new_symbol<S: Into<JSString>>(ctx: &JSContext, description: S) -> Self {
+        JSValue {
+            raw: unsafe { sys::JSValueMakeSymbol(ctx.raw, description.into().raw) },
+            ctx: ctx.raw,
+        }
+    }
+
     /// Creates a JavaScript value from a JSON formatted string.
     ///
     /// * `ctx`: The execution context to use.
@@ -280,6 +304,21 @@ impl JSValue {
     /// ```
     pub fn is_string(&self) -> bool {
         unsafe { sys::JSValueIsString(self.ctx, self.raw) }
+    }
+
+    /// Tests whether a JavaScript value's type is the `symbol` type.
+    ///
+    /// Returns `true` if `value`'s type is the `symbol` type, otherwise `false`.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let v = JSValue::new_symbol(&ctx, "abc");
+    /// assert!(v.is_symbol());
+    /// ```
+    pub fn is_symbol(&self) -> bool {
+        unsafe { sys::JSValueIsSymbol(self.ctx, self.raw) }
     }
 
     /// Tests whether a JavaScript value's type is the `object` type.
