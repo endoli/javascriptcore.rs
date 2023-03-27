@@ -5,9 +5,9 @@
 // except according to those terms.
 
 use super::{JSObject, JSString, JSValue};
+use crate::sys;
 use std::ops::Deref;
 use std::ptr;
-use crate::sys;
 
 impl JSObject {
     /// Gets an iterator over the names of an object's enumerable properties.

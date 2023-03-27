@@ -5,8 +5,8 @@
 // except according to those terms.
 
 use super::{JSClass, JSContext, JSContextGroup};
-use std::ptr;
 use crate::sys;
+use std::ptr;
 
 impl JSContextGroup {
     /// Creates a JavaScript context group.

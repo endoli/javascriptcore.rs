@@ -5,8 +5,8 @@
 // except according to those terms.
 
 use super::{JSClass, JSContext, JSException, JSObject, JSString, JSType, JSValue};
-use std::ptr;
 use crate::sys;
+use std::ptr;
 
 impl JSValue {
     /// Creates a JavaScript value of the `undefined` type.

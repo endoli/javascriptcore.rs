@@ -5,8 +5,8 @@
 // except according to those terms.
 
 use super::{JSContext, JSException, JSObject, JSString, JSValue};
-use std::ptr;
 use crate::sys;
+use std::ptr;
 
 /// Evaluates a string of JavaScript.
 ///
