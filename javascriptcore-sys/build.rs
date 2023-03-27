@@ -8,7 +8,13 @@ fn main() {
 
 #[cfg(target_os = "linux")]
 fn main() {
-    pkg_config::probe_library("javascriptcoregtk-3.0").unwrap();
+    let r = pkg_config::probe_library("javascriptcoregtk-3.0");
+    if r.is_err() {
+        let r = pkg_config::probe_library("javascriptcoregtk-4.0");
+        if r.is_err() {
+            panic!("libjavascriptcoregtk-3.0-dev or -4.0-dev must be installed.")
+        }
+    }
 }
 
 #[cfg(not(any(target_os = "macos", target_os = "linux")))]
