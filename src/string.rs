@@ -7,7 +7,7 @@
 use super::JSString;
 use std::ffi::CString;
 use std::fmt;
-use sys;
+use crate::sys;
 
 impl JSString {
     /// Convert this `JSString` to a `String`.

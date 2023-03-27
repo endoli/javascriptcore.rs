@@ -7,7 +7,7 @@
 use super::{JSObject, JSString, JSValue};
 use std::ops::Deref;
 use std::ptr;
-use sys;
+use crate::sys;
 
 impl JSObject {
     /// Gets an iterator over the names of an object's enumerable properties.

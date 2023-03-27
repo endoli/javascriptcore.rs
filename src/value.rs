@@ -6,7 +6,7 @@
 
 use super::{JSClass, JSContext, JSException, JSObject, JSString, JSType, JSValue};
 use std::ptr;
-use sys;
+use crate::sys;
 
 impl JSValue {
     /// Creates a JavaScript value of the `undefined` type.

@@ -23,8 +23,8 @@ mod object;
 mod string;
 mod value;
 
-pub use base::{check_script_syntax, evaluate_script, garbage_collect};
-pub use sys::{JSType, JSTypedArrayType};
+pub use crate::base::{check_script_syntax, evaluate_script, garbage_collect};
+pub use crate::sys::{JSType, JSTypedArrayType};
 
 /// A JavaScript class.
 ///

@@ -6,7 +6,7 @@
 
 use super::{JSClass, JSContext, JSContextGroup};
 use std::ptr;
-use sys;
+use crate::sys;
 
 impl JSContextGroup {
     /// Creates a JavaScript context group.

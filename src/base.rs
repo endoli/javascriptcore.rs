@@ -6,7 +6,7 @@
 
 use super::{JSContext, JSException, JSObject, JSString, JSValue};
 use std::ptr;
-use sys;
+use crate::sys;
 
 /// Evaluates a string of JavaScript.
 ///

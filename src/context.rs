@@ -6,7 +6,7 @@
 
 use super::{JSClass, JSContext, JSContextGroup, JSString};
 use std::ptr;
-use sys;
+use crate::sys;
 
 impl JSContext {
     /// Creates a global JavaScript execution context and populates it

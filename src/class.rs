@@ -5,7 +5,7 @@
 // except according to those terms.
 
 use super::JSClass;
-use sys;
+use crate::sys;
 
 impl Drop for JSClass {
     fn drop(&mut self) {
