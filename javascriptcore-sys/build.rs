@@ -8,6 +8,10 @@ fn main() {
 
 #[cfg(target_os = "linux")]
 fn main() {
+    println!("cargo:rerun-if-env-changed=DOCS_RS");
+    if let Ok(_) = std::env::var("DOCS_RS") {
+        return;
+    }
     let r = pkg_config::probe_library("javascriptcoregtk-3.0");
     if r.is_err() {
         let r = pkg_config::probe_library("javascriptcoregtk-4.0");
