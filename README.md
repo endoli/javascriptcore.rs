@@ -21,7 +21,7 @@ Add it to your `Cargo.toml` like so:
 
 ```toml
 [dependencies]
-javascriptcore = "0.0.4"
+javascriptcore = "0.0.5"
 ```
 
 ## Status of Implementation
