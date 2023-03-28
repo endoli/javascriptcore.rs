@@ -1347,6 +1347,92 @@ extern "C" {
         exception: *mut JSValueRef,
     ) -> bool;
 
+    /// Tests whether an object has a given property using a `JSValueRef` as the property key.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` to test.
+    /// * `propertyKey`: A `JSValueRef` containing the property key
+    ///   to use when looking up the property.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns `true` if the object has a property whose name matches
+    /// `propertyKey`, otherwise `false`.
+    ///
+    /// This function is the same as performing `propertyKey in object` from JavaScript.
+    pub fn JSObjectHasPropertyForKey(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyKey: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> bool;
+
+    /// Gets a property from an object using a JSValueRef as the property key.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` whose property you want to get.
+    /// * `propertyKey`: A `JSValueRef` containing the property key
+    ///   to use when looking up the property.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// The property's value if object has the property key, otherwise the undefined value.
+    ///
+    /// This function is the same as performing `object[propertyKey]` from JavaScript.
+    pub fn JSObjectGetPropertyForKey(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyKey: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> JSValueRef;
+
+    /// Sets a property on an object using a `JSValueRef` as the property key.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object `:The `JSObject` whose property you want to set.
+    /// * `propertyKey`: A `JSValueRef` containing the property key
+    ///   to use when looking up the property.
+    /// * `value`: A `JSValueRef` to use as the property's value.
+    /// * `attributes`: A logically ORed set of `JSPropertyAttributes`
+    ///   to give to the property.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// This function is the same as performing `object[propertyKey] = value` from JavaScript.
+    pub fn JSObjectSetPropertyForKey(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyKey: JSValueRef,
+        value: JSValueRef,
+        attributes: JSPropertyAttributes,
+        exception: *mut JSValueRef,
+    );
+
+    /// Deletes a property from an object using a `JSValueRef` as the property key.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `object`: The `JSObject` whose property you want to delete.
+    /// * `propertyKey`: A `JSValueRef` containing the property key
+    ///   to use when looking up the property.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// Returns `true` if the delete operation succeeds, otherwise `false`
+    /// (for example, if the property has the `kJSPropertyAttributeDontDelete`
+    /// attribute set).
+    ///
+    /// This function is the same as performing `delete object[propertyKey]` from JavaScript.
+    pub fn JSObjectDeletePropertyForKey(
+        ctx: JSContextRef,
+        object: JSObjectRef,
+        propertyKey: JSValueRef,
+        exception: *mut JSValueRef,
+    ) -> bool;
+
     /// Gets a property from an object by numeric index.
     ///
     /// * `ctx`: The execution context to use.
