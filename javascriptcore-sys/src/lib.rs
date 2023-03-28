@@ -76,12 +76,6 @@ pub struct OpaqueJSPropertyNameArray([u8; 0]);
 /// * [`JSPropertyNameArrayGetNameAtIndex`]
 /// * [`JSPropertyNameArrayRelease`]
 /// * [`JSPropertyNameArrayRetain`]
-///
-/// [`JSObjectCopyPropertyNames`]: fn.JSObjectCopyPropertyNames.html
-/// [`JSPropertyNameArrayGetCount`]: fn.JSPropertyNameArrayGetCount.html
-/// [`JSPropertyNameArrayGetNameAtIndex`]: fn.JSPropertyNameArrayGetNameAtIndex.html
-/// [`JSPropertyNameArrayRelease`]: fn.JSPropertyNameArrayRelease.html
-/// [`JSPropertyNameArrayRetain`]: fn.JSPropertyNameArrayRetain.html
 pub type JSPropertyNameArrayRef = *mut OpaqueJSPropertyNameArray;
 
 /// An ordered set used to collect the names of
@@ -97,8 +91,7 @@ pub struct OpaqueJSPropertyNameAccumulator([u8; 0]);
 /// Values of this type are passed to the [`getPropertyNames` callback].
 /// Names are added to the accumulator using [`JSPropertyNameAccumulatorAddName`].
 ///
-/// [`getPropertyNames` callback]: type.JSObjectGetPropertyNamesCallback.html
-/// [`JSPropertyNameAccumulatorAddName`]: fn.JSPropertyNameAccumulatorAddName.html
+/// [`getPropertyNames` callback]: crate::JSObjectGetPropertyNamesCallback
 pub type JSPropertyNameAccumulatorRef = *mut OpaqueJSPropertyNameAccumulator;
 
 /// A function used to deallocate bytes passed to a Typed Array constructor.
@@ -775,9 +768,6 @@ pub type JSObjectDeletePropertyCallback = ::std::option::Option<
 /// including statically declared properties, properties vended by
 /// other classes, and properties belonging to object's prototype,
 /// are added independently.
-///
-/// [`JSObjectCopyPropertyNames`]: fn.JSObjectCopyPropertyNames.html
-/// [`JSPropertyNameAccumulatorAddName`]: fn.JSPropertyNameAccumulatorAddName.html
 pub type JSObjectGetPropertyNamesCallback = ::std::option::Option<
     unsafe extern "C" fn(
         ctx: JSContextRef,
@@ -1629,8 +1619,6 @@ extern "C" {
     /// See also:
     ///
     /// * [`JSPropertyNameArrayGetNameAtIndex`]
-    ///
-    /// [`JSPropertyNameArrayGetNameAtIndex`]: fn.JSPropertyNameArrayGetNameAtIndex.html
     pub fn JSPropertyNameArrayGetCount(array: JSPropertyNameArrayRef) -> usize;
 
     /// Gets a property name at a given index in a JavaScript property name array.
@@ -1643,8 +1631,6 @@ extern "C" {
     /// See also:
     ///
     /// * [`JSPropertyNameArrayGetCount`]
-    ///
-    /// [`JSPropertyNameArrayGetCount`]: fn.JSPropertyNameArrayGetCount.html
     pub fn JSPropertyNameArrayGetNameAtIndex(
         array: JSPropertyNameArrayRef,
         index: usize,

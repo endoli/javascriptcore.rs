@@ -113,8 +113,6 @@ impl JSValue {
     /// let v = JSValue::new_string(&ctx, "abc");
     /// assert!(v.is_string());
     /// ```
-    ///
-    /// [`JSString`]: struct.JSString.html
     pub fn new_string<S: Into<JSString>>(ctx: &JSContext, string: S) -> Self {
         JSValue {
             raw: unsafe { sys::JSValueMakeString(ctx.raw, string.into().raw) },
@@ -137,8 +135,6 @@ impl JSValue {
     /// let v = JSValue::new_symbol(&ctx, "abc");
     /// assert!(v.is_symbol());
     /// ```
-    ///
-    /// [`JSString`]: struct.JSString.html
     pub fn new_symbol<S: Into<JSString>>(ctx: &JSContext, description: S) -> Self {
         JSValue {
             raw: unsafe { sys::JSValueMakeSymbol(ctx.raw, description.into().raw) },
@@ -162,8 +158,6 @@ impl JSValue {
     /// let v = JSValue::new_from_json(&ctx, "true").expect("value");
     /// assert!(v.is_boolean());
     /// ```
-    ///
-    /// [`JSString`]: struct.JSString.html
     pub fn new_from_json<S: Into<JSString>>(ctx: &JSContext, string: S) -> Result<Self, ()> {
         let v = unsafe { sys::JSValueMakeFromJSONString(ctx.raw, string.into().raw) };
         if v.is_null() {
@@ -193,8 +187,6 @@ impl JSValue {
     /// let s = v.to_json_string(0).unwrap();
     /// assert_eq!(s, "false");
     /// ```
-    ///
-    /// [`JSString`]: struct.JSString.html
     pub fn to_json_string(&self, indent: u32) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let v = unsafe { sys::JSValueCreateJSONString(self.ctx, self.raw, indent, &mut e) };
@@ -428,8 +420,6 @@ impl JSValue {
     /// let s = v.as_string().expect("valid string");
     /// assert_eq!(s, "Cave canem.");
     /// ```
-    ///
-    /// [`JSString`]: struct.JSString.html
     pub fn as_string(&self) -> Result<JSString, JSException> {
         let mut e: sys::JSValueRef = ptr::null_mut();
         let s = unsafe { sys::JSValueToStringCopy(self.ctx, self.raw, &mut e) };

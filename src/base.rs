@@ -34,8 +34,6 @@ use std::ptr;
 /// let r = evaluate_script(&ctx, "2 + 2", None, "test.js", 1);
 /// assert_eq!(r.unwrap().as_number().unwrap(), 4.0);
 /// ```
-///
-/// [`JSValue`]: struct.JSValue.html
 pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
     ctx: &JSContext,
     script: S,

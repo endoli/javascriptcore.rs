@@ -60,8 +60,6 @@ pub struct JSContextGroup {
 }
 
 /// A wrapper for a [`JSValue`] that contains an exception.
-///
-/// [`JSValue`]: struct.JSValue.html
 #[derive(Debug)]
 pub struct JSException {
     value: JSValue,
@@ -72,8 +70,6 @@ pub struct JSException {
 /// An `JSObject` is a [`JSValue`]. This is implemented by having
 /// `JSObject` implement the `Deref` trait so that anything that
 /// expects a `JSValue` can receive a `JSObject` as well.
-///
-/// [`JSValue`]: struct.JSValue.html
 pub struct JSObject {
     raw: sys::JSObjectRef,
     value: JSValue,
@@ -114,9 +110,6 @@ pub struct JSObject {
 /// A `JSString` is not a [`JSValue`] and so it can not be
 /// passed where a `JSValue` is expected. Instead, it must
 /// be boxed using [`JSValue::new_string`].
-///
-/// [`JSValue`]: struct.JSValue.html
-/// [`JSValue::new_string`]: struct.JSValue.html#method.new_string
 #[derive(Eq)]
 pub struct JSString {
     raw: sys::JSStringRef,

@@ -46,8 +46,6 @@ impl JSObject {
     ///
     /// assert!(o.has_property("id"));
     /// ```
-    ///
-    /// [`JSString`]: struct.JSString.html
     pub fn has_property<S>(&self, name: S) -> bool
     where
         S: Into<JSString>,
@@ -74,8 +72,6 @@ impl JSObject {
     /// // Remember that this will be an f64 now!
     /// assert_eq!(n.as_number().expect("number"), 123.0);
     /// ```
-    ///
-    /// [`JSString`]: struct.JSString.html
     pub fn get_property<S>(&self, name: S) -> JSValue
     where
         S: Into<JSString>,
