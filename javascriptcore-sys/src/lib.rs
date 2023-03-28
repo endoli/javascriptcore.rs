@@ -246,6 +246,10 @@ pub enum JSTypedArrayType {
     ArrayBuffer = 9,
     /// Not a Typed Array
     None = 10,
+    /// `BigInt64Array`
+    BigInt64Array = 11,
+    /// `BigUint64Array`
+    BigUint64Array = 12,
 }
 
 extern "C" {
