@@ -9,9 +9,9 @@ fn main() {
     if let Ok(_) = std::env::var("DOCS_RS") {
         return;
     }
-    let r = pkg_config::probe_library("javascriptcoregtk-3.0");
+    let r = pkg_config::probe_library("javascriptcoregtk-4.0");
     if r.is_err() {
-        let r = pkg_config::probe_library("javascriptcoregtk-4.0");
+        let r = pkg_config::probe_library("javascriptcoregtk-3.0");
         if r.is_err() {
             panic!("libjavascriptcoregtk-3.0-dev or -4.0-dev must be installed.")
         }
