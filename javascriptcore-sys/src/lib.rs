@@ -8,7 +8,7 @@
 //! API. It is a pretty direct mapping of the underlying C API
 //! provided by JavaScriptCore.
 
-#![allow(non_camel_case_types, non_snake_case)]
+#![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use std::ptr;
 
@@ -563,10 +563,28 @@ extern "C" {
     /// * `value`: The `JSValue` to unprotect.
     pub fn JSValueUnprotect(ctx: JSContextRef, value: JSValueRef);
 }
+
+/// Specifies that a property has no special attributes.
+pub const kJSPropertyAttributeNone: ::std::os::raw::c_uint = 0;
+/// Specifies that a property is read-only.
+pub const kJSPropertyAttributeReadOnly: ::std::os::raw::c_uint = 2;
+/// Specifies that a property should not be enumerated by JSPropertyEnumerators and JavaScript `for...in` loops.
+pub const kJSPropertyAttributeDontEnum: ::std::os::raw::c_uint = 4;
+/// Specifies that the delete operation should fail on a property.
+pub const kJSPropertyAttributeDontDelete: ::std::os::raw::c_uint = 8;
+
 /// A set of `JSPropertyAttribute`s.
 ///
 /// Combine multiple attributes by logically ORing them together.
 pub type JSPropertyAttributes = ::std::os::raw::c_uint;
+
+/// Specifies that a class has no special attributes.
+pub const kJSClassAttributeNone: ::std::os::raw::c_uint = 0;
+/// Specifies that a class should not automatically generate a shared
+/// prototype for its instance objects. Use
+/// `kJSClassAttributeNoAutomaticPrototype` in combination with
+/// `JSObjectSetPrototype` to manage prototypes manually.
+pub const kJSClassAttributeNoAutomaticPrototype: ::std::os::raw::c_uint = 2;
 
 /// A set of `JSClassAttribute`s.
 ///
