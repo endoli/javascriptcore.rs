@@ -1221,6 +1221,27 @@ extern "C" {
         exception: *mut JSValueRef,
     ) -> JSObjectRef;
 
+    /// Creates a JavaScript promise object by invoking the provided executor.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `resolve`: A pointer to a `JSObjectRef` in which to store the
+    ///   resolve function for the new promise. Pass `NULL` if you do not
+    ///   care to store the resolve callback.
+    /// * `reject`: A pointer to a `JSObjectRef` in which to store the
+    ///   reject function for the new promise. Pass `NULL` if you do not
+    ///   care to store the reject callback.
+    /// * `exception`: A pointer to a `JSValueRef` in which to store
+    ///   an exception, if any. Pass `NULL` if you do not care to
+    ///   store an exception.
+    ///
+    /// A `JSObject` that is a promise or `NULL` if an exception occurred.
+    pub fn JSObjectMakeDeferredPromise(
+        ctx: JSContextRef,
+        resolve: *mut JSObjectRef,
+        reject: *mut JSObjectRef,
+        exception: *mut JSValueRef,
+    ) -> JSObjectRef;
+
     /// Creates a function with a given script as its body.
     ///
     /// * `ctx`: The execution context to use.
