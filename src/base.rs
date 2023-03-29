@@ -123,7 +123,7 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
 /// Performs a JavaScript garbage collection.
 ///
 /// JavaScript values that are on the machine stack, in a register,
-/// protected by `JSValueProtect`, set as the global object of an
+/// protected by [`JSValue::protect()`], set as the global object of an
 /// execution context, or reachable from any such value will not
 /// be collected.
 ///
@@ -134,8 +134,6 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
 ///
 /// * `ctx`: The execution context to use.
 ///
-/// TODO: Fix reference to `JSValueProtect` once it has been wrapped.
-///
 /// ```
 /// use javascriptcore::*;
 ///
@@ -143,6 +141,11 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
 /// // ... Do things ...
 /// garbage_collect(&ctx);
 /// ```
+///
+/// See also:
+///
+/// * [`JSValue::protect()`]
+/// * [`JSValue::unprotect()`]
 pub fn garbage_collect(ctx: &JSContext) {
     unsafe {
         sys::JSGarbageCollect(ctx.raw);

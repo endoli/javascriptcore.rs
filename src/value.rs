@@ -468,6 +468,44 @@ impl JSValue {
             })
         }
     }
+
+    /// Protects a JavaScript value from garbage collection.
+    ///
+    /// Use this method when you want to store a [`JSValue`] in a
+    /// global or on the heap, where the garbage collector will
+    /// not be able to discover your reference to it.
+    ///
+    /// A value may be protected multiple times and must be
+    /// [unprotected] an equal number of times before becoming
+    /// eligible for garbage collection.
+    ///
+    /// See also:
+    ///
+    /// * [`garbage_collect()`]
+    /// * [`JSValue::unprotect()`]
+    ///
+    /// [`garbage_collect()`]: crate::garbage_collect
+    /// [unprotected]: crate::JSValue::unprotect
+    pub fn protect(&self) {
+        unsafe { sys::JSValueProtect(self.ctx, self.raw) };
+    }
+
+    /// Unprotects a JavaScript value from garbage collection.
+    ///
+    /// A value may be [protected] multiple times and must be unprotected
+    /// an equal number of times before becoming eligible for garbage
+    /// collection.
+    ///
+    /// See also:
+    ///
+    /// * [`garbage_collect()`]
+    /// * [`JSValue::protect()`]
+    ///
+    /// [`garbage_collect()`]: crate::garbage_collect
+    /// [protected]: crate::JSValue::protect
+    pub fn unprotect(&self) {
+        unsafe { sys::JSValueUnprotect(self.ctx, self.raw) };
+    }
 }
 
 /// Implement partial equality checks for `JSValue`.
