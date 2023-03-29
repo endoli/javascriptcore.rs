@@ -125,36 +125,24 @@ pub struct JSString {
 ///
 /// # Creating JS values
 ///
-/// * [`JSValue::new_undefined`]
-/// * [`JSValue::new_null`]
-/// * [`JSValue::new_boolean`]
-/// * [`JSValue::new_number`]
-/// * [`JSValue::new_string`]
-/// * [`JSValue::new_from_json`]
+/// * [`JSValue::new_undefined()`]
+/// * [`JSValue::new_null()`]
+/// * [`JSValue::new_boolean()`]
+/// * [`JSValue::new_number()`]
+/// * [`JSValue::new_string()`]
+/// * [`JSValue::new_from_json()`]
 ///
 /// # JSON
 ///
-/// * [`JSValue::new_from_json`]
-/// * [`JSValue::to_json_string`]
+/// * [`JSValue::new_from_json()`]
+/// * [`JSValue::to_json_string()`]
 ///
 /// # Retrieving Rust values
 ///
-/// * [`JSValue::as_boolean`]
-/// * [`JSValue::as_number`]
-/// * [`JSValue::as_object`]
-/// * [`JSValue::as_string`]
-///
-/// [`JSValue::new_undefined`]: #method.new_undefined
-/// [`JSValue::new_null`]: #method.new_null
-/// [`JSValue::new_boolean`]: #method.new_boolean
-/// [`JSValue::new_number`]: #method.new_number
-/// [`JSValue::new_string`]: #method.new_string
-/// [`JSValue::new_from_json`]: #method.new_from_json
-/// [`JSValue::to_json_string`]: #method.to_json_string
-/// [`JSValue::as_boolean`]: #method.as_boolean
-/// [`JSValue::as_number`]: #method.as_number
-/// [`JSValue::as_object`]: #method.as_object
-/// [`JSValue::as_string`]: #method.as_string
+/// * [`JSValue::as_boolean()`]
+/// * [`JSValue::as_number()`]
+/// * [`JSValue::as_object()`]
+/// * [`JSValue::as_string()`]
 #[derive(Debug)]
 pub struct JSValue {
     raw: sys::JSValueRef,
