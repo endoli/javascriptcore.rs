@@ -541,10 +541,10 @@ mod tests {
     fn undefined() {
         let ctx = JSContext::default();
         let vu = JSValue::new_undefined(&ctx);
-        assert_eq!(vu.is_undefined(), true);
-        assert_eq!(vu.is_null(), false);
+        assert!(vu.is_undefined());
+        assert!(!vu.is_null());
         assert_eq!(vu.get_type(), JSType::Undefined);
-        assert_eq!(vu.as_boolean(), false);
+        assert!(!vu.as_boolean());
         assert_eq!(vu.as_string().unwrap(), "undefined");
     }
 
@@ -552,10 +552,10 @@ mod tests {
     fn null() {
         let ctx = JSContext::default();
         let vn = JSValue::new_null(&ctx);
-        assert_eq!(vn.is_null(), true);
-        assert_eq!(vn.is_undefined(), false);
+        assert!(vn.is_null());
+        assert!(!vn.is_undefined());
         assert_eq!(vn.get_type(), JSType::Null);
-        assert_eq!(vn.as_boolean(), false);
+        assert!(!vn.as_boolean());
         assert_eq!(vn.as_string().unwrap(), "null");
     }
 
@@ -563,18 +563,18 @@ mod tests {
     fn boolean() {
         let ctx = JSContext::default();
         let vt = JSValue::new_boolean(&ctx, true);
-        assert_eq!(vt.is_boolean(), true);
-        assert_eq!(vt.is_null(), false);
+        assert!(vt.is_boolean());
+        assert!(!vt.is_null());
         assert_eq!(vt.get_type(), JSType::Boolean);
-        assert_eq!(vt.as_boolean(), true);
+        assert!(vt.as_boolean());
         assert_eq!(vt.as_number().unwrap(), 1.0);
         assert_eq!(vt.as_string().unwrap(), "true");
 
         let vf = JSValue::new_boolean(&ctx, false);
-        assert_eq!(vf.is_boolean(), true);
-        assert_eq!(vf.is_null(), false);
+        assert!(vf.is_boolean());
+        assert!(!vf.is_null());
         assert_eq!(vf.get_type(), JSType::Boolean);
-        assert_eq!(vf.as_boolean(), false);
+        assert!(!vf.as_boolean());
         assert_eq!(vf.as_number().unwrap(), 0.0);
         assert_eq!(vf.as_string().unwrap(), "false");
     }
@@ -583,10 +583,10 @@ mod tests {
     fn number() {
         let ctx = JSContext::default();
         let vn = JSValue::new_number(&ctx, 30.4);
-        assert_eq!(vn.is_number(), true);
-        assert_eq!(vn.is_null(), false);
+        assert!(vn.is_number());
+        assert!(!vn.is_null());
         assert_eq!(vn.get_type(), JSType::Number);
-        assert_eq!(vn.as_boolean(), true);
+        assert!(vn.as_boolean());
         assert_eq!(vn.as_number().unwrap(), 30.4);
         assert_eq!(vn.as_string().unwrap(), "30.4");
     }
@@ -595,10 +595,10 @@ mod tests {
     fn string() {
         let ctx = JSContext::default();
         let vs = JSValue::new_string(&ctx, "abc");
-        assert_eq!(vs.is_string(), true);
-        assert_eq!(vs.is_null(), false);
+        assert!(vs.is_string());
+        assert!(!vs.is_null());
         assert_eq!(vs.get_type(), JSType::String);
-        assert_eq!(vs.as_boolean(), true);
+        assert!(vs.as_boolean());
         assert!(vs.as_number().is_err());
         assert_eq!(vs.as_string().unwrap(), "abc");
     }
@@ -608,8 +608,8 @@ mod tests {
         let ctx = JSContext::default();
 
         let v = JSValue::new_from_json(&ctx, "true").expect("value");
-        assert_eq!(v.is_boolean(), true);
-        assert_eq!(v.as_boolean(), true);
+        assert!(v.is_boolean());
+        assert!(v.as_boolean());
         assert_eq!(v.as_number().unwrap(), 1.0);
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "true");
@@ -620,8 +620,8 @@ mod tests {
         let ctx = JSContext::default();
 
         let v = JSValue::new_from_json(&ctx, "false").expect("value");
-        assert_eq!(v.is_boolean(), true);
-        assert_eq!(v.as_boolean(), false);
+        assert!(v.is_boolean());
+        assert!(!v.as_boolean());
         assert_eq!(v.as_number().unwrap(), 0.0);
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "false");
@@ -631,8 +631,8 @@ mod tests {
     fn json_number_0() {
         let ctx = JSContext::default();
         let v = JSValue::new_from_json(&ctx, "0").expect("value");
-        assert_eq!(v.is_number(), true);
-        assert_eq!(v.as_boolean(), false);
+        assert!(v.is_number());
+        assert!(!v.as_boolean());
         assert_eq!(v.as_number().unwrap(), 0.0);
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "0");
@@ -643,8 +643,8 @@ mod tests {
         let ctx = JSContext::default();
 
         let v = JSValue::new_from_json(&ctx, "3").expect("value");
-        assert_eq!(v.is_number(), true);
-        assert_eq!(v.as_boolean(), true);
+        assert!(v.is_number());
+        assert!(v.as_boolean());
         assert_eq!(v.as_number().unwrap(), 3.0);
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "3");
@@ -655,8 +655,8 @@ mod tests {
         let ctx = JSContext::default();
 
         let v = JSValue::new_from_json(&ctx, "\"abc\"").expect("value");
-        assert_eq!(v.is_string(), true);
-        assert_eq!(v.as_boolean(), true);
+        assert!(v.is_string());
+        assert!(v.as_boolean());
         assert!(v.as_number().is_err());
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "\"abc\"");
@@ -667,8 +667,8 @@ mod tests {
         let ctx = JSContext::default();
 
         let v = JSValue::new_from_json(&ctx, "\"3\"").expect("value");
-        assert_eq!(v.is_string(), true);
-        assert_eq!(v.as_boolean(), true);
+        assert!(v.is_string());
+        assert!(v.as_boolean());
         assert_eq!(v.as_number().unwrap(), 3.0);
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "\"3\"");
