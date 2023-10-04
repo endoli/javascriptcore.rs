@@ -9,10 +9,17 @@ use crate::sys;
 use std::ffi::CString;
 use std::fmt;
 
-impl JSString {
-    /// Convert this `JSString` to a `String`.
-    pub fn to_string(&self) -> String {
-        unsafe {
+impl JSString {}
+
+impl fmt::Debug for JSString {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        write!(fmt, "JSString {{ \"{}\" }}", self)
+    }
+}
+
+impl fmt::Display for JSString {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        let s = unsafe {
             let max_size = sys::JSStringGetMaximumUTF8CStringSize(self.raw);
             let mut buffer: Vec<u8> = Vec::with_capacity(max_size);
             let actual_size = sys::JSStringGetUTF8CString(
@@ -22,13 +29,8 @@ impl JSString {
             );
             buffer.set_len(actual_size - 1);
             String::from_utf8(buffer).unwrap()
-        }
-    }
-}
-
-impl fmt::Debug for JSString {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        write!(fmt, "JSString {{ \"{}\" }}", self.to_string())
+        };
+        write!(fmt, "{}", s)
     }
 }
 
