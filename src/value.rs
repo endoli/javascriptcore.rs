@@ -148,7 +148,7 @@ impl JSValue {
     /// * `string`: A value that can be converted into a [`JSString`] containing
     ///   the JSON string to be parsed.
     ///
-    /// Returns a `Result` with the `JSValue` containing the parsed value, or an error
+    /// Returns an `Option` with the `JSValue` containing the parsed value, or `None`
     /// if the input is invalid.
     ///
     /// ```
@@ -158,12 +158,12 @@ impl JSValue {
     /// let v = JSValue::new_from_json(&ctx, "true").expect("value");
     /// assert!(v.is_boolean());
     /// ```
-    pub fn new_from_json<S: Into<JSString>>(ctx: &JSContext, string: S) -> Result<Self, ()> {
+    pub fn new_from_json<S: Into<JSString>>(ctx: &JSContext, string: S) -> Option<Self> {
         let v = unsafe { sys::JSValueMakeFromJSONString(ctx.raw, string.into().raw) };
         if v.is_null() {
-            Err(())
+            None
         } else {
-            Ok(JSValue {
+            Some(JSValue {
                 raw: v,
                 ctx: ctx.raw,
             })
@@ -679,6 +679,6 @@ mod tests {
         let ctx = JSContext::default();
 
         let v = JSValue::new_from_json(&ctx, "3 +");
-        assert!(v.is_err());
+        assert!(v.is_none());
     }
 }
