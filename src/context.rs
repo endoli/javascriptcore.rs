@@ -92,11 +92,11 @@ impl JSContext {
 
     /// Get the global object of this context.
     ///
-    /// ``rust
+    /// ```rust
     /// # use javascriptcore::JSContext;
     /// let ctx = JSContext::new();
     ///
-    /// assert!(ctx.global_object().is_some());
+    /// assert!(ctx.global_object().is_ok());
     /// ```
     pub fn global_object(&self) -> Result<JSObject, JSException> {
         let global_object = unsafe { JSContextGetGlobalObject(self.raw) };
