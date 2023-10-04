@@ -1,6 +1,8 @@
 # javascriptcore
 
+[![CI](https://github.com/endoli/javascriptcore.rs/actions/workflows/ci.yml/badge.svg)](https://github.com/endoli/javascriptcore.rs/actions/workflows/ci.yml)
 [![](https://img.shields.io/crates/v/javascriptcore.svg)](https://crates.io/crates/javascriptcore)
+[![docs.rs](https://img.shields.io/docsrs/javascriptcore)](https://docs.rs/javascriptcore)
 
 This crate provides a safe binding to the public API for
 [JavaScriptCore](https://trac.webkit.org/wiki/JavaScriptCore),
@@ -10,8 +12,7 @@ Dual licensed under the MIT and Apache 2 licenses.
 
 ## Documentation
 
-The API is fully documented with examples:
-[https://endoli.github.io/javascriptcore.rs/](https://endoli.github.io/javascriptcore.rs/)
+The API is fully documented with examples: <https://docs.rs/javascriptcore/>
 
 ## Installation
 

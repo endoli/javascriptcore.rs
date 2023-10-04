@@ -1,5 +1,9 @@
 # javascriptcore-sys
 
+[![CI](https://github.com/endoli/javascriptcore.rs/actions/workflows/ci.yml/badge.svg)](https://github.com/endoli/javascriptcore.rs/actions/workflows/ci.yml)
+[![](https://img.shields.io/crates/v/javascriptcore-sys.svg)](https://crates.io/crates/javascriptcore-sys)
+[![docs.rs](https://img.shields.io/docsrs/javascriptcore-sys)](https://docs.rs/javascriptcore-sys)
+
 These are raw bindings for the JavaScriptCore library.
 
 This only works on macOS and Linux for now, but should be
