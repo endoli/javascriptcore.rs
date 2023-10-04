@@ -4,6 +4,21 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::JSException;
+use super::{JSException, JSString, JSValue};
 
-impl JSException {}
+impl JSException {
+    /// Return the underlying value backing the exception.
+    pub fn underlying_value(&self) -> &JSValue {
+        &self.value
+    }
+
+    /// Return the name of the exception. This is the value of the `name`
+    /// property on the exception object.
+    pub fn name(&self) -> Result<JSString, JSException> {
+        self.value
+            .as_object()
+            .unwrap()
+            .get_property("name")
+            .as_string()
+    }
+}
