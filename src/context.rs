@@ -4,8 +4,10 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use sys::JSContextGetGlobalObject;
+
 use super::{JSClass, JSContext, JSContextGroup, JSString};
-use crate::sys;
+use crate::{sys, JSException, JSObject, JSValue};
 use std::ptr;
 
 impl JSContext {
@@ -87,6 +89,35 @@ impl JSContext {
     pub fn set_name<S: Into<JSString>>(&self, name: S) {
         unsafe { sys::JSGlobalContextSetName(self.raw, name.into().raw) }
     }
+
+    /// Get the global object of this context.
+    ///
+    /// ``rust
+    /// # use javascriptcore::JSContext;
+    /// let ctx = JSContext::new();
+    ///
+    /// assert!(ctx.global_object().is_some());
+    /// ```
+    pub fn global_object(&self) -> Result<JSObject, JSException> {
+        let global_object = unsafe { JSContextGetGlobalObject(self.raw) };
+
+        if global_object.is_null() {
+            Err(JSException {
+                value: JSValue {
+                    raw: global_object,
+                    ctx: self.raw,
+                },
+            })
+        } else {
+            Ok(JSObject {
+                raw: global_object,
+                value: JSValue {
+                    raw: global_object,
+                    ctx: self.raw,
+                },
+            })
+        }
+    }
 }
 
 impl Default for JSContext {
@@ -130,5 +161,14 @@ mod tests {
 
         ctx.set_name("test thread");
         assert_eq!(ctx.name().unwrap(), "test thread");
+    }
+
+    #[test]
+    fn global_object() {
+        let ctx = JSContext::new();
+        let global_object = ctx.global_object().unwrap();
+
+        let some_property = global_object.get_property("WebAssembly");
+        assert!(!some_property.is_undefined());
     }
 }
