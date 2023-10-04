@@ -181,7 +181,7 @@ mod tests {
         let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("value");
         let o = v.as_object().expect("object");
         assert!(o.has_property("id"));
-        assert!(o.has_property("no-such-value") == false);
+        assert!(!o.has_property("no-such-value"));
     }
 
     #[test]
