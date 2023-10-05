@@ -102,9 +102,7 @@ impl JSContext {
         let global_object = unsafe { JSContextGetGlobalObject(self.raw) };
 
         if global_object.is_null() {
-            Err(JSException {
-                value: JSValue::new_inner(self.raw, global_object),
-            })
+            Err(JSValue::new_inner(self.raw, global_object).into())
         } else {
             Ok(JSObject {
                 raw: global_object,
