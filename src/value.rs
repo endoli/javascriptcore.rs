@@ -97,7 +97,7 @@ impl JSValue {
         }
     }
 
-    /// Creates a JavaScript value of the string type.
+    /// Creates a JavaScript value of the `string` type.
     ///
     /// * `ctx`: The execution context to use.
     /// * `string`: A value that can be converted into a [`JSString`] to assign
@@ -127,7 +127,7 @@ impl JSValue {
         }
     }
 
-    /// Creates a JavaScript value of the symbol type.
+    /// Creates a JavaScript value of the `symbol` type.
     ///
     /// * `ctx`: The execution context to use.
     /// * `description`: A value that can be converted into a [`JSString`] to
