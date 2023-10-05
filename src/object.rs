@@ -186,7 +186,7 @@ impl JSObject {
         if result.is_null() {
             return Err(JSException {
                 value: JSValue::new_string(
-                    &context,
+                    context,
                     "Cannot call this object as a function: it is not a valid function",
                 ),
             });
