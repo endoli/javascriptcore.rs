@@ -138,9 +138,14 @@ impl JSObject {
     ///
     /// This can be used to create a new property, or to update an existing property.
     ///
-    /// * `name`: A value that can be converted to a [`JSString`] containing
+    /// * `index`: A value that can be converted to a [`JSString`] containing
     ///   the property's name.
     /// * `value`: A value containig the property's value.
+    ///
+    /// Calling `get_property_at_index` is equivalent to calling
+    /// `get_property` with a string containing `index`,
+    /// but `get_property_at_index` provides optimized access to
+    /// numeric properties.
     ///
     /// ```
     /// # use javascriptcore::{JSContext, JSValue};
@@ -161,6 +166,46 @@ impl JSObject {
 
         unsafe {
             sys::JSObjectSetProperty(context, self.raw, name.raw, value.raw, 0, &mut exception)
+        }
+
+        if !exception.is_null() {
+            return Err(JSException {
+                value: JSValue {
+                    raw: exception,
+                    ctx: context,
+                },
+            });
+        }
+
+        Ok(())
+    }
+
+    /// Set a property onto an object by using a numeric index.
+    ///
+    /// This can be used to create a new property, or to update an existing property.
+    ///
+    /// * `index`: An integer value that is the property's name.
+    /// * `value`: A value containig the property's value.
+    ///
+    /// Calling `set_property_at_index` is equivalent to calling `set_property` with
+    /// a string containing `index`, but `set_property_at_index` provides optimized
+    /// access to numeric properties.
+    ///
+    /// ```
+    /// # use javascriptcore::{JSContext, JSValue};
+    /// let ctx = JSContext::default();
+    /// let object = JSValue::new_from_json(&ctx, r#"[10]"#).expect("valid array").as_object().unwrap();
+    /// object.set_property_at_index(1, JSValue::new_number(&ctx, 11.)).unwrap();
+    ///
+    /// assert!(object.has_property("0"));
+    /// assert!(object.has_property("1"));
+    /// ```
+    pub fn set_property_at_index(&self, index: u32, value: JSValue) -> Result<(), JSException> {
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let context = self.value.ctx;
+
+        unsafe {
+            sys::JSObjectSetPropertyAtIndex(context, self.raw, index, value.raw, &mut exception)
         }
 
         if !exception.is_null() {
@@ -342,6 +387,24 @@ mod tests {
 
         assert!(object.has_property("baz"));
         assert_eq!(object.get_property("baz").as_string()?.to_string(), "qux");
+
+        Ok(())
+    }
+
+    #[test]
+    fn can_set_property_at_index() -> Result<(), JSException> {
+        let ctx = JSContext::default();
+        let object = JSValue::new_from_json(&ctx, r#"[10]"#)
+            .unwrap()
+            .as_object()?;
+
+        assert!(object.has_property("0"));
+        assert!(!object.has_property("1"));
+
+        object.set_property_at_index(1, JSValue::new_number(&ctx, 11.))?;
+
+        assert!(object.has_property("1"));
+        assert_eq!(object.get_property_at_index(1).as_number()?, 11.);
 
         Ok(())
     }
