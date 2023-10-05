@@ -134,6 +134,47 @@ impl JSObject {
         }
     }
 
+    /// Set a property onto an object.
+    ///
+    /// This can be used to create a new property, or to update an existing property.
+    ///
+    /// * `name`: A value that can be converted to a [`JSString`] containing
+    ///   the property's name.
+    /// * `value`: A value containig the property's value.
+    ///
+    /// ```
+    /// # use javascriptcore::{JSContext, JSValue};
+    /// let ctx = JSContext::default();
+    /// let object = JSValue::new_from_json(&ctx, r#"{"a": 10}"#).expect("valid object").as_object().unwrap();
+    /// object.set_property("b", JSValue::new_number(&ctx, 11.)).unwrap();
+    ///
+    /// assert!(object.has_property("a"));
+    /// assert!(object.has_property("b"));
+    /// ```
+    pub fn set_property<S>(&self, name: S, value: JSValue) -> Result<(), JSException>
+    where
+        S: Into<JSString>,
+    {
+        let name: JSString = name.into();
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let context = self.value.ctx;
+
+        unsafe {
+            sys::JSObjectSetProperty(context, self.raw, name.raw, value.raw, 0, &mut exception)
+        }
+
+        if !exception.is_null() {
+            return Err(JSException {
+                value: JSValue {
+                    raw: exception,
+                    ctx: context,
+                },
+            });
+        }
+
+        Ok(())
+    }
+
     /// Call this object considering it is a valid function.
     ///
     /// ```rust
@@ -288,6 +329,24 @@ mod tests {
     }
 
     #[test]
+    fn can_set_property() -> Result<(), JSException> {
+        let ctx = JSContext::default();
+        let object = JSValue::new_from_json(&ctx, r#"{"foo": "bar"}"#)
+            .unwrap()
+            .as_object()?;
+
+        assert!(object.has_property("foo"));
+        assert!(!object.has_property("baz"));
+
+        object.set_property("baz", JSValue::new_string(&ctx, "qux"))?;
+
+        assert!(object.has_property("baz"));
+        assert_eq!(object.get_property("baz").as_string()?.to_string(), "qux");
+
+        Ok(())
+    }
+
+    #[test]
     fn can_use_as_jsvalue_via_deref() {
         let ctx = JSContext::default();
         let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("value");
@@ -297,7 +356,7 @@ mod tests {
     }
 
     #[test]
-    fn call_as_function() -> Result<(), JSException> {
+    fn can_call_as_function() -> Result<(), JSException> {
         let ctx = JSContext::default();
         let global = ctx.global_object()?;
         let math = global.get_property("Math").as_object()?;
