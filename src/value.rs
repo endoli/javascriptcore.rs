@@ -114,9 +114,16 @@ impl JSValue {
     /// assert!(v.is_string());
     /// ```
     pub fn new_string<S: Into<JSString>>(ctx: &JSContext, string: S) -> Self {
+        Self::new_string_inner(ctx.raw, string)
+    }
+
+    pub(crate) fn new_string_inner<S: Into<JSString>>(
+        ctx: *const sys::OpaqueJSContext,
+        string: S,
+    ) -> Self {
         JSValue {
-            raw: unsafe { sys::JSValueMakeString(ctx.raw, string.into().raw) },
-            ctx: ctx.raw,
+            raw: unsafe { sys::JSValueMakeString(ctx, string.into().raw) },
+            ctx,
         }
     }
 

@@ -270,18 +270,10 @@ impl JSObject {
 
         if result.is_null() {
             return Err(JSException {
-                value: JSValue {
-                    raw: unsafe {
-                        sys::JSValueMakeString(
-                            context,
-                            JSString::from(
-                                "Cannot call this object as a function: it is not a valid function",
-                            )
-                            .raw,
-                        )
-                    },
-                    ctx: context,
-                },
+                value: JSValue::new_string_inner(
+                    context,
+                    "Cannot call this object as a function: it is not a valid function",
+                ),
             });
         }
 
