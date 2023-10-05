@@ -150,7 +150,17 @@ impl JSValue {
     /// * `ctx`: The execution context to use.
     /// * `items`: The array items as [`JSValue`]s.
     ///
-    /// Returns a `JSValue` of the `array` type, other an exception.
+    /// Returns a `JSValue` of the `array` type, otherwise an exception.
+    ///
+    /// ```
+    /// # use javascriptcore::{JSContext, JSValue};
+    /// let ctx = JSContext::default();
+    /// let value = JSValue::new_array(
+    ///     &ctx,
+    ///     &[JSValue::new_number(&ctx, 1.), JSValue::new_number(&ctx, 2.)]
+    /// ).unwrap();
+    /// assert!(value.is_array());
+    /// ```
     pub fn new_array(ctx: &JSContext, items: &[JSValue]) -> Result<Self, JSException> {
         let items = items
             .iter()
