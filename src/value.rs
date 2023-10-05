@@ -192,7 +192,7 @@ impl JSValue {
     ///
     /// * `ctx`: The execution context to use.
     /// * `bytes`: The typed array bytes. The constructed `TypedArray` doesn't copy the bytes,
-    ///   thus this method take a `&mut` reference as it is possible to mutate the bytes via
+    ///   thus this method takes a `&mut` reference as it is possible to mutate the bytes via
     ///   `TypedArray` or via Rust.
     ///
     /// Returns a `JSValue` of the `TypedArray` type, otherwise an exception.
