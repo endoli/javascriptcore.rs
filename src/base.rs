@@ -53,9 +53,7 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
         );
 
         if result.is_null() {
-            Err(JSException {
-                value: JSValue::new_inner(ctx.raw, exception),
-            })
+            Err(JSValue::new_inner(ctx.raw, exception).into())
         } else {
             Ok(JSValue::new_inner(ctx.raw, result))
         }
@@ -106,9 +104,7 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
         if result {
             Ok(())
         } else {
-            Err(JSException {
-                value: JSValue::new_inner(ctx.raw, exception),
-            })
+            Err(JSValue::new_inner(ctx.raw, exception).into())
         }
     }
 }
