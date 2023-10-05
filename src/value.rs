@@ -149,6 +149,49 @@ impl JSValue {
         }
     }
 
+    /// Creates a JavaScript value of the `array` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `items`: The array items as [`JSValue`]s.
+    ///
+    /// Returns a `JSValue` of the `array` type, other an exception.
+    pub fn new_array(ctx: &JSContext, items: &[JSValue]) -> Result<Self, JSException> {
+        let items = items
+            .iter()
+            .map(|argument| argument.raw)
+            .collect::<Vec<_>>();
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+
+        let result = unsafe {
+            sys::JSObjectMakeArray(
+                ctx.raw,
+                items.len(),
+                items.as_slice().as_ptr(),
+                &mut exception,
+            )
+        };
+
+        if !exception.is_null() {
+            return Err(JSException {
+                value: JSValue {
+                    raw: exception,
+                    ctx: ctx.raw,
+                },
+            });
+        }
+
+        if result.is_null() {
+            return Err(JSException {
+                value: JSValue::new_string(ctx, "Failed to make a new array"),
+            });
+        }
+
+        Ok(JSValue {
+            raw: result,
+            ctx: ctx.raw,
+        })
+    }
+
     /// Creates a JavaScript value from a JSON formatted string.
     ///
     /// * `ctx`: The execution context to use.
@@ -353,7 +396,7 @@ impl JSValue {
     /// # use javascriptcore::*;
     /// let ctx = JSContext::default();
     ///
-    /// let v = JSValue::new_from_json(&ctx, "[123, 456]").expect("valid array");
+    /// let v = JSValue::new_array(&ctx, &[JSValue::new_number(&ctx, 123.), JSValue::new_number(&ctx, 456.)]).unwrap();
     /// assert!(v.is_array());
     ///
     /// // But an object is not an array.
@@ -608,6 +651,27 @@ mod tests {
         assert!(vs.as_boolean());
         assert!(vs.as_number().is_err());
         assert_eq!(vs.as_string().unwrap(), "abc");
+    }
+
+    #[test]
+    fn array() {
+        let ctx = JSContext::default();
+        let va = JSValue::new_array(
+            &ctx,
+            &[
+                JSValue::new_boolean(&ctx, true),
+                JSValue::new_boolean(&ctx, false),
+            ],
+        )
+        .unwrap();
+        assert!(va.is_array());
+        assert!(!va.is_null());
+        assert_eq!(va.get_type(), JSType::Object); // true!
+        assert!(va.as_boolean());
+        assert!(va.as_number().is_err());
+        let vo = va.as_object().unwrap();
+        assert!(vo.get_property_at_index(0).as_boolean());
+        assert!(!vo.get_property_at_index(1).as_boolean());
     }
 
     #[test]
