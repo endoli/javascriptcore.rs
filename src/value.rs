@@ -188,6 +188,68 @@ impl JSValue {
         Ok(JSValue::new_inner(ctx.raw, result))
     }
 
+    /// Creates a JavaScript value of the `TypedArray` type.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `bytes`: The typed array bytes. The constructed `TypedArray` doesn't copy the bytes,
+    ///   thus this method takes a `&mut` reference as it is possible to mutate the bytes via
+    ///   `TypedArray` or via Rust.
+    ///
+    /// Returns a `JSValue` of the `TypedArray` type, otherwise an exception.
+    ///
+    /// # Safety
+    ///
+    /// `bytes` can be mutated both by Rust or JavaScript. There is no lock, no mutex, no
+    /// guard. Be extremely careful when using this API. `bytes` aren't copied, they are
+    /// borrowed mutably by JavaScript. Dropping the value in Rust will clear them in
+    /// JavaScript, and vice versa. Hence, this method is marked as `unsafe`.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// # use javascriptcore::{JSContext, JSValue};
+    /// let ctx = JSContext::default();
+    /// let mut bytes = vec![1u8, 2, 3, 4, 5];
+    /// let value = unsafe {
+    ///     JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice())
+    ///         .unwrap()
+    /// };
+    /// ```
+    pub unsafe fn new_typed_array_with_bytes(
+        ctx: &JSContext,
+        // `&mut` instead of &` because the typed array borrows mutably the bytes.
+        //
+        // The argument is named `_bytes` instead of `bytes` to avoid a
+        // `clippy::needless_pass_by_ref_mut` warning (only on Rust nightly).
+        _bytes: &mut [u8],
+    ) -> Result<Self, JSException> {
+        let bytes = _bytes;
+        let deallocator_ctx = ptr::null_mut();
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+
+        let result = unsafe {
+            sys::JSObjectMakeTypedArrayWithBytesNoCopy(
+                ctx.raw,
+                sys::JSTypedArrayType::Uint8Array,
+                bytes.as_ptr() as _,
+                bytes.len(),
+                None,
+                deallocator_ctx,
+                &mut exception,
+            )
+        };
+
+        if !exception.is_null() {
+            return Err(JSValue::new_inner(ctx.raw, exception).into());
+        }
+
+        if result.is_null() {
+            return Err(JSValue::new_string(ctx, "Failed to make a new typed array").into());
+        }
+
+        Ok(JSValue::new_inner(ctx.raw, result))
+    }
+
     /// Creates a JavaScript value from a JSON formatted string.
     ///
     /// * `ctx`: The execution context to use.
@@ -648,6 +710,57 @@ mod tests {
         let vo = va.as_object().unwrap();
         assert!(vo.get_property_at_index(0).as_boolean());
         assert!(!vo.get_property_at_index(1).as_boolean());
+    }
+
+    #[test]
+    fn typed_array() {
+        let ctx = JSContext::default();
+        let mut bytes = vec![1u8, 2, 3, 4, 5];
+        let array = unsafe { JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice()) }
+            .unwrap()
+            .as_object()
+            .unwrap();
+
+        assert_eq!(
+            unsafe {
+                array
+                    .get_property("byteLength")
+                    .as_number()
+                    .unwrap()
+                    .to_int_unchecked::<usize>()
+            },
+            bytes.len()
+        );
+        assert_eq!(
+            unsafe {
+                array
+                    .get_property("BYTES_PER_ELEMENT")
+                    .as_number()
+                    .unwrap()
+                    .to_int_unchecked::<usize>()
+            },
+            1
+        );
+
+        // Let's test the mutability of the bytes, i.e. they aren't copied but borrowed.
+        array
+            .set_property_at_index(2, JSValue::new_number(&ctx, 10.))
+            .unwrap();
+
+        assert_eq!(bytes, &[1u8, 2, 10, 4, 5]);
+
+        bytes[3] = 11;
+
+        assert_eq!(
+            unsafe {
+                array
+                    .get_property_at_index(3)
+                    .as_number()
+                    .unwrap()
+                    .to_int_unchecked::<u8>()
+            },
+            11
+        )
     }
 
     #[test]
