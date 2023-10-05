@@ -22,3 +22,9 @@ impl JSException {
             .as_string()
     }
 }
+
+impl From<JSValue> for JSException {
+    fn from(value: JSValue) -> Self {
+        Self { value }
+    }
+}

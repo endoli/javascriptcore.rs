@@ -168,9 +168,7 @@ impl JSObject {
         }
 
         if !exception.is_null() {
-            return Err(JSException {
-                value: JSValue::new_inner(context, exception),
-            });
+            return Err(JSValue::new_inner(context, exception).into());
         }
 
         Ok(())
@@ -205,9 +203,7 @@ impl JSObject {
         }
 
         if !exception.is_null() {
-            return Err(JSException {
-                value: JSValue::new_inner(context, exception),
-            });
+            return Err(JSValue::new_inner(context, exception).into());
         }
 
         Ok(())
@@ -253,18 +249,15 @@ impl JSObject {
         };
 
         if !exception.is_null() {
-            return Err(JSException {
-                value: JSValue::new_inner(context, exception),
-            });
+            return Err(JSValue::new_inner(context, exception).into());
         }
 
         if result.is_null() {
-            return Err(JSException {
-                value: JSValue::new_string_inner(
-                    context,
-                    "Cannot call this object as a function: it is not a valid function",
-                ),
-            });
+            return Err(JSValue::new_string_inner(
+                context,
+                "Cannot call this object as a function: it is not a valid function",
+            )
+            .into());
         }
 
         Ok(JSValue::new_inner(context, result))
