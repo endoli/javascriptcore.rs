@@ -5,7 +5,7 @@
 // except according to those terms.
 
 use super::{JSObject, JSString};
-use crate::{sys, JSContext, JSException, JSValue};
+use crate::{sys, JSException, JSValue};
 use std::ops::Deref;
 use std::ptr;
 
@@ -144,7 +144,6 @@ impl JSObject {
     /// let pow = math.get_property("pow").as_object().unwrap();
     ///
     /// let result = pow.call_as_function(
-    ///     &ctx,
     ///     None,
     ///     &[JSValue::new_number(&ctx, 2.), JSValue::new_number(&ctx, 3.)],
     /// ).unwrap();
@@ -153,7 +152,6 @@ impl JSObject {
     /// ```
     pub fn call_as_function(
         &self,
-        context: &JSContext,
         this: Option<&JSObject>,
         arguments: &[JSValue],
     ) -> Result<JSValue, JSException> {
@@ -162,10 +160,11 @@ impl JSObject {
             .map(|argument| argument.raw)
             .collect::<Vec<_>>();
         let mut exception: sys::JSValueRef = ptr::null_mut();
+        let context = self.value.ctx;
 
         let result = unsafe {
             sys::JSObjectCallAsFunction(
-                context.raw,
+                context,
                 self.raw,
                 this.map(|this| this.raw).unwrap_or_else(ptr::null_mut),
                 arguments.len(),
@@ -178,23 +177,31 @@ impl JSObject {
             return Err(JSException {
                 value: JSValue {
                     raw: exception,
-                    ctx: context.raw,
+                    ctx: context,
                 },
             });
         }
 
         if result.is_null() {
             return Err(JSException {
-                value: JSValue::new_string(
-                    context,
-                    "Cannot call this object as a function: it is not a valid function",
-                ),
+                value: JSValue {
+                    raw: unsafe {
+                        sys::JSValueMakeString(
+                            context,
+                            JSString::from(
+                                "Cannot call this object as a function: it is not a valid function",
+                            )
+                            .raw,
+                        )
+                    },
+                    ctx: context,
+                },
             });
         }
 
         Ok(JSValue {
             raw: result,
-            ctx: context.raw,
+            ctx: context,
         })
     }
 }
@@ -297,7 +304,6 @@ mod tests {
         let pow = math.get_property("pow").as_object()?;
 
         let result = pow.call_as_function(
-            &ctx,
             None,
             &[JSValue::new_number(&ctx, 2.), JSValue::new_number(&ctx, 3.)],
         )?;
@@ -307,7 +313,7 @@ mod tests {
         // Not a function, it's a constant.
         let e = math.get_property("E").as_object()?;
 
-        assert!(e.call_as_function(&ctx, None, &[]).is_err());
+        assert!(e.call_as_function(None, &[]).is_err());
 
         Ok(())
     }
