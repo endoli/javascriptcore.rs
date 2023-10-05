@@ -103,18 +103,12 @@ impl JSContext {
 
         if global_object.is_null() {
             Err(JSException {
-                value: JSValue {
-                    raw: global_object,
-                    ctx: self.raw,
-                },
+                value: JSValue::new_inner(self.raw, global_object),
             })
         } else {
             Ok(JSObject {
                 raw: global_object,
-                value: JSValue {
-                    raw: global_object,
-                    ctx: self.raw,
-                },
+                value: JSValue::new_inner(self.raw, global_object),
             })
         }
     }

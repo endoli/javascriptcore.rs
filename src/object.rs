@@ -76,13 +76,12 @@ impl JSObject {
     where
         S: Into<JSString>,
     {
-        let mut e: sys::JSValueRef = ptr::null_mut();
-        let v =
-            unsafe { sys::JSObjectGetProperty(self.value.ctx, self.raw, name.into().raw, &mut e) };
-        JSValue {
-            raw: v,
-            ctx: self.value.ctx,
-        }
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let value = unsafe {
+            sys::JSObjectGetProperty(self.value.ctx, self.raw, name.into().raw, &mut exception)
+        };
+
+        JSValue::new_inner(self.value.ctx, value)
     }
 
     /// Gets a property from an object by numeric index.
@@ -126,12 +125,12 @@ impl JSObject {
     /// assert_eq!(o.get_property_at_index(2).as_string().expect("string"), "abc");
     /// ```
     pub fn get_property_at_index(&self, index: u32) -> JSValue {
-        let mut e: sys::JSValueRef = ptr::null_mut();
-        let v = unsafe { sys::JSObjectGetPropertyAtIndex(self.value.ctx, self.raw, index, &mut e) };
-        JSValue {
-            raw: v,
-            ctx: self.value.ctx,
-        }
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let value = unsafe {
+            sys::JSObjectGetPropertyAtIndex(self.value.ctx, self.raw, index, &mut exception)
+        };
+
+        JSValue::new_inner(self.value.ctx, value)
     }
 
     /// Set a property onto an object.
@@ -170,10 +169,7 @@ impl JSObject {
 
         if !exception.is_null() {
             return Err(JSException {
-                value: JSValue {
-                    raw: exception,
-                    ctx: context,
-                },
+                value: JSValue::new_inner(context, exception),
             });
         }
 
@@ -210,10 +206,7 @@ impl JSObject {
 
         if !exception.is_null() {
             return Err(JSException {
-                value: JSValue {
-                    raw: exception,
-                    ctx: context,
-                },
+                value: JSValue::new_inner(context, exception),
             });
         }
 
@@ -261,10 +254,7 @@ impl JSObject {
 
         if !exception.is_null() {
             return Err(JSException {
-                value: JSValue {
-                    raw: exception,
-                    ctx: context,
-                },
+                value: JSValue::new_inner(context, exception),
             });
         }
 
@@ -277,10 +267,7 @@ impl JSObject {
             });
         }
 
-        Ok(JSValue {
-            raw: result,
-            ctx: context,
-        })
+        Ok(JSValue::new_inner(context, result))
     }
 }
 
