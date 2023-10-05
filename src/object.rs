@@ -4,8 +4,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::{JSObject, JSString, JSValue};
-use crate::sys;
+use super::{JSObject, JSString};
+use crate::{sys, JSContext, JSException, JSValue};
 use std::ops::Deref;
 use std::ptr;
 
@@ -133,6 +133,70 @@ impl JSObject {
             ctx: self.value.ctx,
         }
     }
+
+    /// Call this object considering it is a valid function.
+    ///
+    /// ```rust
+    /// # use javascriptcore::{JSContext, JSValue};
+    /// let ctx = JSContext::default();
+    /// let global = ctx.global_object().unwrap();
+    /// let math = global.get_property("Math").as_object().unwrap();
+    /// let pow = math.get_property("pow").as_object().unwrap();
+    ///
+    /// let result = pow.call_as_function(
+    ///     &ctx,
+    ///     None,
+    ///     &[JSValue::new_number(&ctx, 2.), JSValue::new_number(&ctx, 3.)],
+    /// ).unwrap();
+    ///
+    /// assert_eq!(result.as_number().unwrap(), 8.);
+    /// ```
+    pub fn call_as_function(
+        &self,
+        context: &JSContext,
+        this: Option<&JSObject>,
+        arguments: &[JSValue],
+    ) -> Result<JSValue, JSException> {
+        let arguments = arguments
+            .iter()
+            .map(|argument| argument.raw)
+            .collect::<Vec<_>>();
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+
+        let result = unsafe {
+            sys::JSObjectCallAsFunction(
+                context.raw,
+                self.raw,
+                this.map(|this| this.raw).unwrap_or_else(ptr::null_mut),
+                arguments.len(),
+                arguments.as_slice().as_ptr(),
+                &mut exception,
+            )
+        };
+
+        if !exception.is_null() {
+            return Err(JSException {
+                value: JSValue {
+                    raw: exception,
+                    ctx: context.raw,
+                },
+            });
+        }
+
+        if result.is_null() {
+            return Err(JSException {
+                value: JSValue::new_string(
+                    context,
+                    "Cannot call this object as a function: it is not a valid function",
+                ),
+            });
+        }
+
+        Ok(JSValue {
+            raw: result,
+            ctx: context.raw,
+        })
+    }
 }
 
 /// A `JSObject` can be dereferenced to return the underlying `JSValue`.
@@ -173,6 +237,8 @@ impl Iterator for JSObjectPropertyNameIter {
 
 #[cfg(test)]
 mod tests {
+    use crate::JSException;
+
     use super::super::{JSContext, JSValue};
 
     #[test]
@@ -221,5 +287,28 @@ mod tests {
         let o = v.as_object().expect("object");
         assert!(v.is_object());
         assert!(o.is_object());
+    }
+
+    #[test]
+    fn call_as_function() -> Result<(), JSException> {
+        let ctx = JSContext::default();
+        let global = ctx.global_object()?;
+        let math = global.get_property("Math").as_object()?;
+        let pow = math.get_property("pow").as_object()?;
+
+        let result = pow.call_as_function(
+            &ctx,
+            None,
+            &[JSValue::new_number(&ctx, 2.), JSValue::new_number(&ctx, 3.)],
+        )?;
+
+        assert_eq!(result.as_number()?, 8.);
+
+        // Not a function, it's a constant.
+        let e = math.get_property("E").as_object()?;
+
+        assert!(e.call_as_function(&ctx, None, &[]).is_err());
+
+        Ok(())
     }
 }
