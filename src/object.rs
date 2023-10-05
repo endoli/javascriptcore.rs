@@ -209,6 +209,52 @@ impl JSObject {
         Ok(())
     }
 
+    /// Call this object considering it is a valid object constructor.
+    ///
+    /// ```rust
+    /// # use javascriptcore::{JSContext, JSValue};
+    /// let ctx = JSContext::default();
+    /// let global = ctx.global_object().unwrap();
+    /// let number = global.get_property("Number").as_object().unwrap();
+    ///
+    /// let result = number.call_as_constructor(&[JSValue::new_string(&ctx, "42")]).unwrap();
+    ///
+    /// assert!(result.is_object());
+    /// assert_eq!(result.as_number().unwrap(), 42.);
+    /// ```
+    pub fn call_as_constructor(&self, arguments: &[JSValue]) -> Result<JSValue, JSException> {
+        let arguments = arguments
+            .iter()
+            .map(|argument| argument.raw)
+            .collect::<Vec<_>>();
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let context = self.value.ctx;
+
+        let result = unsafe {
+            sys::JSObjectCallAsConstructor(
+                context,
+                self.raw,
+                arguments.len(),
+                arguments.as_slice().as_ptr(),
+                &mut exception,
+            )
+        };
+
+        if !exception.is_null() {
+            return Err(JSValue::new_inner(context, exception).into());
+        }
+
+        if result.is_null() {
+            return Err(JSValue::new_string_inner(
+                context,
+                "Cannot call this object as a constructor: it is not a valid constructor",
+            )
+            .into());
+        }
+
+        Ok(JSValue::new_inner(context, result))
+    }
+
     /// Call this object considering it is a valid function.
     ///
     /// ```rust
@@ -388,6 +434,23 @@ mod tests {
         let o = v.as_object().expect("object");
         assert!(v.is_object());
         assert!(o.is_object());
+    }
+
+    #[test]
+    fn can_call_as_constructor() -> Result<(), JSException> {
+        let ctx = JSContext::default();
+        let global = ctx.global_object()?;
+        let number = global.get_property("Number").as_object()?;
+
+        let result = number.call_as_constructor(&[JSValue::new_string(&ctx, "42")])?;
+
+        // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/Number#return_value
+        assert!(result.is_object());
+        assert!(!result.is_number());
+
+        assert_eq!(result.as_number()?, 42.);
+
+        Ok(())
     }
 
     #[test]
