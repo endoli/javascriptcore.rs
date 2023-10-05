@@ -9,6 +9,14 @@ use crate::sys;
 use std::ptr;
 
 impl JSValue {
+    /// Create a [`Self`].
+    pub(crate) fn new_inner(
+        ctx: *const sys::OpaqueJSContext,
+        raw: *const sys::OpaqueJSValue,
+    ) -> Self {
+        Self { ctx, raw }
+    }
+
     /// Creates a JavaScript value of the `undefined` type.
     ///
     /// * `ctx`: The execution context to use.
@@ -23,10 +31,7 @@ impl JSValue {
     /// assert!(v.is_undefined());
     /// ```
     pub fn new_undefined(ctx: &JSContext) -> Self {
-        JSValue {
-            raw: unsafe { sys::JSValueMakeUndefined(ctx.raw) },
-            ctx: ctx.raw,
-        }
+        JSValue::new_inner(ctx.raw, unsafe { sys::JSValueMakeUndefined(ctx.raw) })
     }
 
     /// Creates a JavaScript value of the `null` type.
@@ -43,10 +48,7 @@ impl JSValue {
     /// assert!(v.is_null());
     /// ```
     pub fn new_null(ctx: &JSContext) -> Self {
-        JSValue {
-            raw: unsafe { sys::JSValueMakeNull(ctx.raw) },
-            ctx: ctx.raw,
-        }
+        JSValue::new_inner(ctx.raw, unsafe { sys::JSValueMakeNull(ctx.raw) })
     }
 
     /// Creates a JavaScript value of the `boolean` type.
@@ -64,10 +66,9 @@ impl JSValue {
     /// assert!(v.is_boolean());
     /// ```
     pub fn new_boolean(ctx: &JSContext, boolean: bool) -> Self {
-        JSValue {
-            raw: unsafe { sys::JSValueMakeBoolean(ctx.raw, boolean) },
-            ctx: ctx.raw,
-        }
+        JSValue::new_inner(ctx.raw, unsafe {
+            sys::JSValueMakeBoolean(ctx.raw, boolean)
+        })
     }
 
     /// Creates a JavaScript value of the `number` type.
@@ -91,10 +92,7 @@ impl JSValue {
     /// assert!(v.is_number());
     /// ```
     pub fn new_number(ctx: &JSContext, number: f64) -> Self {
-        JSValue {
-            raw: unsafe { sys::JSValueMakeNumber(ctx.raw, number) },
-            ctx: ctx.raw,
-        }
+        JSValue::new_inner(ctx.raw, unsafe { sys::JSValueMakeNumber(ctx.raw, number) })
     }
 
     /// Creates a JavaScript value of the `string` type.
@@ -121,10 +119,9 @@ impl JSValue {
         ctx: *const sys::OpaqueJSContext,
         string: S,
     ) -> Self {
-        JSValue {
-            raw: unsafe { sys::JSValueMakeString(ctx, string.into().raw) },
-            ctx,
-        }
+        JSValue::new_inner(ctx, unsafe {
+            sys::JSValueMakeString(ctx, string.into().raw)
+        })
     }
 
     /// Creates a JavaScript value of the `symbol` type.
@@ -143,10 +140,9 @@ impl JSValue {
     /// assert!(v.is_symbol());
     /// ```
     pub fn new_symbol<S: Into<JSString>>(ctx: &JSContext, description: S) -> Self {
-        JSValue {
-            raw: unsafe { sys::JSValueMakeSymbol(ctx.raw, description.into().raw) },
-            ctx: ctx.raw,
-        }
+        JSValue::new_inner(ctx.raw, unsafe {
+            sys::JSValueMakeSymbol(ctx.raw, description.into().raw)
+        })
     }
 
     /// Creates a JavaScript value of the `array` type.
@@ -173,10 +169,7 @@ impl JSValue {
 
         if !exception.is_null() {
             return Err(JSException {
-                value: JSValue {
-                    raw: exception,
-                    ctx: ctx.raw,
-                },
+                value: JSValue::new_inner(ctx.raw, exception),
             });
         }
 
@@ -186,10 +179,7 @@ impl JSValue {
             });
         }
 
-        Ok(JSValue {
-            raw: result,
-            ctx: ctx.raw,
-        })
+        Ok(JSValue::new_inner(ctx.raw, result))
     }
 
     /// Creates a JavaScript value from a JSON formatted string.
@@ -209,14 +199,12 @@ impl JSValue {
     /// assert!(v.is_boolean());
     /// ```
     pub fn new_from_json<S: Into<JSString>>(ctx: &JSContext, string: S) -> Option<Self> {
-        let v = unsafe { sys::JSValueMakeFromJSONString(ctx.raw, string.into().raw) };
-        if v.is_null() {
+        let value = unsafe { sys::JSValueMakeFromJSONString(ctx.raw, string.into().raw) };
+
+        if value.is_null() {
             None
         } else {
-            Some(JSValue {
-                raw: v,
-                ctx: ctx.raw,
-            })
+            Some(JSValue::new_inner(ctx.raw, value))
         }
     }
 
@@ -238,17 +226,16 @@ impl JSValue {
     /// assert_eq!(s, "false");
     /// ```
     pub fn to_json_string(&self, indent: u32) -> Result<JSString, JSException> {
-        let mut e: sys::JSValueRef = ptr::null_mut();
-        let v = unsafe { sys::JSValueCreateJSONString(self.ctx, self.raw, indent, &mut e) };
-        if v.is_null() {
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let value =
+            unsafe { sys::JSValueCreateJSONString(self.ctx, self.raw, indent, &mut exception) };
+
+        if value.is_null() {
             Err(JSException {
-                value: JSValue {
-                    raw: e,
-                    ctx: self.ctx,
-                },
+                value: JSValue::new_inner(self.ctx, exception),
             })
         } else {
-            Ok(JSString { raw: v })
+            Ok(JSString { raw: value })
         }
     }
 
@@ -443,17 +430,15 @@ impl JSValue {
     /// assert_eq!(n, 5.0);
     /// ```
     pub fn as_number(&self) -> Result<f64, JSException> {
-        let mut e: sys::JSValueRef = ptr::null_mut();
-        let f = unsafe { sys::JSValueToNumber(self.ctx, self.raw, &mut e) };
-        if f.is_nan() {
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let number = unsafe { sys::JSValueToNumber(self.ctx, self.raw, &mut exception) };
+
+        if number.is_nan() {
             Err(JSException {
-                value: JSValue {
-                    raw: e,
-                    ctx: self.ctx,
-                },
+                value: JSValue::new_inner(self.ctx, exception),
             })
         } else {
-            Ok(f)
+            Ok(number)
         }
     }
 
@@ -471,17 +456,15 @@ impl JSValue {
     /// assert_eq!(s, "Cave canem.");
     /// ```
     pub fn as_string(&self) -> Result<JSString, JSException> {
-        let mut e: sys::JSValueRef = ptr::null_mut();
-        let s = unsafe { sys::JSValueToStringCopy(self.ctx, self.raw, &mut e) };
-        if s.is_null() {
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let string = unsafe { sys::JSValueToStringCopy(self.ctx, self.raw, &mut exception) };
+
+        if string.is_null() {
             Err(JSException {
-                value: JSValue {
-                    raw: e,
-                    ctx: self.ctx,
-                },
+                value: JSValue::new_inner(self.ctx, exception),
             })
         } else {
-            Ok(JSString { raw: s })
+            Ok(JSString { raw: string })
         }
     }
 
@@ -499,22 +482,17 @@ impl JSValue {
     /// // We now have an object that we can inspect.
     /// ```
     pub fn as_object(&self) -> Result<JSObject, JSException> {
-        let mut e: sys::JSValueRef = ptr::null_mut();
-        let o = unsafe { sys::JSValueToObject(self.ctx, self.raw, &mut e) };
-        if o.is_null() {
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let object = unsafe { sys::JSValueToObject(self.ctx, self.raw, &mut exception) };
+
+        if object.is_null() {
             Err(JSException {
-                value: JSValue {
-                    raw: e,
-                    ctx: self.ctx,
-                },
+                value: JSValue::new_inner(self.ctx, exception),
             })
         } else {
             Ok(JSObject {
-                raw: o,
-                value: JSValue {
-                    raw: self.raw,
-                    ctx: self.ctx,
-                },
+                raw: object,
+                value: JSValue::new_inner(self.ctx, self.raw),
             })
         }
     }

@@ -42,27 +42,22 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
     starting_line_number: i32,
 ) -> Result<JSValue, JSException> {
     unsafe {
-        let mut e: sys::JSValueRef = ptr::null_mut();
-        let r = sys::JSEvaluateScript(
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let result = sys::JSEvaluateScript(
             ctx.raw,
             script.into().raw,
             this_object.map(|t| t.raw).unwrap_or(ptr::null_mut()),
             source_url.into().raw,
             starting_line_number,
-            &mut e,
+            &mut exception,
         );
-        if r.is_null() {
+
+        if result.is_null() {
             Err(JSException {
-                value: JSValue {
-                    raw: e,
-                    ctx: ctx.raw,
-                },
+                value: JSValue::new_inner(ctx.raw, exception),
             })
         } else {
-            Ok(JSValue {
-                raw: r,
-                ctx: ctx.raw,
-            })
+            Ok(JSValue::new_inner(ctx.raw, result))
         }
     }
 }
@@ -99,22 +94,20 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
     starting_line_number: i32,
 ) -> Result<(), JSException> {
     unsafe {
-        let mut e: sys::JSValueRef = ptr::null_mut();
-        let r = sys::JSCheckScriptSyntax(
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let result = sys::JSCheckScriptSyntax(
             ctx.raw,
             script.into().raw,
             source_url.into().raw,
             starting_line_number,
-            &mut e,
+            &mut exception,
         );
-        if r {
+
+        if result {
             Ok(())
         } else {
             Err(JSException {
-                value: JSValue {
-                    raw: e,
-                    ctx: ctx.raw,
-                },
+                value: JSValue::new_inner(ctx.raw, exception),
             })
         }
     }
