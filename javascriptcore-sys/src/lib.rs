@@ -9,6 +9,7 @@
 //! provided by JavaScriptCore.
 
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
+#![warn(clippy::doc_markdown, missing_docs)]
 
 use std::ptr;
 
@@ -580,7 +581,7 @@ extern "C" {
 pub const kJSPropertyAttributeNone: ::std::os::raw::c_uint = 0;
 /// Specifies that a property is read-only.
 pub const kJSPropertyAttributeReadOnly: ::std::os::raw::c_uint = 2;
-/// Specifies that a property should not be enumerated by JSPropertyEnumerators and JavaScript `for...in` loops.
+/// Specifies that a property should not be enumerated by `JSPropertyEnumerators` and JavaScript `for...in` loops.
 pub const kJSPropertyAttributeDontEnum: ::std::os::raw::c_uint = 4;
 /// Specifies that the delete operation should fail on a property.
 pub const kJSPropertyAttributeDontDelete: ::std::os::raw::c_uint = 8;

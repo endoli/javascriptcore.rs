@@ -9,7 +9,7 @@
 //! Evaluate JavaScript programs from within an app, and support
 //! JavaScript scripting of your app.
 
-#![warn(missing_docs)]
+#![warn(clippy::doc_markdown, missing_docs)]
 #![deny(
     trivial_numeric_casts,
     unstable_features,
