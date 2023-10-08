@@ -4,8 +4,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::JSString;
-use crate::sys;
+use crate::{sys, JSString};
 use std::ffi::CString;
 use std::fmt;
 
@@ -100,7 +99,7 @@ impl<'s> From<&'s JSString> for String {
 
 #[cfg(test)]
 mod tests {
-    use super::JSString;
+    use crate::JSString;
 
     #[test]
     fn from_conversion() {

@@ -4,8 +4,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::{JSObject, JSString};
-use crate::{sys, JSException, JSValue};
+use crate::{sys, JSException, JSObject, JSString, JSValue};
 use std::ops::Deref;
 use std::ptr;
 
@@ -348,9 +347,7 @@ impl Iterator for JSObjectPropertyNameIter {
 
 #[cfg(test)]
 mod tests {
-    use crate::JSException;
-
-    use super::super::{JSContext, JSValue};
+    use crate::{JSContext, JSException, JSValue};
 
     #[test]
     fn can_has_property() {

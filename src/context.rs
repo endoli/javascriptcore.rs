@@ -6,8 +6,7 @@
 
 use sys::JSContextGetGlobalObject;
 
-use super::{JSClass, JSContext, JSContextGroup, JSString};
-use crate::{sys, JSException, JSObject, JSValue};
+use crate::{sys, JSClass, JSContext, JSContextGroup, JSException, JSObject, JSString, JSValue};
 use std::ptr;
 
 impl JSContext {
@@ -137,7 +136,7 @@ impl Drop for JSContext {
 
 #[cfg(test)]
 mod tests {
-    use super::JSContext;
+    use crate::JSContext;
 
     #[test]
     fn context_group() {

@@ -4,8 +4,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::{JSContext, JSException, JSObject, JSString, JSValue};
-use crate::sys;
+use crate::{sys, JSContext, JSException, JSObject, JSString, JSValue};
 use std::ptr;
 
 /// Evaluates a string of JavaScript.
@@ -143,7 +142,8 @@ pub fn garbage_collect(ctx: &JSContext) {
 
 #[cfg(test)]
 mod tests {
-    use super::{check_script_syntax, evaluate_script, garbage_collect, JSContext};
+    use super::{check_script_syntax, evaluate_script, garbage_collect};
+    use crate::JSContext;
 
     #[test]
     fn can_check_script_syntax() {

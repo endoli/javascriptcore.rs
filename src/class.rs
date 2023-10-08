@@ -4,8 +4,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::JSClass;
-use crate::sys;
+use crate::{sys, JSClass};
 
 impl Drop for JSClass {
     fn drop(&mut self) {

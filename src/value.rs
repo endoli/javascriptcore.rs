@@ -4,8 +4,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::{JSClass, JSContext, JSException, JSObject, JSString, JSType, JSValue};
-use crate::sys;
+use crate::{sys, JSClass, JSContext, JSException, JSObject, JSString, JSType, JSValue};
 use std::ptr;
 
 impl JSValue {
@@ -608,7 +607,7 @@ impl PartialEq for JSValue {
 
 #[cfg(test)]
 mod tests {
-    use super::{JSContext, JSType, JSValue};
+    use crate::{JSContext, JSType, JSValue};
 
     #[test]
     fn strict_equality() {

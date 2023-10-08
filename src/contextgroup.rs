@@ -4,8 +4,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::{JSClass, JSContext, JSContextGroup};
-use crate::sys;
+use crate::{sys, JSClass, JSContext, JSContextGroup};
 use std::ptr;
 
 impl JSContextGroup {
