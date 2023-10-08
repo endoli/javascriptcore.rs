@@ -1,3 +1,6 @@
+[workspace]
+members = ["javascriptcore-sys"]
+
 [package]
 name = "javascriptcore"
 version = "0.0.5"
