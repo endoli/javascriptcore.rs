@@ -10,6 +10,11 @@ use crate::{sys, JSClass, JSContext, JSContextGroup, JSException, JSObject, JSSt
 use std::ptr;
 
 impl JSContext {
+    /// Create a new [`Self`] from its raw pointer directly.
+    pub(crate) fn new_inner(raw: sys::JSGlobalContextRef) -> Self {
+        Self { raw }
+    }
+
     /// Creates a global JavaScript execution context and populates it
     /// with all the built-in JavaScript objects, such as `Object`,
     /// `Function`, `String`, and `Array`.
@@ -20,7 +25,7 @@ impl JSContext {
     /// However, you may not use values created in the context in other
     /// contexts.
     pub fn new() -> Self {
-        JSContext::default()
+        Self::default()
     }
 
     /// Creates a global JavaScript execution context and populates it
@@ -36,18 +41,18 @@ impl JSContext {
     /// * `global_object_class`: The class to use when creating the global
     ///   object.
     pub fn new_with_class(global_object_class: &JSClass) -> Self {
-        JSContext {
-            raw: unsafe { sys::JSGlobalContextCreate(global_object_class.raw) },
-        }
+        Self::new_inner(unsafe { sys::JSGlobalContextCreate(global_object_class.raw) })
     }
 
     /// Gets the context group to which a JavaScript execution context belongs.
     pub fn group(&self) -> JSContextGroup {
-        let g = unsafe { sys::JSContextGetGroup(self.raw) };
+        let group = unsafe { sys::JSContextGetGroup(self.raw) };
+
         unsafe {
-            sys::JSContextGroupRetain(g);
+            sys::JSContextGroupRetain(group);
         };
-        JSContextGroup { raw: g }
+
+        JSContextGroup { raw: group }
     }
 
     /// Gets a copy of the name of a context.
@@ -66,11 +71,12 @@ impl JSContext {
     /// assert!(ctx.name().is_none());
     /// ```
     pub fn name(&self) -> Option<JSString> {
-        let r = unsafe { sys::JSGlobalContextCopyName(self.raw) };
-        if r.is_null() {
+        let result = unsafe { sys::JSGlobalContextCopyName(self.raw) };
+
+        if result.is_null() {
             None
         } else {
-            Some(JSString { raw: r })
+            Some(JSString { raw: result })
         }
     }
 
@@ -122,9 +128,7 @@ impl Default for JSContext {
     /// However, you may not use values created in the context in other
     /// contexts.
     fn default() -> Self {
-        JSContext {
-            raw: unsafe { sys::JSGlobalContextCreate(ptr::null_mut()) },
-        }
+        Self::new_inner(unsafe { sys::JSGlobalContextCreate(ptr::null_mut()) })
     }
 }
 
