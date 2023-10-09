@@ -4,12 +4,18 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use sys::JSObjectCallAsFunctionCallback;
+
 use crate::{sys, JSClass, JSContext, JSException, JSObject, JSString, JSType, JSValue};
 use std::ptr;
 
 impl JSValue {
-    /// Create a [`Self`].
-    pub(crate) fn new_inner(ctx: sys::JSContextRef, raw: sys::JSValueRef) -> Self {
+    /// Create a new [`Self`] from its raw pointer directly.
+    ///
+    /// # Safety
+    ///
+    /// Ensure `raw` is valid.
+    pub unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSValueRef) -> Self {
         Self { ctx, raw }
     }
 
@@ -27,7 +33,7 @@ impl JSValue {
     /// assert!(v.is_undefined());
     /// ```
     pub fn new_undefined(ctx: &JSContext) -> Self {
-        JSValue::new_inner(ctx.raw, unsafe { sys::JSValueMakeUndefined(ctx.raw) })
+        unsafe { Self::from_raw(ctx.raw, sys::JSValueMakeUndefined(ctx.raw)) }
     }
 
     /// Creates a JavaScript value of the `null` type.
@@ -44,7 +50,7 @@ impl JSValue {
     /// assert!(v.is_null());
     /// ```
     pub fn new_null(ctx: &JSContext) -> Self {
-        JSValue::new_inner(ctx.raw, unsafe { sys::JSValueMakeNull(ctx.raw) })
+        unsafe { Self::from_raw(ctx.raw, sys::JSValueMakeNull(ctx.raw)) }
     }
 
     /// Creates a JavaScript value of the `boolean` type.
@@ -62,9 +68,7 @@ impl JSValue {
     /// assert!(v.is_boolean());
     /// ```
     pub fn new_boolean(ctx: &JSContext, boolean: bool) -> Self {
-        JSValue::new_inner(ctx.raw, unsafe {
-            sys::JSValueMakeBoolean(ctx.raw, boolean)
-        })
+        unsafe { Self::from_raw(ctx.raw, sys::JSValueMakeBoolean(ctx.raw, boolean)) }
     }
 
     /// Creates a JavaScript value of the `number` type.
@@ -88,7 +92,7 @@ impl JSValue {
     /// assert!(v.is_number());
     /// ```
     pub fn new_number(ctx: &JSContext, number: f64) -> Self {
-        Self::new_inner(ctx.raw, unsafe { sys::JSValueMakeNumber(ctx.raw, number) })
+        unsafe { Self::from_raw(ctx.raw, sys::JSValueMakeNumber(ctx.raw, number)) }
     }
 
     /// Creates a JavaScript value of the `string` type.
@@ -115,9 +119,7 @@ impl JSValue {
         ctx: *const sys::OpaqueJSContext,
         string: S,
     ) -> Self {
-        Self::new_inner(ctx, unsafe {
-            sys::JSValueMakeString(ctx, string.into().raw)
-        })
+        unsafe { Self::from_raw(ctx, sys::JSValueMakeString(ctx, string.into().raw)) }
     }
 
     /// Creates a JavaScript value of the `symbol` type.
@@ -136,9 +138,12 @@ impl JSValue {
     /// assert!(v.is_symbol());
     /// ```
     pub fn new_symbol<S: Into<JSString>>(ctx: &JSContext, description: S) -> Self {
-        Self::new_inner(ctx.raw, unsafe {
-            sys::JSValueMakeSymbol(ctx.raw, description.into().raw)
-        })
+        unsafe {
+            Self::from_raw(
+                ctx.raw,
+                sys::JSValueMakeSymbol(ctx.raw, description.into().raw),
+            )
+        }
     }
 
     /// Creates a JavaScript value of the `array` type.
@@ -174,14 +179,14 @@ impl JSValue {
         };
 
         if !exception.is_null() {
-            return Err(Self::new_inner(ctx.raw, exception).into());
+            return Err(unsafe { Self::from_raw(ctx.raw, exception).into() });
         }
 
         if result.is_null() {
             return Err(Self::new_string(ctx, "Failed to make a new array").into());
         }
 
-        Ok(Self::new_inner(ctx.raw, result))
+        Ok(unsafe { Self::from_raw(ctx.raw, result) })
     }
 
     /// Creates a JavaScript value of the `TypedArray` type.
@@ -236,14 +241,69 @@ impl JSValue {
         };
 
         if !exception.is_null() {
-            return Err(Self::new_inner(ctx.raw, exception).into());
+            return Err(Self::from_raw(ctx.raw, exception).into());
         }
 
         if result.is_null() {
             return Err(Self::new_string(ctx, "Failed to make a new typed array").into());
         }
 
-        Ok(JSValue::new_inner(ctx.raw, result))
+        Ok(Self::from_raw(ctx.raw, result))
+    }
+
+    /// Creates a JavaScript function where the function implementation is written in
+    /// Rust.
+    ///
+    /// * `ctx`: The execution context to use.
+    /// * `name`: The function name.
+    /// * `function`: The function implementation.
+    ///
+    /// The easiest way to declare such a function is to use the
+    /// [`crate::function_callback`] procedural macro:
+    ///
+    /// ```rust
+    /// use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// #[function_callback]
+    /// fn greet(
+    ///     ctx: &JSContext,
+    ///     _function: Option<&JSObject>,
+    ///     _this_object: Option<&JSObject>,
+    ///     arguments: &[JSValue],
+    /// ) -> Result<JSValue, JSException> {
+    ///     if arguments.len() != 1 {
+    ///         return Err(JSValue::new_string(ctx, "must receive 1 argument").into());
+    ///     }
+    ///
+    ///     let who = arguments[0].as_string()?;
+    ///
+    ///     Ok(JSValue::new_string(&ctx, format!("Hello, {who}!")))
+    /// }
+    ///
+    /// let greet = JSValue::new_function(&ctx, "greet", Some(greet)).as_object().unwrap();
+    ///
+    /// let result = greet.call_as_function(
+    ///     None,
+    ///     &[JSValue::new_string(&ctx, "Gordon")],
+    /// ).unwrap();
+    ///
+    /// assert_eq!(result.as_string().unwrap().to_string(), "Hello, Gordon!");
+    /// ```
+    pub fn new_function<N>(
+        ctx: &JSContext,
+        name: N,
+        function: JSObjectCallAsFunctionCallback,
+    ) -> Self
+    where
+        N: Into<JSString>,
+    {
+        unsafe {
+            Self::from_raw(
+                ctx.raw,
+                sys::JSObjectMakeFunctionWithCallback(ctx.raw, name.into().raw, function),
+            )
+        }
     }
 
     /// Creates a JavaScript value from a JSON formatted string.
@@ -268,7 +328,7 @@ impl JSValue {
         if value.is_null() {
             None
         } else {
-            Some(Self::new_inner(ctx.raw, value))
+            Some(unsafe { Self::from_raw(ctx.raw, value) })
         }
     }
 
@@ -295,7 +355,7 @@ impl JSValue {
             unsafe { sys::JSValueCreateJSONString(self.ctx, self.raw, indent, &mut exception) };
 
         if value.is_null() {
-            Err(Self::new_inner(self.ctx, exception).into())
+            Err(unsafe { Self::from_raw(self.ctx, exception) }.into())
         } else {
             Ok(JSString { raw: value })
         }
@@ -496,7 +556,7 @@ impl JSValue {
         let number = unsafe { sys::JSValueToNumber(self.ctx, self.raw, &mut exception) };
 
         if number.is_nan() {
-            Err(Self::new_inner(self.ctx, exception).into())
+            Err(unsafe { Self::from_raw(self.ctx, exception) }.into())
         } else {
             Ok(number)
         }
@@ -520,7 +580,7 @@ impl JSValue {
         let string = unsafe { sys::JSValueToStringCopy(self.ctx, self.raw, &mut exception) };
 
         if string.is_null() {
-            Err(Self::new_inner(self.ctx, exception).into())
+            Err(unsafe { Self::from_raw(self.ctx, exception) }.into())
         } else {
             Ok(JSString { raw: string })
         }
@@ -544,9 +604,9 @@ impl JSValue {
         let object = unsafe { sys::JSValueToObject(self.ctx, self.raw, &mut exception) };
 
         if object.is_null() {
-            Err(Self::new_inner(self.ctx, exception).into())
+            Err(unsafe { Self::from_raw(self.ctx, exception) }.into())
         } else {
-            Ok(JSObject::new_inner(self.ctx, object))
+            Ok(unsafe { JSObject::from_raw(self.ctx, object) })
         }
     }
 
@@ -599,9 +659,15 @@ impl PartialEq for JSValue {
     }
 }
 
+impl From<JSValue> for sys::JSValueRef {
+    fn from(value: JSValue) -> Self {
+        value.raw
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::{JSContext, JSType, JSValue};
+    use crate::{sys, JSContext, JSException, JSType, JSValue};
 
     #[test]
     fn strict_equality() {
@@ -754,6 +820,93 @@ mod tests {
             },
             11
         )
+    }
+
+    #[test]
+    fn function() -> Result<(), JSException> {
+        let ctx = JSContext::default();
+
+        unsafe extern "C" fn sum(
+            ctx: sys::JSContextRef,
+            _function: sys::JSObjectRef,
+            _this_object: sys::JSObjectRef,
+            argument_count: usize,
+            arguments: *const sys::JSValueRef,
+            _exception: *mut sys::JSValueRef,
+        ) -> *const sys::OpaqueJSValue {
+            use std::{mem, slice};
+
+            let arguments = unsafe { slice::from_raw_parts(arguments, argument_count) }
+                .iter()
+                .map(|value| JSValue::from_raw(ctx, *value))
+                .collect::<Vec<_>>();
+
+            let x = arguments.get(0).unwrap();
+            let y = arguments.get(1).unwrap();
+
+            let ctx = JSContext::from_raw(ctx as *mut _);
+            let result = JSValue::new_number(&ctx, x.as_number().unwrap() + y.as_number().unwrap());
+
+            mem::forget(ctx);
+
+            result.raw
+        }
+
+        let sum = JSValue::new_function(&ctx, "awesome_sum", Some(sum)).as_object()?;
+        let result = sum.call_as_function(
+            None,
+            &[JSValue::new_number(&ctx, 1.), JSValue::new_number(&ctx, 2.)],
+        )?;
+
+        assert_eq!(result.as_number()?, 3.);
+
+        Ok(())
+    }
+
+    #[test]
+    fn function_with_macros() -> Result<(), JSException> {
+        use crate as javascriptcore;
+        use crate::function_callback;
+
+        let ctx = JSContext::default();
+
+        #[function_callback]
+        fn sum(
+            ctx: &JSContext,
+            _function: Option<&JSObject>,
+            _this_object: Option<&JSObject>,
+            arguments: &[JSValue],
+        ) -> Result<JSValue, JSException> {
+            if arguments.len() != 2 {
+                return Err(JSValue::new_string(ctx, "must receive 2 arguments").into());
+            }
+
+            let x = arguments[0].as_number()?;
+            let y = arguments[1].as_number()?;
+
+            Ok(JSValue::new_number(ctx, x + y))
+        }
+
+        let sum = JSValue::new_function(&ctx, "awesome_sum", Some(sum)).as_object()?;
+
+        // Correct call.
+        {
+            let result = sum.call_as_function(
+                None,
+                &[JSValue::new_number(&ctx, 1.), JSValue::new_number(&ctx, 2.)],
+            )?;
+
+            assert_eq!(result.as_number()?, 3.);
+        }
+
+        // Invalid call: Not enough arguments.
+        {
+            let result = sum.call_as_function(None, &[]);
+
+            assert!(result.is_err());
+        }
+
+        Ok(())
     }
 
     #[test]

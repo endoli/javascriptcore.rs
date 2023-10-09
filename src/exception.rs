@@ -4,7 +4,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use crate::{JSException, JSString, JSValue};
+use crate::{sys, JSException, JSString, JSValue};
 
 impl JSException {
     /// Return the underlying value backing the exception.
@@ -26,5 +26,11 @@ impl JSException {
 impl From<JSValue> for JSException {
     fn from(value: JSValue) -> Self {
         Self { value }
+    }
+}
+
+impl From<JSException> for sys::JSValueRef {
+    fn from(value: JSException) -> Self {
+        value.value.raw
     }
 }

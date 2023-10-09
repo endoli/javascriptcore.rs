@@ -11,7 +11,11 @@ use std::ptr;
 
 impl JSContext {
     /// Create a new [`Self`] from its raw pointer directly.
-    pub(crate) fn new_inner(raw: sys::JSGlobalContextRef) -> Self {
+    ///
+    /// # Safety
+    ///
+    /// Ensure `raw` is valid.
+    pub unsafe fn from_raw(raw: sys::JSGlobalContextRef) -> Self {
         Self { raw }
     }
 
@@ -41,7 +45,7 @@ impl JSContext {
     /// * `global_object_class`: The class to use when creating the global
     ///   object.
     pub fn new_with_class(global_object_class: &JSClass) -> Self {
-        Self::new_inner(unsafe { sys::JSGlobalContextCreate(global_object_class.raw) })
+        unsafe { Self::from_raw(sys::JSGlobalContextCreate(global_object_class.raw)) }
     }
 
     /// Gets the context group to which a JavaScript execution context belongs.
@@ -107,9 +111,9 @@ impl JSContext {
         let global_object = unsafe { JSContextGetGlobalObject(self.raw) };
 
         if global_object.is_null() {
-            Err(JSValue::new_inner(self.raw, global_object).into())
+            Err(unsafe { JSValue::from_raw(self.raw, global_object) }.into())
         } else {
-            Ok(JSObject::new_inner(self.raw, global_object))
+            Ok(unsafe { JSObject::from_raw(self.raw, global_object) })
         }
     }
 }
@@ -125,7 +129,7 @@ impl Default for JSContext {
     /// However, you may not use values created in the context in other
     /// contexts.
     fn default() -> Self {
-        Self::new_inner(unsafe { sys::JSGlobalContextCreate(ptr::null_mut()) })
+        unsafe { Self::from_raw(sys::JSGlobalContextCreate(ptr::null_mut())) }
     }
 }
 
