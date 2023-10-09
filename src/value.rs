@@ -88,7 +88,7 @@ impl JSValue {
     /// assert!(v.is_number());
     /// ```
     pub fn new_number(ctx: &JSContext, number: f64) -> Self {
-        JSValue::new_inner(ctx.raw, unsafe { sys::JSValueMakeNumber(ctx.raw, number) })
+        Self::new_inner(ctx.raw, unsafe { sys::JSValueMakeNumber(ctx.raw, number) })
     }
 
     /// Creates a JavaScript value of the `string` type.
@@ -115,7 +115,7 @@ impl JSValue {
         ctx: *const sys::OpaqueJSContext,
         string: S,
     ) -> Self {
-        JSValue::new_inner(ctx, unsafe {
+        Self::new_inner(ctx, unsafe {
             sys::JSValueMakeString(ctx, string.into().raw)
         })
     }
@@ -136,7 +136,7 @@ impl JSValue {
     /// assert!(v.is_symbol());
     /// ```
     pub fn new_symbol<S: Into<JSString>>(ctx: &JSContext, description: S) -> Self {
-        JSValue::new_inner(ctx.raw, unsafe {
+        Self::new_inner(ctx.raw, unsafe {
             sys::JSValueMakeSymbol(ctx.raw, description.into().raw)
         })
     }
@@ -174,14 +174,14 @@ impl JSValue {
         };
 
         if !exception.is_null() {
-            return Err(JSValue::new_inner(ctx.raw, exception).into());
+            return Err(Self::new_inner(ctx.raw, exception).into());
         }
 
         if result.is_null() {
-            return Err(JSValue::new_string(ctx, "Failed to make a new array").into());
+            return Err(Self::new_string(ctx, "Failed to make a new array").into());
         }
 
-        Ok(JSValue::new_inner(ctx.raw, result))
+        Ok(Self::new_inner(ctx.raw, result))
     }
 
     /// Creates a JavaScript value of the `TypedArray` type.
@@ -236,11 +236,11 @@ impl JSValue {
         };
 
         if !exception.is_null() {
-            return Err(JSValue::new_inner(ctx.raw, exception).into());
+            return Err(Self::new_inner(ctx.raw, exception).into());
         }
 
         if result.is_null() {
-            return Err(JSValue::new_string(ctx, "Failed to make a new typed array").into());
+            return Err(Self::new_string(ctx, "Failed to make a new typed array").into());
         }
 
         Ok(JSValue::new_inner(ctx.raw, result))
@@ -268,7 +268,7 @@ impl JSValue {
         if value.is_null() {
             None
         } else {
-            Some(JSValue::new_inner(ctx.raw, value))
+            Some(Self::new_inner(ctx.raw, value))
         }
     }
 
@@ -295,7 +295,7 @@ impl JSValue {
             unsafe { sys::JSValueCreateJSONString(self.ctx, self.raw, indent, &mut exception) };
 
         if value.is_null() {
-            Err(JSValue::new_inner(self.ctx, exception).into())
+            Err(Self::new_inner(self.ctx, exception).into())
         } else {
             Ok(JSString { raw: value })
         }
@@ -496,7 +496,7 @@ impl JSValue {
         let number = unsafe { sys::JSValueToNumber(self.ctx, self.raw, &mut exception) };
 
         if number.is_nan() {
-            Err(JSValue::new_inner(self.ctx, exception).into())
+            Err(Self::new_inner(self.ctx, exception).into())
         } else {
             Ok(number)
         }
@@ -520,7 +520,7 @@ impl JSValue {
         let string = unsafe { sys::JSValueToStringCopy(self.ctx, self.raw, &mut exception) };
 
         if string.is_null() {
-            Err(JSValue::new_inner(self.ctx, exception).into())
+            Err(Self::new_inner(self.ctx, exception).into())
         } else {
             Ok(JSString { raw: string })
         }
@@ -544,7 +544,7 @@ impl JSValue {
         let object = unsafe { sys::JSValueToObject(self.ctx, self.raw, &mut exception) };
 
         if object.is_null() {
-            Err(JSValue::new_inner(self.ctx, exception).into())
+            Err(Self::new_inner(self.ctx, exception).into())
         } else {
             Ok(JSObject::new_inner(self.ctx, object))
         }
