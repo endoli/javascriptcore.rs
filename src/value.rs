@@ -9,10 +9,7 @@ use std::ptr;
 
 impl JSValue {
     /// Create a [`Self`].
-    pub(crate) fn new_inner(
-        ctx: *const sys::OpaqueJSContext,
-        raw: *const sys::OpaqueJSValue,
-    ) -> Self {
+    pub(crate) fn new_inner(ctx: sys::JSContextRef, raw: sys::JSValueRef) -> Self {
         Self { ctx, raw }
     }
 
