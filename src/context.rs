@@ -109,10 +109,7 @@ impl JSContext {
         if global_object.is_null() {
             Err(JSValue::new_inner(self.raw, global_object).into())
         } else {
-            Ok(JSObject {
-                raw: global_object,
-                value: JSValue::new_inner(self.raw, global_object),
-            })
+            Ok(JSObject::new_inner(self.raw, global_object))
         }
     }
 }

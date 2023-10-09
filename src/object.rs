@@ -9,6 +9,13 @@ use std::ops::Deref;
 use std::ptr;
 
 impl JSObject {
+    pub(crate) fn new_inner(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
+        Self {
+            raw,
+            value: JSValue::new_inner(ctx, raw),
+        }
+    }
+
     /// Gets an iterator over the names of an object's enumerable properties.
     ///
     /// ```
