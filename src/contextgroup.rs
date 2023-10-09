@@ -10,7 +10,7 @@ use std::ptr;
 impl JSContextGroup {
     /// Creates a JavaScript context group.
     pub fn new() -> Self {
-        JSContextGroup::default()
+        Self::default()
     }
 
     /// Creates a global JavaScript execution context in this context
@@ -22,9 +22,9 @@ impl JSContextGroup {
     ///
     /// The created global context retains this group.
     pub fn new_context(&self) -> JSContext {
-        JSContext {
-            raw: unsafe { sys::JSGlobalContextCreateInGroup(self.raw, ptr::null_mut()) },
-        }
+        JSContext::new_inner(unsafe {
+            sys::JSGlobalContextCreateInGroup(self.raw, ptr::null_mut())
+        })
     }
 
     /// Creates a global JavaScript execution context in this context
@@ -39,16 +39,16 @@ impl JSContextGroup {
     /// * `global_object_class`: The class to use when creating the global
     ///   object.
     pub fn new_context_with_class(&self, global_object_class: &JSClass) -> JSContext {
-        JSContext {
-            raw: unsafe { sys::JSGlobalContextCreateInGroup(self.raw, global_object_class.raw) },
-        }
+        JSContext::new_inner(unsafe {
+            sys::JSGlobalContextCreateInGroup(self.raw, global_object_class.raw)
+        })
     }
 }
 
 impl Default for JSContextGroup {
     /// Creates a JavaScript context group.
     fn default() -> Self {
-        JSContextGroup {
+        Self {
             raw: unsafe { sys::JSContextGroupCreate() },
         }
     }
