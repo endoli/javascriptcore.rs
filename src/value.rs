@@ -549,10 +549,7 @@ impl JSValue {
         if object.is_null() {
             Err(JSValue::new_inner(self.ctx, exception).into())
         } else {
-            Ok(JSObject {
-                raw: object,
-                value: JSValue::new_inner(self.ctx, self.raw),
-            })
+            Ok(JSObject::new_inner(self.ctx, object))
         }
     }
 
