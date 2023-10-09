@@ -9,10 +9,15 @@ use std::ops::Deref;
 use std::ptr;
 
 impl JSObject {
-    pub(crate) fn new_inner(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
+    /// Create a new [`Self`] from its raw pointer directly.
+    ///
+    /// # Safety
+    ///
+    /// Ensure `raw` is valid.
+    pub unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
         Self {
             raw,
-            value: JSValue::new_inner(ctx, raw),
+            value: JSValue::from_raw(ctx, raw),
         }
     }
 
@@ -87,7 +92,7 @@ impl JSObject {
             sys::JSObjectGetProperty(self.value.ctx, self.raw, name.into().raw, &mut exception)
         };
 
-        JSValue::new_inner(self.value.ctx, value)
+        unsafe { JSValue::from_raw(self.value.ctx, value) }
     }
 
     /// Gets a property from an object by numeric index.
@@ -136,7 +141,7 @@ impl JSObject {
             sys::JSObjectGetPropertyAtIndex(self.value.ctx, self.raw, index, &mut exception)
         };
 
-        JSValue::new_inner(self.value.ctx, value)
+        unsafe { JSValue::from_raw(self.value.ctx, value) }
     }
 
     /// Set a property onto an object.
@@ -174,7 +179,7 @@ impl JSObject {
         }
 
         if !exception.is_null() {
-            return Err(JSValue::new_inner(context, exception).into());
+            return Err(unsafe { JSValue::from_raw(context, exception) }.into());
         }
 
         Ok(())
@@ -209,7 +214,7 @@ impl JSObject {
         }
 
         if !exception.is_null() {
-            return Err(JSValue::new_inner(context, exception).into());
+            return Err(unsafe { JSValue::from_raw(context, exception) }.into());
         }
 
         Ok(())
@@ -247,7 +252,7 @@ impl JSObject {
         };
 
         if !exception.is_null() {
-            return Err(JSValue::new_inner(context, exception).into());
+            return Err(unsafe { JSValue::from_raw(context, exception) }.into());
         }
 
         if result.is_null() {
@@ -258,7 +263,7 @@ impl JSObject {
             .into());
         }
 
-        Ok(JSValue::new_inner(context, result))
+        Ok(unsafe { JSValue::from_raw(context, result) })
     }
 
     /// Call this object considering it is a valid function.
@@ -301,7 +306,7 @@ impl JSObject {
         };
 
         if !exception.is_null() {
-            return Err(JSValue::new_inner(context, exception).into());
+            return Err(unsafe { JSValue::from_raw(context, exception).into() });
         }
 
         if result.is_null() {
@@ -312,7 +317,7 @@ impl JSObject {
             .into());
         }
 
-        Ok(JSValue::new_inner(context, result))
+        Ok(unsafe { JSValue::from_raw(context, result) })
     }
 }
 

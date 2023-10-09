@@ -22,9 +22,7 @@ impl JSContextGroup {
     ///
     /// The created global context retains this group.
     pub fn new_context(&self) -> JSContext {
-        JSContext::new_inner(unsafe {
-            sys::JSGlobalContextCreateInGroup(self.raw, ptr::null_mut())
-        })
+        unsafe { JSContext::from_raw(sys::JSGlobalContextCreateInGroup(self.raw, ptr::null_mut())) }
     }
 
     /// Creates a global JavaScript execution context in this context
@@ -39,9 +37,12 @@ impl JSContextGroup {
     /// * `global_object_class`: The class to use when creating the global
     ///   object.
     pub fn new_context_with_class(&self, global_object_class: &JSClass) -> JSContext {
-        JSContext::new_inner(unsafe {
-            sys::JSGlobalContextCreateInGroup(self.raw, global_object_class.raw)
-        })
+        unsafe {
+            JSContext::from_raw(sys::JSGlobalContextCreateInGroup(
+                self.raw,
+                global_object_class.raw,
+            ))
+        }
     }
 }
 

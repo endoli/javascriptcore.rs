@@ -1,0 +1,19 @@
+[package]
+name = "javascriptcore-macros"
+version = "0.0.1"
+edition = "2021"
+authors = ["Bruce Mitchener <bruce.mitchener@gmail.com>", "Ivan Enderlin <ivan@mnt.io>"]
+license = "MIT OR Apache-2.0"
+description = "Procedural macros for the `javascriptcore` crate."
+keywords = ["javascript", "jsc", "scripting"]
+documentation = "https://docs.rs/javascriptcore-sys"
+homepage = "https://github.com/endoli/javascriptcore.rs"
+repository = "https://github.com/endoli/javascriptcore.rs"
+categories = ["external-ffi-bindings"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote = "1.0.33"
+syn = { version = "2.0.38", features = ["full"] }

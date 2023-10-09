@@ -17,7 +17,8 @@
     unused_qualifications
 )]
 
-extern crate javascriptcore_sys as sys;
+pub use javascriptcore_macros::function_callback;
+use javascriptcore_sys as sys;
 
 mod base;
 mod class;
