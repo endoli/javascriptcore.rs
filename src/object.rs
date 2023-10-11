@@ -333,6 +333,13 @@ impl Deref for JSObject {
     }
 }
 
+impl From<&JSObject> for JSValue {
+    fn from(object: &JSObject) -> Self {
+        // SAFETY: `ctx` and `raw` is valid, it's safe to use them.
+        unsafe { JSValue::from_raw(object.value.ctx, object.value.raw) }
+    }
+}
+
 pub struct JSObjectPropertyNameIter {
     raw: sys::JSPropertyNameArrayRef,
     idx: usize,

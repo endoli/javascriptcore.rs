@@ -17,7 +17,9 @@
     unused_qualifications
 )]
 
-pub use javascriptcore_macros::function_callback;
+use std::ffi::CString;
+
+pub use javascriptcore_macros::{constructor_callback, function_callback};
 #[doc(hidden)]
 pub use javascriptcore_sys as sys;
 
@@ -41,6 +43,8 @@ pub use crate::sys::{JSType, JSTypedArrayType};
 /// TODO: Fix `JSObjectMake` reference once it has been wrapped.
 pub struct JSClass {
     raw: sys::JSClassRef,
+    #[allow(unused)]
+    name: CString,
 }
 
 /// A JavaScript execution context.

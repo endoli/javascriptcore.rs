@@ -32,13 +32,11 @@ pub fn function_callback(_attributes: TokenStream, item: TokenStream) -> TokenSt
             arguments: *const javascriptcore::sys::JSValueRef,
             exception: *mut javascriptcore::sys::JSValueRef,
         ) -> *const javascriptcore::sys::OpaqueJSValue {
-            use core::{mem::ManuallyDrop, ptr, slice};
+            use core::{mem::ManuallyDrop, ops::Not, ptr, slice};
             use javascriptcore::{sys::JSValueRef, JSContext, JSObject, JSValue};
 
             // This should never happen, it's simply a paranoid precaution.
-            if raw_ctx.is_null() {
-                return ptr::null();
-            }
+            assert!(raw_ctx.is_null().not(), "`JSContextRef` is null");
 
             // First off, let's prepare the arguments. The goal is to transform the raw C pointers
             // into Rust types.
@@ -101,6 +99,98 @@ pub fn function_callback(_attributes: TokenStream, item: TokenStream) -> TokenSt
 
                     // Return a null pointer for the result.
                     ptr::null()
+                }
+            }
+        }
+    }
+    .into()
+}
+
+/// Transforms a Rust function into a C function for being used as a JavaScript
+/// constructor callback.
+///
+/// This `constructor_callback` procedural macro transforms a Rust function of type:
+///
+/// ```rust,ignore
+/// fn(
+///     context: &JSContext,
+///     constructor: Option<&JSObject>,
+///     arguments: &[JSValue]
+/// ) -> Result<JSValue, JSException>
+/// ```
+///
+/// into a `javascriptcore_sys::JSObjectCallAsConstructorCallback` function.
+///
+/// Check the documentation of `javascriptcore::JSClass::new` to learn more.
+#[proc_macro_attribute]
+pub fn constructor_callback(_attributes: TokenStream, item: TokenStream) -> TokenStream {
+    let constructor = syn::parse::<syn::ItemFn>(item)
+        .expect("#[constructor_callback] must apply on a valid function");
+    let constructor_name = &constructor.sig.ident;
+
+    quote! {
+        unsafe extern "C" fn #constructor_name(
+            raw_ctx: javascriptcore::sys::JSContextRef,
+            constructor: javascriptcore::sys::JSObjectRef,
+            argument_count: usize,
+            arguments: *const javascriptcore::sys::JSValueRef,
+            exception: *mut javascriptcore::sys::JSValueRef,
+        ) -> *mut javascriptcore::sys::OpaqueJSValue {
+            use core::{mem::ManuallyDrop, ops::Not, ptr, slice};
+            use javascriptcore::{sys::JSValueRef, JSContext, JSObject, JSValue};
+
+            // This should never happen, it's simply a paranoid precaution.
+            assert!(raw_ctx.is_null().not(), "`JSContextRef` is null");
+
+            // First off, let's prepare the arguments. The goal is to transform the raw C pointers
+            // into Rust types.
+
+            // Let's not drop `ctx`, otherwise it will close the context.
+            let ctx = ManuallyDrop::new(JSContext::from_raw(raw_ctx as *mut _));
+            let constructor = JSObject::from_raw(raw_ctx, constructor);
+
+            let arguments = if argument_count == 0 || arguments.is_null() {
+                Vec::new()
+            } else {
+                unsafe { slice::from_raw_parts(arguments, argument_count) }
+                    .iter()
+                    .map(|value| JSValue::from_raw(raw_ctx, *value))
+                    .collect::<Vec<_>>()
+            };
+
+            // Isolate the `#constructor` inside its own block to avoid collisions with variables.
+            // Let's use also this as an opportunity to type check the constructor being annotated by
+            // `constructor_callback`.
+            let ctor: fn(
+                &JSContext,
+                &JSObject,
+                &[JSValue],
+            ) -> Result<JSValue, JSException> = {
+                #constructor
+
+                #constructor_name
+            };
+
+            // Second, call the original constructor.
+            let result = ctor(&ctx, &constructor, arguments.as_slice());
+
+            // Finally, let's handle the result, including the exception.
+            match result {
+                Ok(value) => {
+                    // Ensure `exception` contains a null pointer.
+                    *exception = ptr::null_mut();
+
+                    // Return the result.
+                    let value: *const javascriptcore::sys::OpaqueJSValue = value.into();
+
+                    value as *mut _
+                }
+                Err(exc) => {
+                    // Fill the exception.
+                    *exception = JSValueRef::from(exc) as *mut _;
+
+                    // Return a null pointer for the result.
+                    ptr::null_mut()
                 }
             }
         }

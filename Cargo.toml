@@ -19,3 +19,4 @@ exclude = ["javascript_core/**"]
 [dependencies]
 javascriptcore-macros = { path = "javascriptcore-macros", version = "0.0.1" }
 javascriptcore-sys = { path = "javascriptcore-sys", version = "0.0.5" }
+thiserror = "1.0.49"
