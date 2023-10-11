@@ -25,16 +25,15 @@ pub fn function_callback(_attributes: TokenStream, item: TokenStream) -> TokenSt
 
     quote! {
         unsafe extern "C" fn #function_name(
-            raw_ctx: javascriptcore_sys::JSContextRef,
-            function: javascriptcore_sys::JSObjectRef,
-            this_object: javascriptcore_sys::JSObjectRef,
+            raw_ctx: javascriptcore::sys::JSContextRef,
+            function: javascriptcore::sys::JSObjectRef,
+            this_object: javascriptcore::sys::JSObjectRef,
             argument_count: usize,
-            arguments: *const javascriptcore_sys::JSValueRef,
-            exception: *mut javascriptcore_sys::JSValueRef,
-        ) -> *const javascriptcore_sys::OpaqueJSValue {
+            arguments: *const javascriptcore::sys::JSValueRef,
+            exception: *mut javascriptcore::sys::JSValueRef,
+        ) -> *const javascriptcore::sys::OpaqueJSValue {
             use core::{mem::ManuallyDrop, ptr, slice};
-            use javascriptcore::{JSContext, JSObject, JSValue};
-            use javascriptcore_sys::JSValueRef;
+            use javascriptcore::{sys::JSValueRef, JSContext, JSObject, JSValue};
 
             // This should never happen, it's simply a paranoid precaution.
             if raw_ctx.is_null() {
