@@ -18,7 +18,8 @@
 )]
 
 pub use javascriptcore_macros::function_callback;
-use javascriptcore_sys as sys;
+#[doc(hidden)]
+pub use javascriptcore_sys as sys;
 
 mod base;
 mod class;
