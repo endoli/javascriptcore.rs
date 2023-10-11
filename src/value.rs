@@ -667,7 +667,7 @@ impl From<JSValue> for sys::JSValueRef {
 
 #[cfg(test)]
 mod tests {
-    use crate::{sys, JSContext, JSException, JSType, JSValue};
+    use crate::{function_callback, sys, JSContext, JSException, JSType, JSValue};
 
     #[test]
     fn strict_equality() {
@@ -866,7 +866,6 @@ mod tests {
     #[test]
     fn function_with_macros() -> Result<(), JSException> {
         use crate as javascriptcore;
-        use crate::function_callback;
 
         let ctx = JSContext::default();
 
