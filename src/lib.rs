@@ -131,6 +131,8 @@ pub struct JSString {
 /// * [`JSValue::new_boolean()`]
 /// * [`JSValue::new_number()`]
 /// * [`JSValue::new_string()`]
+/// * [`JSValue::new_typed_array_with_bytes()`]
+/// * [`JSValue::new_function()`]
 /// * [`JSValue::new_from_json()`]
 ///
 /// # JSON
