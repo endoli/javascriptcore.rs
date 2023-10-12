@@ -150,7 +150,7 @@ impl JSObject {
     ///
     /// * `index`: A value that can be converted to a [`JSString`] containing
     ///   the property's name.
-    /// * `value`: A value containig the property's value.
+    /// * `value`: A value containing the property's value.
     ///
     /// Calling `get_property_at_index` is equivalent to calling
     /// `get_property` with a string containing `index`,
@@ -197,7 +197,7 @@ impl JSObject {
     /// This can be used to create a new property, or to update an existing property.
     ///
     /// * `index`: An integer value that is the property's name.
-    /// * `value`: A value containig the property's value.
+    /// * `value`: A value containing the property's value.
     ///
     /// Calling `set_property_at_index` is equivalent to calling `set_property` with
     /// a string containing `index`, but `set_property_at_index` provides optimized
