@@ -347,6 +347,12 @@ impl From<&JSObject> for JSValue {
     }
 }
 
+impl From<JSObject> for JSValue {
+    fn from(object: JSObject) -> Self {
+        (&object).into()
+    }
+}
+
 pub struct JSObjectPropertyNameIter {
     raw: sys::JSPropertyNameArrayRef,
     idx: usize,
