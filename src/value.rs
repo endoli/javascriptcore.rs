@@ -667,7 +667,7 @@ impl From<JSValue> for sys::JSValueRef {
 
 #[cfg(test)]
 mod tests {
-    use crate::{function_callback, sys, JSContext, JSException, JSType, JSValue};
+    use crate::{evaluate_script, function_callback, sys, JSContext, JSException, JSType, JSValue};
 
     #[test]
     fn strict_equality() {
@@ -772,20 +772,17 @@ mod tests {
     }
 
     #[test]
-    fn typed_array() {
+    fn typed_array() -> Result<(), JSException> {
         let ctx = JSContext::default();
         let mut bytes = vec![1u8, 2, 3, 4, 5];
-        let array = unsafe { JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice()) }
-            .unwrap()
-            .as_object()
-            .unwrap();
+        let array = unsafe { JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice()) }?
+            .as_object()?;
 
         assert_eq!(
             unsafe {
                 array
                     .get_property("byteLength")
-                    .as_number()
-                    .unwrap()
+                    .as_number()?
                     .to_int_unchecked::<usize>()
             },
             bytes.len()
@@ -794,17 +791,14 @@ mod tests {
             unsafe {
                 array
                     .get_property("BYTES_PER_ELEMENT")
-                    .as_number()
-                    .unwrap()
+                    .as_number()?
                     .to_int_unchecked::<usize>()
             },
             1
         );
 
         // Let's test the mutability of the bytes, i.e. they aren't copied but borrowed.
-        array
-            .set_property_at_index(2, JSValue::new_number(&ctx, 10.))
-            .unwrap();
+        array.set_property_at_index(2, JSValue::new_number(&ctx, 10.))?;
 
         assert_eq!(bytes, &[1u8, 2, 10, 4, 5]);
 
@@ -814,12 +808,13 @@ mod tests {
             unsafe {
                 array
                     .get_property_at_index(3)
-                    .as_number()
-                    .unwrap()
+                    .as_number()?
                     .to_int_unchecked::<u8>()
             },
             11
-        )
+        );
+
+        Ok(())
     }
 
     #[test]
@@ -852,13 +847,22 @@ mod tests {
             result.raw
         }
 
-        let sum = JSValue::new_function(&ctx, "awesome_sum", Some(sum)).as_object()?;
-        let result = sum.call_as_function(
+        // Let's try from Rust.
+        let sum = JSValue::new_function(&ctx, "awesome_sum", Some(sum));
+        let result = sum.as_object()?.call_as_function(
             None,
             &[JSValue::new_number(&ctx, 1.), JSValue::new_number(&ctx, 2.)],
         )?;
 
         assert_eq!(result.as_number()?, 3.);
+
+        // Let's try in a script.
+        let global_object = ctx.global_object()?;
+        global_object.set_property("awesome_sum", sum)?;
+
+        let result = evaluate_script(&ctx, "awesome_sum(3, 4)", None, "test.js", 1)?;
+
+        assert_eq!(result.as_number()?, 7.);
 
         Ok(())
     }
@@ -886,11 +890,13 @@ mod tests {
             Ok(JSValue::new_number(ctx, x + y))
         }
 
-        let sum = JSValue::new_function(&ctx, "awesome_sum", Some(sum)).as_object()?;
+        // Let's try from Rust.
+        let sum = JSValue::new_function(&ctx, "awesome_sum", Some(sum));
+        let sum_as_object = sum.as_object()?;
 
         // Correct call.
         {
-            let result = sum.call_as_function(
+            let result = sum_as_object.call_as_function(
                 None,
                 &[JSValue::new_number(&ctx, 1.), JSValue::new_number(&ctx, 2.)],
             )?;
@@ -900,10 +906,18 @@ mod tests {
 
         // Invalid call: Not enough arguments.
         {
-            let result = sum.call_as_function(None, &[]);
+            let result = sum_as_object.call_as_function(None, &[]);
 
             assert!(result.is_err());
         }
+
+        // Let's try in a script.
+        let global_object = ctx.global_object()?;
+        global_object.set_property("awesome_sum", sum)?;
+
+        let result = evaluate_script(&ctx, "awesome_sum(3, 4)", None, "test.js", 1)?;
+
+        assert_eq!(result.as_number()?, 7.);
 
         Ok(())
     }
