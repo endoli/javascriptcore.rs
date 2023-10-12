@@ -130,7 +130,7 @@ pub fn check_script_syntax<S: Into<JSString>, U: Into<JSString>>(
 /// garbage_collect(&ctx);
 /// ```
 ///
-/// See also:
+/// # See also
 ///
 /// * [`JSValue::protect()`]
 /// * [`JSValue::unprotect()`]
