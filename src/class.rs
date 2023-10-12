@@ -127,6 +127,7 @@ impl Drop for JSClass {
 /// A builder for [`JSClass`].
 ///
 /// Get an instance of `Self` with [`JSClass::builder`].
+#[must_use]
 pub struct JSClassBuilder<'a> {
     /// The context.
     ctx: &'a JSContext,
