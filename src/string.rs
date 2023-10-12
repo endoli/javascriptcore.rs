@@ -23,7 +23,7 @@ impl fmt::Display for JSString {
             let mut buffer: Vec<u8> = Vec::with_capacity(max_size);
             let actual_size = sys::JSStringGetUTF8CString(
                 self.raw,
-                buffer.as_mut_ptr() as *mut ::std::os::raw::c_char,
+                buffer.as_mut_ptr().cast::<::std::os::raw::c_char>(),
                 max_size,
             );
             buffer.set_len(actual_size - 1);
