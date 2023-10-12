@@ -142,6 +142,10 @@ extern "C" {
     ///   exception.
     ///
     /// The [`JSValueRef`] that results from evaluating script, or `NULL` if an exception is thrown.
+    ///
+    /// # See also
+    ///
+    /// * [`JSCheckScriptSyntax()`]
     pub fn JSEvaluateScript(
         ctx: JSContextRef,
         script: JSStringRef,
@@ -170,6 +174,10 @@ extern "C" {
     ///   to store a syntax error exception.
     ///
     /// Returns `true` if the script is syntactically correct, otherwise `false`.
+    ///
+    /// # See also
+    ///
+    /// * [`JSEvaluateScript()`]
     pub fn JSCheckScriptSyntax(
         ctx: JSContextRef,
         script: JSStringRef,
@@ -192,10 +200,10 @@ extern "C" {
     ///
     /// * `ctx`: The execution context to use.
     ///
-    /// See also:
+    /// # See also
     ///
-    /// * [`JSValueProtect`]
-    /// * [`JSValueUnprotect`]
+    /// * [`JSValueProtect()`]
+    /// * [`JSValueUnprotect()`]
     pub fn JSGarbageCollect(ctx: JSContextRef);
 }
 
@@ -551,10 +559,10 @@ extern "C" {
     /// * `ctx`: The execution context to use.
     /// * `value`: The [`JSValueRef`] to protect.
     ///
-    /// See also:
+    /// # See also
     ///
-    /// * [`JSGarbageCollect`]
-    /// * [`JSValueUnprotect`]
+    /// * [`JSGarbageCollect()`]
+    /// * [`JSValueUnprotect()`]
     ///
     /// [unprotected]: crate::JSValueUnprotect
     pub fn JSValueProtect(ctx: JSContextRef, value: JSValueRef);
@@ -568,10 +576,10 @@ extern "C" {
     /// * `ctx`: The execution context to use.
     /// * `value`: The [`JSValueRef`] to unprotect.
     ///
-    /// See also:
+    /// # See also
     ///
-    /// * [`JSGarbageCollect`]
-    /// * [`JSValueProtect`]
+    /// * [`JSGarbageCollect()`]
+    /// * [`JSValueProtect()`]
     ///
     /// [protected]: crate::JSValueProtect
     pub fn JSValueUnprotect(ctx: JSContextRef, value: JSValueRef);
@@ -668,7 +676,17 @@ pub type JSObjectFinalizeCallback =
 /// property's existence needs to be known, not its value,
 /// and computing its value would be expensive.
 ///
-/// If this callback is NULL, the getProperty callback will be used to service hasProperty requests.
+/// If this callback is `NULL`, the `getProperty` callback will be used
+/// to service `hasProperty` requests.
+///
+/// # See also
+///
+/// * [`JSClassDefinition::getProperty`]
+/// * [`JSClassDefinition::hasProperty`]
+/// * [`JSObjectDeletePropertyCallback`]
+/// * [`JSObjectGetPropertyCallback`]
+/// * [`JSObjectSetPropertyCallback`]
+/// * [`JSObjectHasProperty()`]
 pub type JSObjectHasPropertyCallback = ::std::option::Option<
     unsafe extern "C" fn(ctx: JSContextRef, object: JSObjectRef, propertyName: JSStringRef) -> bool,
 >;
@@ -693,6 +711,14 @@ pub type JSObjectHasPropertyCallback = ::std::option::Option<
 /// If this function returns `NULL`, the get request forwards to `object`'s
 /// statically declared properties, then its parent class chain (which
 /// includes the default object class), then its prototype chain.
+///
+/// # See also
+///
+/// * [`JSClassDefinition::getProperty`]
+/// * [`JSObjectDeletePropertyCallback`]
+/// * [`JSObjectHasPropertyCallback`]
+/// * [`JSObjectSetPropertyCallback`]
+/// * [`JSObjectGetProperty()`]
 pub type JSObjectGetPropertyCallback = ::std::option::Option<
     unsafe extern "C" fn(
         ctx: JSContextRef,
@@ -724,6 +750,14 @@ pub type JSObjectGetPropertyCallback = ::std::option::Option<
 /// If this function returns `false`, the set request forwards to
 /// `object`'s statically declared properties, then its parent class
 /// chain (which includes the default object class).
+///
+/// # See also
+///
+/// * [`JSClassDefinition::setProperty`]
+/// * [`JSObjectDeletePropertyCallback`]
+/// * [`JSObjectGetPropertyCallback`]
+/// * [`JSObjectHasPropertyCallback`]
+/// * [`JSObjectSetProperty()`]
 pub type JSObjectSetPropertyCallback = ::std::option::Option<
     unsafe extern "C" fn(
         ctx: JSContextRef,
@@ -754,6 +788,14 @@ pub type JSObjectSetPropertyCallback = ::std::option::Option<
 /// If this function returns `false`, the delete request forwards to
 /// `object`'s statically declared properties, then its parent class
 /// chain (which includes the default object class).
+///
+/// # See also
+///
+/// * [`JSClassDefinition::deleteProperty`]
+/// * [`JSObjectGetPropertyCallback`]
+/// * [`JSObjectHasPropertyCallback`]
+/// * [`JSObjectSetPropertyCallback`]
+/// * [`JSObjectDeleteProperty()`]
 pub type JSObjectDeletePropertyCallback = ::std::option::Option<
     unsafe extern "C" fn(
         ctx: JSContextRef,
@@ -1116,7 +1158,7 @@ extern "C" {
     /// * `jsClass`: The [`JSClassRef`] to assign to the object. Pass `NULL` to use
     ///   the default object class.
     /// * `data`: A `void*` to set as the object's private data.
-    ///    Pass NULL to specify no private data.
+    ///    Pass `NULL` to specify no private data.
     ///
     /// Returns a [`JSObjectRef`] with the given class and private data.
     pub fn JSObjectMake(
@@ -1318,6 +1360,10 @@ extern "C" {
     /// * `object`: A [`JSObjectRef`] whose prototype you want to get.
     ///
     /// Returns a [`JSValueRef`] that is the object's prototype.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectSetPrototype()`]
     pub fn JSObjectGetPrototype(ctx: JSContextRef, object: JSObjectRef) -> JSValueRef;
 
     ///Sets an object's prototype.
@@ -1325,6 +1371,10 @@ extern "C" {
     /// * `ctx`: The execution context to use.
     /// * `object`: The [`JSObjectRef`] whose prototype you want to set.
     /// * `value`: A [`JSValueRef`] to set as the object's prototype.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectGetPrototype()`]
     pub fn JSObjectSetPrototype(ctx: JSContextRef, object: JSObjectRef, value: JSValueRef);
 
     /// Tests whether an object has a given property.
@@ -1334,6 +1384,15 @@ extern "C" {
     ///
     /// Returns `true` if the object has a property whose name matches
     /// `propertyName`, otherwise `false`.
+    ///
+    /// # See also
+    ///
+    /// * [`JSClassDefinition::hasProperty`]
+    /// * [`JSObjectDeleteProperty()`]
+    /// * [`JSObjectGetProperty()`]
+    /// * [`JSObjectHasPropertyCallback`]
+    /// * [`JSObjectHasPropertyForKey()`]
+    /// * [`JSObjectSetProperty()`]
     pub fn JSObjectHasProperty(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1351,6 +1410,16 @@ extern "C" {
     ///
     /// Returns the property's value if object has the property, otherwise
     /// the undefined value.
+    ///
+    /// # See also
+    ///
+    /// * [`JSClassDefinition::getProperty`]
+    /// * [`JSObjectDeleteProperty()`]
+    /// * [`JSObjectGetPropertyAtIndex()`]
+    /// * [`JSObjectGetPropertyCallback`]
+    /// * [`JSObjectGetPropertyForKey()`]
+    /// * [`JSObjectHasProperty()`]
+    /// * [`JSObjectSetProperty()`]
     pub fn JSObjectGetProperty(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1368,6 +1437,16 @@ extern "C" {
     /// * `exception`: A pointer to a [`JSValueRef`] in which to store
     ///   an exception, if any. Pass `NULL` if you do not care to
     ///   store an exception.
+    ///
+    /// # See also
+    ///
+    /// * [`JSClassDefinition::setProperty`]
+    /// * [`JSObjectDeleteProperty()`]
+    /// * [`JSObjectGetProperty()`]
+    /// * [`JSObjectHasProperty()`]
+    /// * [`JSObjectSetPropertyAtIndex()`]
+    /// * [`JSObjectSetPropertyCallback`]
+    /// * [`JSObjectGetPropertyForKey()`]
     pub fn JSObjectSetProperty(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1389,6 +1468,15 @@ extern "C" {
     /// Returns `true` if the delete operation succeeds, otherwise `false`
     /// (for example, if the property has the [`kJSPropertyAttributeDontDelete`]
     /// attribute set).
+    ///
+    /// # See also
+    ///
+    /// * [`JSClassDefinition::deleteProperty`]
+    /// * [`JSObjectDeletePropertyCallback`]
+    /// * [`JSObjectDeletePropertyForKey()`]
+    /// * [`JSObjectGetProperty()`]
+    /// * [`JSObjectHasProperty()`]
+    /// * [`JSObjectSetProperty()`]
     pub fn JSObjectDeleteProperty(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1410,6 +1498,13 @@ extern "C" {
     /// `propertyKey`, otherwise `false`.
     ///
     /// This function is the same as performing `propertyKey in object` from JavaScript.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectDeletePropertyForKey()`]
+    /// * [`JSObjectGetPropertyForKey()`]
+    /// * [`JSObjectHasProperty()`]
+    /// * [`JSObjectSetPropertyForKey()`]
     pub fn JSObjectHasPropertyForKey(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1430,6 +1525,14 @@ extern "C" {
     /// The property's value if object has the property key, otherwise the undefined value.
     ///
     /// This function is the same as performing `object[propertyKey]` from JavaScript.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectDeletePropertyForKey()`]
+    /// * [`JSObjectGetProperty()`]
+    /// * [`JSObjectGetPropertyAtIndex()`]
+    /// * [`JSObjectHasPropertyForKey()`]
+    /// * [`JSObjectSetPropertyForKey()`]
     pub fn JSObjectGetPropertyForKey(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1451,6 +1554,14 @@ extern "C" {
     ///   store an exception.
     ///
     /// This function is the same as performing `object[propertyKey] = value` from JavaScript.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectDeletePropertyForKey()`]
+    /// * [`JSObjectGetPropertyForKey()`]
+    /// * [`JSObjectHasPropertyForKey()`]
+    /// * [`JSObjectSetProperty()`]
+    /// * [`JSObjectSetPropertyAtIndex()`]
     pub fn JSObjectSetPropertyForKey(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1475,6 +1586,13 @@ extern "C" {
     /// attribute set).
     ///
     /// This function is the same as performing `delete object[propertyKey]` from JavaScript.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectDeleteProperty()`]
+    /// * [`JSObjectGetPropertyForKey()`]
+    /// * [`JSObjectHasPropertyForKey()`]
+    /// * [`JSObjectSetPropertyForKey()`]
     pub fn JSObjectDeletePropertyForKey(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1498,6 +1616,12 @@ extern "C" {
     /// [`JSObjectGetProperty`] with a string containing `propertyIndex`,
     /// but `JSObjectGetPropertyAtIndex` provides optimized access to
     /// numeric properties.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectGetProperty()`]
+    /// * [`JSObjectGetPropertyForKey()`]
+    /// * [`JSObjectSetPropertyAtIndex()`]
     pub fn JSObjectGetPropertyAtIndex(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1519,6 +1643,12 @@ extern "C" {
     /// [`JSObjectSetProperty`] with a string containing `propertyIndex`,
     /// but `JSObjectSetPropertyAtIndex` provides optimized access to
     /// numeric properties.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectGetPropertyAtIndex()`]
+    /// * [`JSObjectSetProperty()`]
+    /// * [`JSObjectSetPropertyForKey()`]
     pub fn JSObjectSetPropertyAtIndex(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1533,6 +1663,11 @@ extern "C" {
     ///
     /// Returns a `void*` that is the object's private data, if the
     /// object has private data, otherwise `NULL`.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectMake()`]
+    /// * [`JSObjectSetPrivate()`]
     pub fn JSObjectGetPrivate(object: JSObjectRef) -> *mut ::std::os::raw::c_void;
 
     /// Sets a pointer to private data on an object.
@@ -1544,6 +1679,11 @@ extern "C" {
     ///
     /// The default object class does not allocate storage for private data.
     /// Only objects created with a non-`NULL` [`JSClassRef`] can store private data.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectGetPrivate()`]
+    /// * [`JSObjectMake()`]
     pub fn JSObjectSetPrivate(object: JSObjectRef, data: *mut ::std::os::raw::c_void) -> bool;
 
     /// Tests whether an object can be called as a function.
@@ -1552,6 +1692,10 @@ extern "C" {
     /// * `object`: The [`JSObjectRef`] to test.
     ///
     /// Returns `true` if the object can be called as a function, otherwise `false`.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectCallAsFunction()`]
     pub fn JSObjectIsFunction(ctx: JSContextRef, object: JSObjectRef) -> bool;
 
     /// Calls an object as a function.
@@ -1568,6 +1712,10 @@ extern "C" {
     ///
     /// Returns the [`JSValueRef`] that results from calling `object` as a function,
     /// or `NULL` if an exception is thrown or `object` is not a function.
+    ///
+    /// # See also
+    ///
+    /// * [`JSObjectCallAsFunction()`]
     pub fn JSObjectCallAsFunction(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1614,6 +1762,13 @@ extern "C" {
     /// Returns a [`JSPropertyNameArrayRef`] containing the names of
     /// `object`'s enumerable properties. Ownership follows the Create
     /// Rule.
+    ///
+    /// # See also
+    ///
+    /// * [`JSPropertyNameArrayGetCount`]
+    /// * [`JSPropertyNameArrayGetNameAtIndex`]
+    /// * [`JSPropertyNameArrayRelease`]
+    /// * [`JSPropertyNameArrayRetain`]
     pub fn JSObjectCopyPropertyNames(
         ctx: JSContextRef,
         object: JSObjectRef,
@@ -1624,11 +1779,19 @@ extern "C" {
     /// * `array`: The [`JSPropertyNameArrayRef`] to retain.
     ///
     /// Returns a [`JSPropertyNameArrayRef`] that is the same as array.
+    ///
+    /// # See also
+    ///
+    /// * [`JSPropertyNameArrayRelease()`]
     pub fn JSPropertyNameArrayRetain(array: JSPropertyNameArrayRef) -> JSPropertyNameArrayRef;
 
     /// Releases a JavaScript property name array.
     ///
     /// * `array` The [`JSPropertyNameArrayRef`] to release.
+    ///
+    /// # See also
+    ///
+    /// * [`JSPropertyNameArrayRetain()`]
     pub fn JSPropertyNameArrayRelease(array: JSPropertyNameArrayRef);
 
     /// Gets a count of the number of items in a JavaScript property name array.
@@ -1637,8 +1800,9 @@ extern "C" {
     ///
     /// Return an integer count of the number of names in `array`.
     ///
-    /// See also:
+    /// # See also
     ///
+    /// * [`JSObjectCopyPropertyNames()`]
     /// * [`JSPropertyNameArrayGetNameAtIndex`]
     pub fn JSPropertyNameArrayGetCount(array: JSPropertyNameArrayRef) -> usize;
 
@@ -1649,8 +1813,9 @@ extern "C" {
     ///
     /// Returns a [`JSStringRef`] containing the property name.
     ///
-    /// See also:
+    /// # See also
     ///
+    /// * [`JSObjectCopyPropertyNames()`]
     /// * [`JSPropertyNameArrayGetCount`]
     pub fn JSPropertyNameArrayGetNameAtIndex(
         array: JSPropertyNameArrayRef,

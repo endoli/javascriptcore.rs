@@ -620,7 +620,7 @@ impl JSValue {
     /// [unprotected] an equal number of times before becoming
     /// eligible for garbage collection.
     ///
-    /// See also:
+    /// # See also
     ///
     /// * [`garbage_collect()`]
     /// * [`JSValue::unprotect()`]
@@ -637,7 +637,7 @@ impl JSValue {
     /// an equal number of times before becoming eligible for garbage
     /// collection.
     ///
-    /// See also:
+    /// # See also
     ///
     /// * [`garbage_collect()`]
     /// * [`JSValue::protect()`]

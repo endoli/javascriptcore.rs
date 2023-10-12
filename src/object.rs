@@ -83,6 +83,13 @@ impl JSObject {
     /// // Remember that this will be an f64 now!
     /// assert_eq!(n.as_number().expect("number"), 123.0);
     /// ```
+    ///
+    /// # See also
+    ///
+    /// * [`JSObject::get_property_at_index()`]
+    /// * [`JSObject::has_property()`]
+    /// * [`JSObject::set_property()`]
+    /// * [`JSObject::set_property_at_index()`]
     pub fn get_property<S>(&self, name: S) -> JSValue
     where
         S: Into<JSString>,
@@ -135,6 +142,13 @@ impl JSObject {
     /// assert_eq!(o.get_property_at_index(1).as_boolean(), true);
     /// assert_eq!(o.get_property_at_index(2).as_string().expect("string"), "abc");
     /// ```
+    ///
+    /// # See also
+    ///
+    /// * [`JSObject::get_property()`]
+    /// * [`JSObject::has_property()`]
+    /// * [`JSObject::set_property()`]
+    /// * [`JSObject::set_property_at_index()`]
     pub fn get_property_at_index(&self, index: u32) -> JSValue {
         let mut exception: sys::JSValueRef = ptr::null_mut();
         let value = unsafe {
@@ -166,6 +180,13 @@ impl JSObject {
     /// assert!(object.has_property("a"));
     /// assert!(object.has_property("b"));
     /// ```
+    ///
+    /// # See also
+    ///
+    /// * [`JSObject::get_property()`]
+    /// * [`JSObject::get_property_at_index()`]
+    /// * [`JSObject::has_property()`]
+    /// * [`JSObject::set_property_at_index()`]
     pub fn set_property<S>(&self, name: S, value: JSValue) -> Result<(), JSException>
     where
         S: Into<JSString>,
@@ -212,6 +233,13 @@ impl JSObject {
     /// assert!(object.has_property("0"));
     /// assert!(object.has_property("1"));
     /// ```
+    ///
+    /// # See also
+    ///
+    /// * [`JSObject::get_property()`]
+    /// * [`JSObject::get_property_at_index()`]
+    /// * [`JSObject::has_property()`]
+    /// * [`JSObject::set_property()`]
     pub fn set_property_at_index(&self, index: u32, value: JSValue) -> Result<(), JSException> {
         let mut exception: sys::JSValueRef = ptr::null_mut();
         let context = self.value.ctx;
@@ -240,6 +268,10 @@ impl JSObject {
     /// assert!(result.is_object());
     /// assert_eq!(result.as_number().unwrap(), 42.);
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSObject::call_as_function()`]
     pub fn call_as_constructor(&self, arguments: &[JSValue]) -> Result<JSValue, JSException> {
         let arguments = arguments
             .iter()
@@ -289,6 +321,10 @@ impl JSObject {
     ///
     /// assert_eq!(result.as_number().unwrap(), 8.);
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSObject::call_as_constructor()`]
     pub fn call_as_function(
         &self,
         this: Option<&JSObject>,
