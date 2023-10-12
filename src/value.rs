@@ -16,7 +16,7 @@ impl JSValue {
     ///
     /// Ensure `raw` is valid.
     pub unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSValueRef) -> Self {
-        Self { ctx, raw }
+        Self { raw, ctx }
     }
 
     /// Creates a JavaScript value of the `undefined` type.
