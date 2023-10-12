@@ -6,16 +6,11 @@
 
 use std::{ffi::CString, ptr};
 
-use sys::{
-    JSClassCreate, JSClassDefinition, JSClassRetain, JSObjectCallAsConstructorCallback,
-    JSObjectMake,
-};
-
-use crate::{sys, JSClass, JSContext, JSObject};
+use crate::{sys, JSClass, JSContext, JSException, JSObject, JSValue};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum JSClassError {
+enum JSClassError {
     #[error("classname was invalid (e.g. it contains a NULL character)")]
     InvalidName,
 
@@ -27,36 +22,68 @@ pub enum JSClassError {
 }
 
 impl JSClass {
-    pub fn new<N>(
-        name: N,
-        constructor: JSObjectCallAsConstructorCallback,
-    ) -> Result<Self, JSClassError>
+    /// Create a new builder to build a [`Self`].
+    ///
+    /// ```rust
+    /// # use javascriptcore::*;
+    /// /// Declare a class constructor.
+    /// #[constructor_callback]
+    /// fn foo(
+    ///     ctx: &JSContext,
+    ///     constructor: &JSObject,
+    ///     _arguments: &[JSValue],
+    /// ) -> Result<JSValue, JSException> {
+    ///     /// Declare a function.
+    ///     #[function_callback]
+    ///     fn bar(
+    ///         ctx: &JSContext,
+    ///         _function: Option<&JSObject>,
+    ///         _this_object: Option<&JSObject>,
+    ///         _arguments: &[JSValue],
+    ///     ) -> Result<JSValue, JSException> {
+    ///         Ok(JSValue::new_number(&ctx, 42.))
+    ///     }
+    ///
+    ///     constructor.set_property("bar", JSValue::new_function(ctx, "bar", Some(bar)))?;
+    ///
+    ///     Ok(constructor.into())
+    /// }
+    ///
+    /// let ctx = JSContext::default();
+    /// let class = JSClass::builder(&ctx, "Foo")
+    ///     .unwrap()
+    ///     .constructor(Some(foo))
+    ///     .build()
+    ///     .unwrap();
+    ///
+    /// // We have a class! Now, let's populate it inside the global object, just for fun.
+    ///
+    /// let object = class.new_object();
+    /// let global_object = ctx.global_object().unwrap();
+    /// global_object.set_property("Foo", object.into()).unwrap();
+    ///
+    /// let result = evaluate_script(&ctx, "const foo = new Foo(); foo.bar()", None, "test.js", 1).unwrap();
+    ///
+    /// assert_eq!(result.as_number().unwrap(), 42.);
+    //// ```
+    pub fn builder<N>(ctx: &JSContext, name: N) -> Result<JSClassBuilder, JSException>
     where
         N: Into<Vec<u8>>,
     {
         let Ok(name) = CString::new(name) else {
-            return Err(JSClassError::InvalidName);
+            return Err(JSValue::new_string(ctx, JSClassError::InvalidName.to_string()).into());
         };
 
-        let class_definition = JSClassDefinition {
+        let class_definition = sys::JSClassDefinition {
             className: name.as_ptr(),
-            callAsConstructor: constructor,
             ..Default::default()
         };
 
-        let class = unsafe { JSClassCreate(&class_definition) };
-
-        if class.is_null() {
-            return Err(JSClassError::FailedToCreateClass);
-        }
-
-        let class = unsafe { JSClassRetain(class) };
-
-        if class.is_null() {
-            return Err(JSClassError::FailedToRetainClass);
-        }
-
-        Ok(unsafe { JSClass::from_raw(class, name) })
+        Ok(JSClassBuilder {
+            ctx,
+            name,
+            class_definition,
+        })
     }
 
     /// Create a new [`Self`] from its raw pointer directly.
@@ -64,12 +91,30 @@ impl JSClass {
     /// # Safety
     ///
     /// Ensure `raw` is valid.
-    unsafe fn from_raw(raw: sys::JSClassRef, name: CString) -> Self {
-        Self { raw, name }
+    unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSClassRef, name: CString) -> Self {
+        Self { ctx, raw, name }
     }
 
-    pub fn instantiate(&self, ctx: &JSContext) -> JSObject {
-        unsafe { JSObject::from_raw(ctx.raw, JSObjectMake(ctx.raw, self.raw, ptr::null_mut())) }
+    /// Transform the `Self` into a [`JSObject`].
+    ///
+    /// Note that it doesn't instantiate the class. To do a proper instantiation, one has to
+    /// call [`JSObject::call_as_constructor`].
+    ///
+    /// ```rust
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    /// let class = JSClass::builder(&ctx, "Foo").unwrap().build().unwrap();
+    /// let object = class.new_object();
+    ///
+    /// assert!(object.is_object_of_class(&class));
+    /// ```
+    pub fn new_object(&self) -> JSObject {
+        unsafe {
+            JSObject::from_raw(
+                self.ctx,
+                sys::JSObjectMake(self.ctx, self.raw, ptr::null_mut()),
+            )
+        }
     }
 }
 
@@ -79,17 +124,71 @@ impl Drop for JSClass {
     }
 }
 
+/// A builder for [`JSClass`].
+///
+/// Get an instance of `Self` with [`JSClass::builder`].
+pub struct JSClassBuilder<'a> {
+    /// The context.
+    ctx: &'a JSContext,
+
+    /// The class name.
+    name: CString,
+
+    /// The class definition.
+    class_definition: sys::JSClassDefinition,
+}
+
+impl<'a> JSClassBuilder<'a> {
+    /// Set a class constructor, called by [the `new` operator in JavaScript][new].
+    ///
+    /// The easiest way to generate a [`JSObjectCallAsConstructorCallback`] is by using the
+    /// [`crate::constructor_callback`] procedural macro.
+    ///
+    /// [`JSObjectCallAsConstructorCallback`]: sys::JSObjectCallAsConstructorCallback
+    /// [new]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/new
+    pub fn constructor(mut self, constructor: sys::JSObjectCallAsConstructorCallback) -> Self {
+        self.class_definition.callAsConstructor = constructor;
+
+        self
+    }
+
+    /// Build a [`JSClass`].
+    pub fn build(self) -> Result<JSClass, JSException> {
+        let class = unsafe { sys::JSClassCreate(&self.class_definition) };
+
+        if class.is_null() {
+            return Err(JSValue::new_string(
+                self.ctx,
+                JSClassError::FailedToCreateClass.to_string(),
+            )
+            .into());
+        }
+
+        let class = unsafe { sys::JSClassRetain(class) };
+
+        if class.is_null() {
+            return Err(JSValue::new_string(
+                self.ctx,
+                JSClassError::FailedToRetainClass.to_string(),
+            )
+            .into());
+        }
+
+        Ok(unsafe { JSClass::from_raw(self.ctx.raw, class, self.name) })
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::{constructor_callback, function_callback, JSException};
+    use crate::{constructor_callback, evaluate_script, function_callback};
 
     use super::*;
 
     #[test]
     fn class_with_no_constructor() -> Result<(), JSException> {
         let ctx = JSContext::default();
-        let class = JSClass::new("Foo", None).unwrap();
-        let object = class.instantiate(&ctx);
+        let class = JSClass::builder(&ctx, "Foo")?.build()?;
+        let object = class.new_object();
 
         assert!(object.is_object_of_class(&class));
 
@@ -116,7 +215,7 @@ mod tests {
                 _this_object: Option<&JSObject>,
                 _arguments: &[JSValue],
             ) -> Result<JSValue, JSException> {
-                Ok(JSValue::new_number(&ctx, 42.))
+                Ok(JSValue::new_number(ctx, 42.))
             }
 
             constructor.set_property("bar", JSValue::new_function(ctx, "bar", Some(bar)))?;
@@ -125,8 +224,10 @@ mod tests {
         }
 
         let ctx = JSContext::default();
-        let class = JSClass::new("Foo", Some(foo_ctor)).unwrap();
-        let object = class.instantiate(&ctx);
+        let class = JSClass::builder(&ctx, "Foo")?
+            .constructor(Some(foo_ctor))
+            .build()?;
+        let object = class.new_object();
 
         assert!(object.is_object_of_class(&class));
 
@@ -140,6 +241,14 @@ mod tests {
                 .as_number()?,
             42.
         );
+
+        // Let's try in a script.
+        let global_object = ctx.global_object()?;
+        global_object.set_property("Foo", object.into())?;
+
+        let result = evaluate_script(&ctx, "const foo = new Foo(); foo.bar()", None, "test.js", 1);
+
+        assert_eq!(result?.as_number()?, 42.);
 
         Ok(())
     }
