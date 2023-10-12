@@ -182,7 +182,7 @@ impl JSObject {
                 value.raw,
                 sys::kJSPropertyAttributeNone,
                 &mut exception,
-            )
+            );
         }
 
         if !exception.is_null() {
@@ -217,7 +217,7 @@ impl JSObject {
         let context = self.value.ctx;
 
         unsafe {
-            sys::JSObjectSetPropertyAtIndex(context, self.raw, index, value.raw, &mut exception)
+            sys::JSObjectSetPropertyAtIndex(context, self.raw, index, value.raw, &mut exception);
         }
 
         if !exception.is_null() {
