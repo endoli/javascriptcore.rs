@@ -175,7 +175,14 @@ impl JSObject {
         let context = self.value.ctx;
 
         unsafe {
-            sys::JSObjectSetProperty(context, self.raw, name.raw, value.raw, 0, &mut exception)
+            sys::JSObjectSetProperty(
+                context,
+                self.raw,
+                name.raw,
+                value.raw,
+                sys::kJSPropertyAttributeNone,
+                &mut exception,
+            )
         }
 
         if !exception.is_null() {
