@@ -12,7 +12,7 @@ impl JSString {}
 
 impl fmt::Debug for JSString {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        write!(fmt, "JSString {{ \"{}\" }}", self)
+        write!(fmt, "JSString {{ \"{self}\" }}")
     }
 }
 
@@ -29,7 +29,7 @@ impl fmt::Display for JSString {
             buffer.set_len(actual_size - 1);
             String::from_utf8(buffer).unwrap()
         };
-        write!(fmt, "{}", s)
+        write!(fmt, "{s}")
     }
 }
 
