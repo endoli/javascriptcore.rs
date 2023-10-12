@@ -24,8 +24,8 @@ impl JSException {
 impl fmt::Display for JSException {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.underlying_value().as_string() {
-            Ok(string) => write!(formatter, "JSException (interpreted as string): {}", string),
-            Err(_) => write!(formatter, "{:?}", self),
+            Ok(string) => write!(formatter, "JSException (interpreted as string): {string}"),
+            Err(_) => write!(formatter, "{self:?}"),
         }
     }
 }
