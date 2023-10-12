@@ -305,7 +305,7 @@ impl JSObject {
             sys::JSObjectCallAsFunction(
                 context,
                 self.raw,
-                this.map(|this| this.raw).unwrap_or_else(ptr::null_mut),
+                this.map_or_else(ptr::null_mut, |this| this.raw),
                 arguments.len(),
                 arguments.as_slice().as_ptr(),
                 &mut exception,
