@@ -45,7 +45,7 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
         let result = sys::JSEvaluateScript(
             ctx.raw,
             script.into().raw,
-            this_object.map(|t| t.raw).unwrap_or(ptr::null_mut()),
+            this_object.map_or(ptr::null_mut(), |t| t.raw),
             source_url.into().raw,
             starting_line_number,
             &mut exception,
