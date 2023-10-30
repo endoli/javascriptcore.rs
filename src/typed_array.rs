@@ -141,6 +141,10 @@ impl JSTypedArray {
     /// The pointer of the slice returned by this function is temporary and is not
     /// guaranteed to remain valid across JavaScriptCore API calls.
     pub unsafe fn as_mut_slice(&mut self) -> Result<&mut [u8], JSException> {
+        self.as_mut_slice_impl()
+    }
+
+    unsafe fn as_mut_slice_impl(&self) -> Result<&mut [u8], JSException> {
         let offset = self.byte_offset()?;
         let length = self.len()?;
 
@@ -157,6 +161,12 @@ impl JSTypedArray {
                 length,
             ))
         }
+    }
+
+    /// Returns a `Vec` (so a copy) of the underlying buffer represented by the
+    /// Typed Array.
+    pub fn to_vec(&self) -> Result<Vec<u8>, JSException> {
+        Ok(unsafe { self.as_mut_slice_impl() }?.to_vec())
     }
 }
 
