@@ -9,7 +9,7 @@ use std::ffi::CString;
 use std::fmt;
 
 impl JSString {
-    /// Returns the number of Unicode characters in this JavaScript string.
+    /// Return the number of Unicode characters in this JavaScript string.
     ///
     /// Remember that strings in JavaScript are UTF-16 encoded.
     ///
@@ -25,6 +25,17 @@ impl JSString {
     /// ```
     pub fn len(&self) -> usize {
         unsafe { sys::JSStringGetLength(self.raw) }
+    }
+
+    /// Check whether the string is empty.
+    ///
+    /// ```rust
+    /// # use javascriptcore::JSString;
+    /// assert!(JSString::from("").is_empty());
+    /// assert!(!JSString::from("abc").is_empty());
+    /// ```
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 }
 
@@ -160,5 +171,11 @@ mod tests {
 
         assert_eq!(b.len(), 11);
         assert_eq!(b.to_string().len(), 24);
+    }
+
+    #[test]
+    fn is_empty() {
+        assert!(JSString::from("").is_empty());
+        assert!(!JSString::from("abc").is_empty());
     }
 }
