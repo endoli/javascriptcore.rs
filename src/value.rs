@@ -7,7 +7,8 @@
 use sys::JSObjectCallAsFunctionCallback;
 
 use crate::{
-    sys, JSClass, JSContext, JSException, JSObject, JSString, JSType, JSTypedArrayType, JSValue,
+    sys, JSClass, JSContext, JSException, JSObject, JSString, JSType, JSTypedArray,
+    JSTypedArrayType, JSValue,
 };
 use std::ptr;
 
@@ -384,20 +385,6 @@ impl JSValue {
         unsafe { sys::JSValueGetType(self.ctx, self.raw) }
     }
 
-    /// Returns a value of type [`JSTypedArrayType`] that identifies value's
-    /// Typed Array type, or `JSTypedArrayType::None` if the value is not a Typed Array
-    /// object.
-    pub fn get_typed_array_type(&self) -> Result<JSTypedArrayType, JSException> {
-        let mut exception: sys::JSValueRef = ptr::null_mut();
-        let value = unsafe { sys::JSValueGetTypedArrayType(self.ctx, self.raw, &mut exception) };
-
-        if !exception.is_null() {
-            Err(unsafe { Self::from_raw(self.ctx, exception) }.into())
-        } else {
-            Ok(value)
-        }
-    }
-
     /// Tests whether a JavaScript value's type is the `undefined` type.
     ///
     /// Returns `true` if `value`'s type is the `undefined` type, otherwise `false`.
@@ -547,14 +534,12 @@ impl JSValue {
     ///         .unwrap()
     /// };
     /// assert!(value.is_typed_array());
-    /// assert!(matches!(value.get_typed_array_type(), Ok(JSTypedArrayType::Uint8Array)));
     /// ```
     pub fn is_typed_array(&self) -> bool {
-        if let Ok(ty) = self.get_typed_array_type() {
-            ty != JSTypedArrayType::None
-        } else {
-            false
-        }
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let value = unsafe { sys::JSValueGetTypedArrayType(self.ctx, self.raw, &mut exception) };
+
+        value != JSTypedArrayType::None
     }
 
     /// Tests whether a JavaScript value is a `date`.
@@ -651,6 +636,43 @@ impl JSValue {
         }
     }
 
+    /// Converts a JavaScript value to a Typed Array object and returns the
+    /// resulting object.
+    ///
+    /// Returns either the `JSTypedArray` result of conversion, or an exception
+    /// if one was thrown.
+    ///
+    /// ```rust
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    /// let array = evaluate_script(
+    ///     &ctx,
+    ///     "new Uint8Array([1, 2, 3, 4, 5])",
+    ///     None,
+    ///     "foo.js",
+    ///     1,
+    /// ).unwrap();
+    ///
+    /// assert!(array.is_typed_array());
+    ///
+    /// let array = array.as_typed_array().unwrap();
+    /// ````
+    pub fn as_typed_array(&self) -> Result<JSTypedArray, JSException> {
+        if !self.is_typed_array() {
+            return Err(unsafe {
+                Self::from_raw(
+                    self.ctx,
+                    JSString::from("Value is not a Typed Array").raw as *const _,
+                )
+            }
+            .into());
+        }
+
+        let object = self.as_object()?;
+
+        Ok(unsafe { JSTypedArray::from_raw(object.ctx, object.raw) })
+    }
+
     /// Protects a JavaScript value from garbage collection.
     ///
     /// Use this method when you want to store a [`JSValue`] in a
@@ -708,10 +730,7 @@ impl From<JSValue> for sys::JSValueRef {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        evaluate_script, function_callback, sys, JSContext, JSException, JSType, JSTypedArrayType,
-        JSValue,
-    };
+    use crate::{evaluate_script, function_callback, sys, JSContext, JSException, JSType, JSValue};
 
     #[test]
     fn strict_equality() {
@@ -823,7 +842,6 @@ mod tests {
 
         // It's a `Uint8Array.`
         assert!(array.is_typed_array());
-        assert_eq!(array.get_typed_array_type()?, JSTypedArrayType::Uint8Array);
 
         let array = array.as_object()?;
 
@@ -1025,7 +1043,6 @@ mod tests {
         let v = JSValue::new_from_json(&ctx, "\"abc\"").expect("value");
         assert!(v.is_string());
         assert!(v.as_boolean());
-        assert_eq!(v.get_typed_array_type().unwrap(), JSTypedArrayType::None);
         assert!(v.as_number().is_err());
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "\"abc\"");

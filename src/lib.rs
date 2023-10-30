@@ -30,6 +30,7 @@ mod contextgroup;
 mod exception;
 mod object;
 mod string;
+mod typed_array;
 mod value;
 
 pub use crate::sys::{JSType, JSTypedArrayType};
@@ -122,6 +123,17 @@ pub struct JSString {
     raw: sys::JSStringRef,
 }
 
+/// A JavaScript Typed Array.
+///
+/// A Typed Array is a special JavaScript object that represent a family of
+/// buffer view. Learn more by [reading the documentation][doc].
+///
+/// [doc]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray#behavior_when_viewing_a_resizable_buffer
+pub struct JSTypedArray {
+    raw: sys::JSObjectRef,
+    ctx: sys::JSContextRef,
+}
+
 /// A JavaScript value.
 ///
 /// The base type for all JavaScript values, and polymorphic functions
@@ -152,6 +164,7 @@ pub struct JSString {
 /// * [`JSValue::as_number()`]
 /// * [`JSValue::as_object()`]
 /// * [`JSValue::as_string()`]
+/// * [`JSValue::as_typed_array()`]
 #[derive(Debug)]
 pub struct JSValue {
     raw: sys::JSValueRef,
