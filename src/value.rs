@@ -6,7 +6,9 @@
 
 use sys::JSObjectCallAsFunctionCallback;
 
-use crate::{sys, JSClass, JSContext, JSException, JSObject, JSString, JSType, JSValue};
+use crate::{
+    sys, JSClass, JSContext, JSException, JSObject, JSString, JSType, JSTypedArrayType, JSValue,
+};
 use std::ptr;
 
 impl JSValue {
@@ -382,6 +384,20 @@ impl JSValue {
         unsafe { sys::JSValueGetType(self.ctx, self.raw) }
     }
 
+    /// Returns a value of type [`JSTypedArrayType`] that identifies value's
+    /// Typed Array type, or `JSTypedArrayType::None` if the value is not a Typed Array
+    /// object.
+    pub fn get_typed_array_type(&self) -> Result<JSTypedArrayType, JSException> {
+        let mut exception: sys::JSValueRef = ptr::null_mut();
+        let value = unsafe { sys::JSValueGetTypedArrayType(self.ctx, self.raw, &mut exception) };
+
+        if !exception.is_null() {
+            Err(unsafe { Self::from_raw(self.ctx, exception) }.into())
+        } else {
+            Ok(value)
+        }
+    }
+
     /// Tests whether a JavaScript value's type is the `undefined` type.
     ///
     /// Returns `true` if `value`'s type is the `undefined` type, otherwise `false`.
@@ -667,7 +683,10 @@ impl From<JSValue> for sys::JSValueRef {
 
 #[cfg(test)]
 mod tests {
-    use crate::{evaluate_script, function_callback, sys, JSContext, JSException, JSType, JSValue};
+    use crate::{
+        evaluate_script, function_callback, sys, JSContext, JSException, JSType, JSTypedArrayType,
+        JSValue,
+    };
 
     #[test]
     fn strict_equality() {
@@ -775,8 +794,12 @@ mod tests {
     fn typed_array() -> Result<(), JSException> {
         let ctx = JSContext::default();
         let mut bytes = vec![1u8, 2, 3, 4, 5];
-        let array = unsafe { JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice()) }?
-            .as_object()?;
+        let array = unsafe { JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice()) }?;
+
+        // It's a `Uint8Array.`
+        assert_eq!(array.get_typed_array_type()?, JSTypedArrayType::Uint8Array);
+
+        let array = array.as_object()?;
 
         assert_eq!(
             unsafe {
