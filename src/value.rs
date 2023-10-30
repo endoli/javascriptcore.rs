@@ -532,6 +532,31 @@ impl JSValue {
         unsafe { sys::JSValueIsArray(self.ctx, self.raw) }
     }
 
+    /// Tests whether a JavaScript value is a Typed Array.
+    ///
+    /// ```
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let value = JSValue::new_number(&ctx, 123.);
+    /// assert!(!value.is_typed_array());
+    ///
+    /// let mut bytes = vec![1u8, 2, 3, 4, 5];
+    /// let value = unsafe {
+    ///     JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice())
+    ///         .unwrap()
+    /// };
+    /// assert!(value.is_typed_array());
+    /// assert!(matches!(value.get_typed_array_type(), Ok(JSTypedArrayType::Uint8Array)));
+    /// ```
+    pub fn is_typed_array(&self) -> bool {
+        if let Ok(ty) = self.get_typed_array_type() {
+            ty != JSTypedArrayType::None
+        } else {
+            false
+        }
+    }
+
     /// Tests whether a JavaScript value is a `date`.
     ///
     /// Returns `true` if `value` is a `date`, otherwise `false`.
@@ -797,6 +822,7 @@ mod tests {
         let array = unsafe { JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice()) }?;
 
         // It's a `Uint8Array.`
+        assert!(array.is_typed_array());
         assert_eq!(array.get_typed_array_type()?, JSTypedArrayType::Uint8Array);
 
         let array = array.as_object()?;
@@ -999,6 +1025,7 @@ mod tests {
         let v = JSValue::new_from_json(&ctx, "\"abc\"").expect("value");
         assert!(v.is_string());
         assert!(v.as_boolean());
+        assert_eq!(v.get_typed_array_type().unwrap(), JSTypedArrayType::None);
         assert!(v.as_number().is_err());
         let s = v.to_json_string(0).unwrap();
         assert_eq!(s, "\"abc\"");
