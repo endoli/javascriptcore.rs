@@ -8,7 +8,25 @@ use crate::{sys, JSString};
 use std::ffi::CString;
 use std::fmt;
 
-impl JSString {}
+impl JSString {
+    /// Returns the number of Unicode characters in this JavaScript string.
+    ///
+    /// Remember that strings in JavaScript are UTF-16 encoded.
+    ///
+    /// ```rust
+    /// # use javascriptcore::JSString;
+    /// let str = JSString::from("😄");
+    ///
+    /// // The JavaScript string length is 2, since it's UTF-16 encoded.
+    /// assert_eq!(str.len(), 2);
+    ///
+    /// // But once encoded into UTF-8 as a Rust string, it's 4.
+    /// assert_eq!(str.to_string().len(), 4);
+    /// ```
+    pub fn len(&self) -> usize {
+        unsafe { sys::JSStringGetLength(self.raw) }
+    }
+}
 
 impl fmt::Debug for JSString {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
@@ -129,5 +147,18 @@ mod tests {
 
         assert_eq!("abc", a);
         assert_eq!(s, a);
+    }
+
+    #[test]
+    fn len() {
+        let a: JSString = "😄".into();
+
+        assert_eq!(a.len(), 2);
+        assert_eq!(a.to_string().len(), 4);
+
+        let b: JSString = "∀𝑥∈ℝ,𝑥²≥0".into();
+
+        assert_eq!(b.len(), 11);
+        assert_eq!(b.to_string().len(), 24);
     }
 }
