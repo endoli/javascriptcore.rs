@@ -12,7 +12,7 @@ impl JSTypedArray {
     ///
     /// # Safety
     ///
-    /// Ensure `raw` is valid.
+    /// Ensure `raw` is valid, and represents a typed array.
     pub(crate) unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
         Self { ctx, raw }
     }
@@ -24,13 +24,7 @@ impl JSTypedArray {
     /// ```rust
     /// # use javascriptcore::*;
     /// let ctx = JSContext::default();
-    /// let array = evaluate_script(
-    ///     &ctx,
-    ///     "new Uint8Array([1, 2, 3, 4, 5])",
-    ///     None,
-    ///     "foo.js",
-    ///     1,
-    /// )
+    /// let array = evaluate_script(&ctx, "new Uint8Array([1, 2, 3, 4, 5])", None, "foo.js", 1)
     ///     .unwrap()
     ///     .as_typed_array()
     ///     .unwrap();
@@ -52,13 +46,7 @@ impl JSTypedArray {
     /// ```rust
     /// # use javascriptcore::*;
     /// let ctx = JSContext::default();
-    /// let array = evaluate_script(
-    ///     &ctx,
-    ///     "new Uint8Array([1, 2, 3, 4, 5])",
-    ///     None,
-    ///     "foo.js",
-    ///     1,
-    /// )
+    /// let array = evaluate_script(&ctx, "new Uint8Array([1, 2, 3, 4, 5])", None, "foo.js", 1)
     ///     .unwrap()
     ///     .as_typed_array()
     ///     .unwrap();
@@ -78,16 +66,14 @@ impl JSTypedArray {
 
     /// Returns the byte offset of the Typed Array.
     ///
+    /// The _byte offset_ is the offset used when a Typed Array is created from
+    /// another Typed Array, it's a “subview” that can start from an offset, up to a
+    /// certain length, which is the byte length.
+    ///
     /// ```rust
     /// # use javascriptcore::*;
     /// let ctx = JSContext::default();
-    /// let array = evaluate_script(
-    ///     &ctx,
-    ///     "const array = new Uint8Array([1, 2, 3, 4, 5]); new Uint8Array(array.buffer, 3)",
-    ///     None,
-    ///     "foo.js",
-    ///     1,
-    /// )
+    /// let array = evaluate_script(&ctx, "const array = new Uint8Array([1, 2, 3, 4, 5]); new Uint8Array(array.buffer, 3)", None, "foo.js", 1)
     ///     .unwrap()
     ///     .as_typed_array()
     ///     .unwrap();
@@ -106,16 +92,15 @@ impl JSTypedArray {
     }
 
     /// Returns the byte length of the Typed Array.
+    ///
+    /// The _byte length_ is the length used when a Typed Array is created from
+    /// another Typed Array, it's a “subview” that can start from an offset, up to a
+    /// certain length, which is the byte length.
+    ///
     /// ```rust
     /// # use javascriptcore::*;
     /// let ctx = JSContext::default();
-    /// let array = evaluate_script(
-    ///     &ctx,
-    ///     "const array = new Uint8Array([1, 2, 3, 4, 5]); new Uint8Array(array.buffer, 1, 2)",
-    ///     None,
-    ///     "foo.js",
-    ///     1,
-    /// )
+    /// let array = evaluate_script(&ctx, "const array = new Uint8Array([1, 2, 3, 4, 5]); new Uint8Array(array.buffer, 1, 2)", None, "foo.js", 1)
     ///     .unwrap()
     ///     .as_typed_array()
     ///     .unwrap();
@@ -140,6 +125,47 @@ impl JSTypedArray {
     ///
     /// The pointer of the slice returned by this function is temporary and is not
     /// guaranteed to remain valid across JavaScriptCore API calls.
+    ///
+    /// # Example
+    ///    
+    /// ```rust
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// /// Create a Typed Array from the Rust API.
+    /// let mut bytes = vec![1u8, 2, 3, 4, 5];
+    /// let array_as_value =
+    ///     unsafe { JSValue::new_typed_array_with_bytes(&ctx, bytes.as_mut_slice()) }.unwrap();
+    /// let mut array = array_as_value.as_typed_array().unwrap();
+    ///
+    /// ctx.global_object().unwrap().set_property("array", array_as_value).unwrap();
+    ///
+    /// /// Create a sub-Typed Array from `array` in JavaScript.
+    /// let mut sub_array = evaluate_script(
+    ///     &ctx,
+    ///     "new Uint8Array(array.buffer, 1, 3)",
+    ///     None,
+    ///     "foo.js",
+    ///     1,
+    /// )
+    ///     .unwrap()
+    ///     .as_typed_array()
+    ///     .unwrap();
+    ///
+    /// let sub_slice = unsafe { sub_array.as_mut_slice() }.unwrap();
+    ///
+    /// // Items are untouched.
+    /// assert_eq!(sub_slice, &[2, 3, 4]);
+    /// assert_eq!(bytes, &[1, 2, 3, 4, 5]);
+    ///
+    /// // Now let's mutate them.
+    /// sub_slice[0] = 12;
+    /// sub_slice[2] = 14;
+    ///
+    /// // See, they are mutated.
+    /// assert_eq!(sub_slice, &[12, 3, 14]);
+    /// assert_eq!(bytes, &[1, 12, 3, 14, 5]);
+    /// ```
     pub unsafe fn as_mut_slice(&mut self) -> Result<&mut [u8], JSException> {
         self.as_mut_slice_impl()
     }
@@ -165,6 +191,18 @@ impl JSTypedArray {
 
     /// Returns a `Vec` (so a copy) of the underlying buffer represented by the
     /// Typed Array.
+    ///
+    /// ```rust
+    /// # use javascriptcore::*;
+    /// let ctx = JSContext::default();
+    ///
+    /// let mut array = evaluate_script(&ctx, "const array = new Uint8Array([1, 2, 3, 4, 5]); new Uint8Array(array.buffer, 1, 3)", None, "foo.js", 1)
+    ///     .unwrap()
+    ///     .as_typed_array()
+    ///     .unwrap();
+    ///
+    /// assert_eq!(array.to_vec().unwrap(), &[2, 3, 4]);
+    /// ```
     pub fn to_vec(&self) -> Result<Vec<u8>, JSException> {
         Ok(unsafe { self.as_mut_slice_impl() }?.to_vec())
     }

@@ -126,7 +126,7 @@ pub struct JSString {
 /// A JavaScript Typed Array.
 ///
 /// A Typed Array is a special JavaScript object that represent a family of
-/// buffer view. Learn more by [reading the documentation][doc].
+/// buffer views. Learn more by [reading the documentation][doc].
 ///
 /// [doc]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray#behavior_when_viewing_a_resizable_buffer
 pub struct JSTypedArray {
