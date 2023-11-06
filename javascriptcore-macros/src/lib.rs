@@ -21,10 +21,11 @@ use quote::quote;
 pub fn function_callback(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let function = syn::parse::<syn::ItemFn>(item)
         .expect("#[function_callback] must apply on a valid function");
+    let function_visibility = &function.vis;
     let function_name = &function.sig.ident;
 
     quote! {
-        unsafe extern "C" fn #function_name(
+        #function_visibility unsafe extern "C" fn #function_name(
             raw_ctx: javascriptcore::sys::JSContextRef,
             function: javascriptcore::sys::JSObjectRef,
             this_object: javascriptcore::sys::JSObjectRef,
@@ -126,10 +127,11 @@ pub fn function_callback(_attributes: TokenStream, item: TokenStream) -> TokenSt
 pub fn constructor_callback(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     let constructor = syn::parse::<syn::ItemFn>(item)
         .expect("#[constructor_callback] must apply on a valid function");
+    let constructor_visibility = &constructor.vis;
     let constructor_name = &constructor.sig.ident;
 
     quote! {
-        unsafe extern "C" fn #constructor_name(
+        #constructor_visibility unsafe extern "C" fn #constructor_name(
             raw_ctx: javascriptcore::sys::JSContextRef,
             constructor: javascriptcore::sys::JSObjectRef,
             argument_count: usize,
