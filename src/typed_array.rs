@@ -14,7 +14,7 @@ impl JSTypedArray {
     ///
     /// Ensure `raw` is valid, and represents a typed array.
     pub(crate) unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
-        Self { ctx, raw }
+        Self { raw, ctx }
     }
 
     /// Returns a value of type [`JSTypedArrayType`] that identifies value's
