@@ -35,6 +35,10 @@ impl JSValue {
     /// let v = JSValue::new_undefined(&ctx);
     /// assert!(v.is_undefined());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_undefined()`]
     pub fn new_undefined(ctx: &JSContext) -> Self {
         unsafe { Self::from_raw(ctx.raw, sys::JSValueMakeUndefined(ctx.raw)) }
     }
@@ -52,6 +56,10 @@ impl JSValue {
     /// let v = JSValue::new_null(&ctx);
     /// assert!(v.is_null());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_null()`]
     pub fn new_null(ctx: &JSContext) -> Self {
         unsafe { Self::from_raw(ctx.raw, sys::JSValueMakeNull(ctx.raw)) }
     }
@@ -70,6 +78,11 @@ impl JSValue {
     /// let v = JSValue::new_boolean(&ctx, true /* or false */);
     /// assert!(v.is_boolean());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_boolean()`]
+    /// - [`JSValue::new_boolean()`]
     pub fn new_boolean(ctx: &JSContext, boolean: bool) -> Self {
         unsafe { Self::from_raw(ctx.raw, sys::JSValueMakeBoolean(ctx.raw, boolean)) }
     }
@@ -94,6 +107,11 @@ impl JSValue {
     /// let v = JSValue::new_number(&ctx, 3 as f64);
     /// assert!(v.is_number());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_number()`]
+    /// - [`JSValue::new_number()`]
     pub fn new_number(ctx: &JSContext, number: f64) -> Self {
         unsafe { Self::from_raw(ctx.raw, sys::JSValueMakeNumber(ctx.raw, number)) }
     }
@@ -114,6 +132,11 @@ impl JSValue {
     /// let v = JSValue::new_string(&ctx, "abc");
     /// assert!(v.is_string());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_string()`]
+    /// - [`JSValue::new_string()`]
     pub fn new_string<S: Into<JSString>>(ctx: &JSContext, string: S) -> Self {
         Self::new_string_inner(ctx.raw, string)
     }
@@ -140,6 +163,10 @@ impl JSValue {
     /// let v = JSValue::new_symbol(&ctx, "abc");
     /// assert!(v.is_symbol());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_symbol()`]
     pub fn new_symbol<S: Into<JSString>>(ctx: &JSContext, description: S) -> Self {
         unsafe {
             Self::from_raw(
@@ -165,6 +192,10 @@ impl JSValue {
     /// ).unwrap();
     /// assert!(value.is_array());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_array()`]
     pub fn new_array(ctx: &JSContext, items: &[JSValue]) -> Result<Self, JSException> {
         let items = items
             .iter()
@@ -219,6 +250,11 @@ impl JSValue {
     ///         .unwrap()
     /// };
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::as_typed_array()`]
+    /// - [`JSValue::is_typed_array()`]
     pub unsafe fn new_typed_array_with_bytes(
         ctx: &JSContext,
         // `&mut` instead of &` because the typed array borrows mutably the bytes.
@@ -396,6 +432,10 @@ impl JSValue {
     /// let v = JSValue::new_undefined(&ctx);
     /// assert!(v.is_undefined());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::new_undefined()`]
     pub fn is_undefined(&self) -> bool {
         unsafe { sys::JSValueIsUndefined(self.ctx, self.raw) }
     }
@@ -411,6 +451,10 @@ impl JSValue {
     /// let v = JSValue::new_from_json(&ctx, "null").expect("value");
     /// assert!(v.is_null());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::new_null()`]
     pub fn is_null(&self) -> bool {
         unsafe { sys::JSValueIsNull(self.ctx, self.raw) }
     }
@@ -426,6 +470,11 @@ impl JSValue {
     /// let v = JSValue::new_from_json(&ctx, "false").expect("value");
     /// assert!(v.is_boolean());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::as_boolean()`]
+    /// - [`JSValue::new_boolean()`]
     pub fn is_boolean(&self) -> bool {
         unsafe { sys::JSValueIsBoolean(self.ctx, self.raw) }
     }
@@ -441,6 +490,11 @@ impl JSValue {
     /// let v = JSValue::new_from_json(&ctx, "-23").expect("value");
     /// assert!(v.is_number());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::as_number()`]
+    /// - [`JSValue::new_number()`]
     pub fn is_number(&self) -> bool {
         unsafe { sys::JSValueIsNumber(self.ctx, self.raw) }
     }
@@ -456,6 +510,11 @@ impl JSValue {
     /// let v = JSValue::new_from_json(&ctx, "\"Pueri et puellae\"").expect("value");
     /// assert!(v.is_string());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::as_string()`]
+    /// - [`JSValue::new_string()`]
     pub fn is_string(&self) -> bool {
         unsafe { sys::JSValueIsString(self.ctx, self.raw) }
     }
@@ -471,6 +530,10 @@ impl JSValue {
     /// let v = JSValue::new_symbol(&ctx, "abc");
     /// assert!(v.is_symbol());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::new_symbol()`]
     pub fn is_symbol(&self) -> bool {
         unsafe { sys::JSValueIsSymbol(self.ctx, self.raw) }
     }
@@ -486,6 +549,11 @@ impl JSValue {
     /// let v = JSValue::new_from_json(&ctx, "{\"id\": 123}").expect("valid object");
     /// assert!(v.is_object());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::as_object()`]
+    /// - [`JSValue::is_object_of_class()`]
     pub fn is_object(&self) -> bool {
         unsafe { sys::JSValueIsObject(self.ctx, self.raw) }
     }
@@ -496,6 +564,11 @@ impl JSValue {
     ///
     /// Returns `true` if `value` is an `object` and has `jsClass` in its
     /// class chain, otherwise `false`.
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::as_object()`]
+    /// - [`JSValue::is_object()`]
     pub fn is_object_of_class(&self, js_class: &JSClass) -> bool {
         unsafe { sys::JSValueIsObjectOfClass(self.ctx, self.raw, js_class.raw) }
     }
@@ -535,6 +608,11 @@ impl JSValue {
     /// };
     /// assert!(value.is_typed_array());
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::as_typed_array()`]
+    /// - [`JSValue::new_typed_array_with_bytes()`]
     pub fn is_typed_array(&self) -> bool {
         let mut exception: sys::JSValueRef = ptr::null_mut();
         let value = unsafe { sys::JSValueGetTypedArrayType(self.ctx, self.raw, &mut exception) };
@@ -560,6 +638,11 @@ impl JSValue {
     /// let v = JSValue::new_boolean(&ctx, false);
     /// assert_eq!(v.as_boolean(), false);
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_boolean()`]
+    /// - [`JSValue::new_boolean()`]
     pub fn as_boolean(&self) -> bool {
         unsafe { sys::JSValueToBoolean(self.ctx, self.raw) }
     }
@@ -577,6 +660,11 @@ impl JSValue {
     /// let n = v.as_number().expect("valid number");
     /// assert_eq!(n, 5.0);
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_number()`]
+    /// - [`JSValue::new_number()`]
     pub fn as_number(&self) -> Result<f64, JSException> {
         let mut exception: sys::JSValueRef = ptr::null_mut();
         let number = unsafe { sys::JSValueToNumber(self.ctx, self.raw, &mut exception) };
@@ -601,6 +689,11 @@ impl JSValue {
     /// let s = v.as_string().expect("valid string");
     /// assert_eq!(s, "Cave canem.");
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_string()`]
+    /// - [`JSValue::new_string()`]
     pub fn as_string(&self) -> Result<JSString, JSException> {
         let mut exception: sys::JSValueRef = ptr::null_mut();
         let string = unsafe { sys::JSValueToStringCopy(self.ctx, self.raw, &mut exception) };
@@ -625,6 +718,10 @@ impl JSValue {
     /// let o = v.as_object().expect("object");
     /// // We now have an object that we can inspect.
     /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_object()`]
     pub fn as_object(&self) -> Result<JSObject, JSException> {
         let mut exception: sys::JSValueRef = ptr::null_mut();
         let object = unsafe { sys::JSValueToObject(self.ctx, self.raw, &mut exception) };
@@ -657,6 +754,11 @@ impl JSValue {
     ///
     /// let array = array.as_typed_array().unwrap();
     /// ````
+    ///
+    /// # See also
+    ///
+    /// - [`JSValue::is_typed_array()`]
+    /// - [`JSValue::new_typed_array_with_bytes()`]
     pub fn as_typed_array(&self) -> Result<JSTypedArray, JSException> {
         if !self.is_typed_array() {
             return Err(unsafe {
