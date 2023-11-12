@@ -255,6 +255,28 @@ impl JSObject {
         Ok(())
     }
 
+    /// Returns `true` if the object can be called as a constructor, otherwise `false`.
+    ///
+    /// ```rust
+    /// # use javascriptcore::{JSContext, JSValue};
+    /// let ctx = JSContext::default();
+    /// let global = ctx.global_object().unwrap();
+    ///
+    /// let number = global.get_property("Number").as_object().unwrap();
+    /// assert!(number.is_constructor());
+    ///
+    /// let math = global.get_property("Math").as_object().unwrap();
+    /// let pow = math.get_property("pow").as_object().unwrap();
+    /// assert!(!pow.is_constructor());
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSObject::call_as_constructor()`]
+    pub fn is_constructor(&self) -> bool {
+        unsafe { sys::JSObjectIsConstructor(self.value.ctx, self.raw) }
+    }
+
     /// Call this object considering it is a valid object constructor.
     ///
     /// ```rust
@@ -272,6 +294,7 @@ impl JSObject {
     /// # See also
     ///
     /// - [`JSObject::call_as_function()`]
+    /// - [`JSObject::is_constructor()`]
     pub fn call_as_constructor(&self, arguments: &[JSValue]) -> Result<JSValue, JSException> {
         let arguments = arguments
             .iter()
@@ -305,6 +328,31 @@ impl JSObject {
         Ok(unsafe { JSValue::from_raw(context, result) })
     }
 
+    /// Returns `true` if the object can be called as a constructor, otherwise `false`.
+    ///
+    /// ```rust
+    /// # use javascriptcore::{JSContext, JSValue};
+    /// let ctx = JSContext::default();
+    /// let global = ctx.global_object().unwrap();
+    ///
+    /// let number = global.get_property("Number").as_object().unwrap();
+    /// assert!(number.is_function());
+    ///
+    /// let math = global.get_property("Math").as_object().unwrap();
+    /// let pow = math.get_property("pow").as_object().unwrap();
+    /// assert!(pow.is_function());
+    ///
+    /// let pi = math.get_property("PI").as_object().unwrap();
+    /// assert!(!pi.is_function());
+    /// ```
+    ///
+    /// # See also
+    ///
+    /// - [`JSObject::call_as_function()`]
+    pub fn is_function(&self) -> bool {
+        unsafe { sys::JSObjectIsFunction(self.value.ctx, self.raw) }
+    }
+
     /// Call this object considering it is a valid function.
     ///
     /// ```rust
@@ -325,6 +373,7 @@ impl JSObject {
     /// # See also
     ///
     /// - [`JSObject::call_as_constructor()`]
+    /// - [`JSObject::is_function()`]
     pub fn call_as_function(
         &self,
         this: Option<&JSObject>,
