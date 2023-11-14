@@ -450,7 +450,12 @@ impl Iterator for JSObjectPropertyNameIter {
         if self.idx < unsafe { sys::JSPropertyNameArrayGetCount(self.raw) } {
             let name = unsafe { sys::JSPropertyNameArrayGetNameAtIndex(self.raw, self.idx) };
             self.idx += 1;
-            Some(JSString { raw: name })
+            // GetNameAtIndex doesn't retain the name, so since we're going to release it
+            // when we release the property name array, but this JSString may outlive that,
+            // we need to retain the string to keep it alive.
+            Some(JSString {
+                raw: unsafe { sys::JSStringRetain(name) },
+            })
         } else {
             None
         }
@@ -459,6 +464,12 @@ impl Iterator for JSObjectPropertyNameIter {
     fn size_hint(&self) -> (usize, Option<usize>) {
         let sz = unsafe { sys::JSPropertyNameArrayGetCount(self.raw) };
         (sz - self.idx, Some(sz))
+    }
+}
+
+impl Drop for JSObjectPropertyNameIter {
+    fn drop(&mut self) {
+        unsafe { sys::JSPropertyNameArrayRelease(self.raw) }
     }
 }
 
