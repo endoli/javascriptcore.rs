@@ -68,3 +68,23 @@ jobs:
 
       - name: cargo build
         run: cargo build --target aarch64-apple-ios --all-targets --workspace
+
+  build-doc:
+    name: cargo docs-rs
+    runs-on: ubuntu-22.04
+    env:
+      RUSTDOCFLAGS: -Dwarnings
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
+      - uses: dtolnay/install@cargo-docs-rs
+      - name: install dependencies
+        run: |
+           if [ "$RUNNER_OS" == "Linux" ]; then
+             sudo apt update
+             sudo apt install pkg-config libjavascriptcoregtk-4.0-dev
+           fi
+        shell: bash
+      - run: cargo docs-rs
