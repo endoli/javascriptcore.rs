@@ -51,3 +51,20 @@ jobs:
 
       - name: cargo test
         run: cargo test --workspace
+
+  build-ios:
+    runs-on: macos-13
+    name: cargo build - ios
+    env:
+        RUSTFLAGS: -D warnings
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install stable toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          target: aarch64-apple-ios
+
+      - name: cargo build
+        run: cargo build --target aarch64-apple-ios --all-targets --workspace
