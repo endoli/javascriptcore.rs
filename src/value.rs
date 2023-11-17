@@ -1092,6 +1092,78 @@ mod tests {
     }
 
     #[test]
+    fn function_with_macros_and_generics() -> Result<(), JSException> {
+        use crate as javascriptcore;
+
+        let ctx = JSContext::default();
+
+        trait Math {
+            fn double(x: f64) -> f64;
+        }
+
+        struct Double;
+        struct NoDouble;
+
+        impl Math for Double {
+            fn double(x: f64) -> f64 {
+                x * 2.
+            }
+        }
+
+        impl Math for NoDouble {
+            fn double(x: f64) -> f64 {
+                x
+            }
+        }
+
+        #[function_callback]
+        fn do_double<M>(
+            ctx: &JSContext,
+            _function: Option<&JSObject>,
+            _this_object: Option<&JSObject>,
+            arguments: &[JSValue],
+        ) -> Result<JSValue, JSException>
+        where
+            M: Math,
+        {
+            if arguments.len() != 1 {
+                return Err(JSValue::new_string(ctx, "must receive 1 argument").into());
+            }
+
+            let x = arguments[0].as_number()?;
+
+            Ok(JSValue::new_number(ctx, M::double(x)))
+        }
+
+        // Let's try with `Double` as the generic parameter.
+        let do_math = JSValue::new_function(&ctx, "do_math_with_double", Some(do_double::<Double>));
+        let do_math_as_object = do_math.as_object()?;
+
+        // Correct call.
+        {
+            let result =
+                do_math_as_object.call_as_function(None, &[JSValue::new_number(&ctx, 2.)])?;
+
+            assert_eq!(result.as_number()?, 4.);
+        }
+
+        // Let's try with `NoDouble` as the generic parameter.
+        let do_math =
+            JSValue::new_function(&ctx, "do_math_with_no_double", Some(do_double::<NoDouble>));
+        let do_math_as_object = do_math.as_object()?;
+
+        // Correct call.
+        {
+            let result =
+                do_math_as_object.call_as_function(None, &[JSValue::new_number(&ctx, 2.)])?;
+
+            assert_eq!(result.as_number()?, 2.);
+        }
+
+        Ok(())
+    }
+
+    #[test]
     fn json_boolean_true() {
         let ctx = JSContext::default();
 
