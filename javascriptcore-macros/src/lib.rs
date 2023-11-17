@@ -23,16 +23,20 @@ pub fn function_callback(_attributes: TokenStream, item: TokenStream) -> TokenSt
         .expect("#[function_callback] must apply on a valid function");
     let function_visibility = &function.vis;
     let function_name = &function.sig.ident;
+    let function_generics = &function.sig.generics.params;
+    let function_where_clause = &function.sig.generics.where_clause;
 
     quote! {
-        #function_visibility unsafe extern "C" fn #function_name(
+        #function_visibility unsafe extern "C" fn #function_name < #function_generics > (
             raw_ctx: javascriptcore::sys::JSContextRef,
             function: javascriptcore::sys::JSObjectRef,
             this_object: javascriptcore::sys::JSObjectRef,
             argument_count: usize,
             arguments: *const javascriptcore::sys::JSValueRef,
             exception: *mut javascriptcore::sys::JSValueRef,
-        ) -> *const javascriptcore::sys::OpaqueJSValue {
+        ) -> *const javascriptcore::sys::OpaqueJSValue
+        #function_where_clause
+        {
             use core::{mem::ManuallyDrop, option::Option, ops::Not, ptr, result::Result, slice};
             use std::vec::Vec;
             use javascriptcore::{sys::JSValueRef, JSContext, JSObject, JSValue};
@@ -80,7 +84,7 @@ pub fn function_callback(_attributes: TokenStream, item: TokenStream) -> TokenSt
             ) -> Result<JSValue, JSException> = {
                 #function
 
-                #function_name
+                #function_name ::< #function_generics >
             };
 
             // Second, call the original function.
@@ -130,15 +134,19 @@ pub fn constructor_callback(_attributes: TokenStream, item: TokenStream) -> Toke
         .expect("#[constructor_callback] must apply on a valid function");
     let constructor_visibility = &constructor.vis;
     let constructor_name = &constructor.sig.ident;
+    let constructor_generics = &constructor.sig.generics.params;
+    let constructor_where_clause = &constructor.sig.generics.where_clause;
 
     quote! {
-        #constructor_visibility unsafe extern "C" fn #constructor_name(
+        #constructor_visibility unsafe extern "C" fn #constructor_name < #constructor_generics >(
             raw_ctx: javascriptcore::sys::JSContextRef,
             constructor: javascriptcore::sys::JSObjectRef,
             argument_count: usize,
             arguments: *const javascriptcore::sys::JSValueRef,
             exception: *mut javascriptcore::sys::JSValueRef,
-        ) -> *mut javascriptcore::sys::OpaqueJSValue {
+        ) -> *mut javascriptcore::sys::OpaqueJSValue
+        #constructor_where_clause
+        {
             use core::{mem::ManuallyDrop, option::Option, ops::Not, ptr, result::Result, slice};
             use std::vec::Vec;
             use javascriptcore::{sys::JSValueRef, JSContext, JSObject, JSValue};
@@ -172,7 +180,7 @@ pub fn constructor_callback(_attributes: TokenStream, item: TokenStream) -> Toke
             ) -> Result<JSValue, JSException> = {
                 #constructor
 
-                #constructor_name
+                #constructor_name ::< #constructor_generics >
             };
 
             // Second, call the original constructor.
