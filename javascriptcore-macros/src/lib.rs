@@ -37,8 +37,8 @@ pub fn function_callback(_attributes: TokenStream, item: TokenStream) -> TokenSt
         ) -> *const javascriptcore::sys::OpaqueJSValue
         #function_where_clause
         {
-            use core::{mem::ManuallyDrop, option::Option, ops::Not, ptr, result::Result, slice};
-            use std::vec::Vec;
+            use ::core::{mem::ManuallyDrop, option::Option, ops::Not, ptr, result::Result, slice};
+            use ::std::vec::Vec;
             use javascriptcore::{sys::JSValueRef, JSContext, JSObject, JSValue};
 
             // This should never happen, it's simply a paranoid precaution.
@@ -147,8 +147,8 @@ pub fn constructor_callback(_attributes: TokenStream, item: TokenStream) -> Toke
         ) -> *mut javascriptcore::sys::OpaqueJSValue
         #constructor_where_clause
         {
-            use core::{mem::ManuallyDrop, option::Option, ops::Not, ptr, result::Result, slice};
-            use std::vec::Vec;
+            use ::core::{mem::ManuallyDrop, option::Option, ops::Not, ptr, result::Result, slice};
+            use ::std::vec::Vec;
             use javascriptcore::{sys::JSValueRef, JSContext, JSObject, JSValue};
 
             // This should never happen, it's simply a paranoid precaution.
