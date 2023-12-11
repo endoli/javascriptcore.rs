@@ -193,9 +193,7 @@ pub fn constructor_callback(_attributes: TokenStream, item: TokenStream) -> Toke
                     *exception = ptr::null_mut();
 
                     // Return the result.
-                    let value: *const javascriptcore::sys::OpaqueJSValue = value.into();
-
-                    value as *mut _
+                    value.into()
                 }
                 Err(exc) => {
                     // Fill the exception.
