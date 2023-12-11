@@ -164,7 +164,7 @@ mod tests {
         let ctx = JSContext::new();
         let global_object = ctx.global_object().unwrap();
 
-        let some_property = global_object.get_property("WebAssembly");
+        let some_property = global_object.get_property("Array");
         assert!(!some_property.is_undefined());
     }
 }
