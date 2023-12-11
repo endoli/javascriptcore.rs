@@ -830,6 +830,12 @@ impl From<JSValue> for sys::JSValueRef {
     }
 }
 
+impl From<JSValue> for sys::JSObjectRef {
+    fn from(value: JSValue) -> Self {
+        value.raw as *mut _
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{evaluate_script, function_callback, sys, JSContext, JSException, JSType, JSValue};
