@@ -75,7 +75,7 @@ pub fn evaluate_script<S: Into<JSString>, U: Into<JSString>>(
 ///   to `1`.
 ///
 /// Returns `Ok` if the script is syntactically correct, otherwise
-/// returns an exception.
+/// returns an [exception](JSException).
 ///
 /// ```
 /// use javascriptcore::*;

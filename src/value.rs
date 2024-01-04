@@ -181,7 +181,7 @@ impl JSValue {
     /// * `ctx`: The execution context to use.
     /// * `items`: The array items as [`JSValue`]s.
     ///
-    /// Returns a `JSValue` of the `array` type, otherwise an exception.
+    /// Returns a `JSValue` of the `array` type, otherwise an [exception](JSException).
     ///
     /// ```
     /// # use javascriptcore::{JSContext, JSValue};
@@ -230,7 +230,7 @@ impl JSValue {
     ///   thus this method takes a `&mut` reference as it is possible to mutate the bytes via
     ///   `TypedArray` or via Rust.
     ///
-    /// Returns a `JSValue` of the `TypedArray` type, otherwise an exception.
+    /// Returns a `JSValue` of the `TypedArray` type, otherwise an [exception](JSException).
     ///
     /// # Safety
     ///
@@ -378,7 +378,7 @@ impl JSValue {
     ///   The size of the indent is clamped to `10` spaces.
     ///
     /// Returns either a [`JSString`] with the result of serialization, or an
-    /// exception if one was thrown.
+    /// [exception](JSException) if one was thrown.
     ///
     /// ```
     /// # use javascriptcore::*;
@@ -649,7 +649,7 @@ impl JSValue {
 
     /// Converts a JavaScript value to number and returns the resulting number.
     ///
-    /// Returns either the numeric result of conversion, or an exception
+    /// Returns either the numeric result of conversion, or an [exception](JSException)
     /// if one was thrown.
     ///
     /// ```
@@ -679,7 +679,7 @@ impl JSValue {
     /// Converts a JavaScript value to string and copies the result into a JavaScript string.
     ///
     /// Returns either [`JSString`] with the result of conversion, or an
-    /// exception if one was thrown.  Ownership follows the Create Rule.
+    /// [exception](JSException) if one was thrown.  Ownership follows the Create Rule.
     ///
     /// ```
     /// # use javascriptcore::*;
@@ -707,7 +707,7 @@ impl JSValue {
 
     /// Converts a JavaScript value to object and returns the resulting object.
     ///
-    /// Returns either the `JSObject` result of conversion, or an exception
+    /// Returns either the `JSObject` result of conversion, or an [exception](JSException)
     /// if one was thrown.
     ///
     /// ```
@@ -736,7 +736,7 @@ impl JSValue {
     /// Converts a JavaScript value to a Typed Array object and returns the
     /// resulting object.
     ///
-    /// Returns either the `JSTypedArray` result of conversion, or an exception
+    /// Returns either the `JSTypedArray` result of conversion, or an [exception](JSException)
     /// if one was thrown.
     ///
     /// ```rust
