@@ -183,7 +183,7 @@ impl JSTypedArray {
             assert!(!ptr.is_null(), "`ptr` must not be null");
 
             Ok(slice::from_raw_parts_mut(
-                ptr.offset(offset.try_into().unwrap()) as *mut u8,
+                ptr.offset(offset.try_into().unwrap()).cast::<u8>(),
                 length,
             ))
         }
