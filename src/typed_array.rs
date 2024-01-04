@@ -13,7 +13,7 @@ impl JSTypedArray {
     /// # Safety
     ///
     /// Ensure `raw` is valid, and represents a typed array.
-    pub(crate) unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
+    pub(crate) const unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
         Self { raw, ctx }
     }
 

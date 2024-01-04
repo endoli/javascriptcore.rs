@@ -10,7 +10,7 @@ use crate::{sys, JSException, JSString, JSValue};
 
 impl JSException {
     /// Return the underlying value backing the exception.
-    pub fn underlying_value(&self) -> &JSValue {
+    pub const fn underlying_value(&self) -> &JSValue {
         &self.value
     }
 

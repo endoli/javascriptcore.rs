@@ -15,7 +15,7 @@ impl JSContext {
     /// # Safety
     ///
     /// Ensure `raw` is valid.
-    pub unsafe fn from_raw(raw: sys::JSGlobalContextRef) -> Self {
+    pub const unsafe fn from_raw(raw: sys::JSGlobalContextRef) -> Self {
         Self { raw }
     }
 

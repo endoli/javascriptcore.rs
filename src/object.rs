@@ -14,7 +14,7 @@ impl JSObject {
     /// # Safety
     ///
     /// Ensure `raw` is valid.
-    pub unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
+    pub const unsafe fn from_raw(ctx: sys::JSContextRef, raw: sys::JSObjectRef) -> Self {
         Self {
             raw,
             value: JSValue::from_raw(ctx, raw),
