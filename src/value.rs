@@ -1011,6 +1011,7 @@ mod tests {
                 .map(|value| JSValue::from_raw(ctx, *value))
                 .collect::<Vec<_>>();
 
+            #[allow(clippy::get_first)]
             let x = arguments.get(0).unwrap();
             let y = arguments.get(1).unwrap();
 
