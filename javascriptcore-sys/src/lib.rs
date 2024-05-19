@@ -1512,7 +1512,7 @@ extern "C" {
         exception: *mut JSValueRef,
     ) -> bool;
 
-    /// Gets a property from an object using a JSValueRef as the property key.
+    /// Gets a property from an object using a [`JSValueRef`] as the property key.
     ///
     /// * `ctx`: The execution context to use.
     /// * `object`: The [`JSObjectRef`] whose property you want to get.
@@ -2078,8 +2078,8 @@ extern "C" {
     ///   of the Typed Array object.
     /// * `byteLength`: The number of bytes pointed to by the parameter bytes.
     /// * `bytesDeallocator`: The allocator to use to deallocate the external
-    ///    buffer when the JSTypedArrayData object is deallocated.
-    /// * `deallocatorContext A pointer to pass back to the deallocator.
+    ///    buffer when the `JSTypedArrayData` object is deallocated.
+    /// * `deallocatorContext`: A pointer to pass back to the deallocator.
     /// * `exception`: A pointer to a [`JSValueRef`] in which to store
     ///   an exception, if any. Pass `NULL` if you do not care to
     ///   store an exception.
