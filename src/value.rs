@@ -270,7 +270,7 @@ impl JSValue {
         let result = unsafe {
             sys::JSObjectMakeTypedArrayWithBytesNoCopy(
                 ctx.raw,
-                sys::JSTypedArrayType::Uint8Array,
+                JSTypedArrayType::Uint8Array,
                 bytes.as_ptr() as _,
                 bytes.len(),
                 None,
