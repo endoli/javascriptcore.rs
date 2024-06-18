@@ -15,7 +15,8 @@ On Debian and Ubuntu, this includes:
 
 * `pkg-config`
 * `libglib2.0-dev`
-* `libjavascriptcoregtk-3.0-dev` or `libjavascriptcoregtk-4.0-dev`
+* `libjavascriptcoregtk-3.0-dev`, `libjavascriptcoregtk-4.0-dev`,
+  or `libjavascriptcoregtk-4.1-dev`
 
 Other Linux distributions may need different packages and changes
 may need to be made to the ``build.rs`` script. Please submit bugs
