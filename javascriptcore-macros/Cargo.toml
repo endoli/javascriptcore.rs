@@ -1,6 +1,6 @@
 [package]
 name = "javascriptcore-macros"
-version = "0.0.1"
+version = "0.0.6"
 edition = "2021"
 authors = ["Bruce Mitchener <bruce.mitchener@gmail.com>", "Ivan Enderlin <ivan@mnt.io>"]
 license = "MIT OR Apache-2.0"
