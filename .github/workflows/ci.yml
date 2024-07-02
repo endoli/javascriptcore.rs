@@ -60,7 +60,7 @@ jobs:
         run: cargo test --workspace
 
   build-ios:
-    runs-on: macos-13
+    runs-on: macos-latest
     name: cargo build - ios
     env:
         RUSTFLAGS: -D warnings
