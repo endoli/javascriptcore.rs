@@ -96,6 +96,7 @@ pub struct OpaqueJSPropertyNameAccumulator([u8; 0]);
 pub type JSPropertyNameAccumulatorRef = *mut OpaqueJSPropertyNameAccumulator;
 
 /// A function used to deallocate bytes passed to a Typed Array constructor.
+///
 /// The function should take two arguments. The first is a pointer to
 /// the bytes that were originally passed to the Typed Array constructor.
 /// The second is a pointer to additional information desired at the time
@@ -602,8 +603,9 @@ pub type JSPropertyAttributes = ::std::os::raw::c_uint;
 /// Specifies that a class has no special attributes.
 pub const kJSClassAttributeNone: ::std::os::raw::c_uint = 0;
 /// Specifies that a class should not automatically generate a shared
-/// prototype for its instance objects. Use
-/// `kJSClassAttributeNoAutomaticPrototype` in combination with
+/// prototype for its instance objects.
+///
+/// Use `kJSClassAttributeNoAutomaticPrototype` in combination with
 /// [`JSObjectSetPrototype`] to manage prototypes manually.
 pub const kJSClassAttributeNoAutomaticPrototype: ::std::os::raw::c_uint = 2;
 
