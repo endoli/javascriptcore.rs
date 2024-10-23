@@ -34,7 +34,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-12, macos-13, macos-14, ubuntu-20.04, ubuntu-22.04]
+        os: [macos-13, macos-14, macos-15, ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
+        include:
+          - os: ubuntu-20.04
+            jsc_pkg: libjavascriptcoregtk-4.0-dev
+          - os: ubuntu-22.04
+            jsc_pkg: libjavascriptcoregtk-4.0-dev
+          - os: ubuntu-24.04
+            jsc_pkg: libjavascriptcoregtk-4.1-dev
     name: cargo clippy + test
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +56,7 @@ jobs:
         run: |
            if [ "$RUNNER_OS" == "Linux" ]; then
              sudo apt update
-             sudo apt install pkg-config libjavascriptcoregtk-4.0-dev
+             sudo apt install pkg-config ${{ matrix.jsc_pkg }}
            fi
         shell: bash
 
