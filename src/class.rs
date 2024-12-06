@@ -139,7 +139,7 @@ pub struct JSClassBuilder<'a> {
     class_definition: sys::JSClassDefinition,
 }
 
-impl<'a> JSClassBuilder<'a> {
+impl JSClassBuilder<'_> {
     /// Set a class constructor, called by [the `new` operator in JavaScript][new].
     ///
     /// The easiest way to generate a [`JSObjectCallAsConstructorCallback`] is by using the

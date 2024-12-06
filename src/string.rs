@@ -88,7 +88,7 @@ impl PartialEq<String> for JSString {
     }
 }
 
-impl<'s> PartialEq<JSString> for &'s str {
+impl PartialEq<JSString> for &str {
     fn eq(&self, other: &JSString) -> bool {
         let utf8 = CString::new(self.as_bytes()).unwrap();
         unsafe { sys::JSStringIsEqualToUTF8CString(other.raw, utf8.as_ptr()) }
