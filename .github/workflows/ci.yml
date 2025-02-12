@@ -34,10 +34,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-13, macos-14, macos-15, ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
+        os: [macos-13, macos-14, macos-15, ubuntu-22.04, ubuntu-24.04]
         include:
-          - os: ubuntu-20.04
-            jsc_pkg: libjavascriptcoregtk-4.0-dev
           - os: ubuntu-22.04
             jsc_pkg: libjavascriptcoregtk-4.0-dev
           - os: ubuntu-24.04
