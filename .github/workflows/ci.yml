@@ -83,7 +83,7 @@ jobs:
 
   build-doc:
     name: cargo docs-rs
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       RUSTDOCFLAGS: -Dwarnings
     steps:
@@ -96,7 +96,7 @@ jobs:
         run: |
            if [ "$RUNNER_OS" == "Linux" ]; then
              sudo apt update
-             sudo apt install pkg-config libjavascriptcoregtk-4.0-dev
+             sudo apt install pkg-config libjavascriptcoregtk-4.1-dev
            fi
         shell: bash
       - run: cargo docs-rs
