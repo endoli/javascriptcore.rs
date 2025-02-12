@@ -1160,7 +1160,7 @@ extern "C" {
     /// * `jsClass`: The [`JSClassRef`] to assign to the object. Pass `NULL` to use
     ///   the default object class.
     /// * `data`: A `void*` to set as the object's private data.
-    ///    Pass `NULL` to specify no private data.
+    ///   Pass `NULL` to specify no private data.
     ///
     /// Returns a [`JSObjectRef`] with the given class and private data.
     pub fn JSObjectMake(
@@ -2080,7 +2080,7 @@ extern "C" {
     ///   of the Typed Array object.
     /// * `byteLength`: The number of bytes pointed to by the parameter bytes.
     /// * `bytesDeallocator`: The allocator to use to deallocate the external
-    ///    buffer when the `JSTypedArrayData` object is deallocated.
+    ///   buffer when the `JSTypedArrayData` object is deallocated.
     /// * `deallocatorContext`: A pointer to pass back to the deallocator.
     /// * `exception`: A pointer to a [`JSValueRef`] in which to store
     ///   an exception, if any. Pass `NULL` if you do not care to
