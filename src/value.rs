@@ -832,7 +832,7 @@ impl From<JSValue> for sys::JSValueRef {
 
 impl From<JSValue> for sys::JSObjectRef {
     fn from(value: JSValue) -> Self {
-        value.raw as *mut _
+        value.raw.cast_mut()
     }
 }
 
